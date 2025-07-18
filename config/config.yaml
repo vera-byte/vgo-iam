@@ -1,0 +1,8 @@
+grpc:
+  port: "50051"
+
+database:
+  dsn: "postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"
+
+security:
+  master_key: "MWZjMTk4NzVkN2E4YzlmZmQwNjJiZWE2N2E3MGU1" # 实际使用时替换为安全密钥

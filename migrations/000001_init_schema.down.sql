@@ -1,0 +1,4 @@
+DROP TABLE IF EXISTS user_policies;
+DROP TABLE IF EXISTS access_keys;
+DROP TABLE IF EXISTS policies;
+DROP TABLE IF EXISTS users;

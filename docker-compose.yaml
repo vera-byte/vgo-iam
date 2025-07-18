@@ -1,0 +1,80 @@
+services:
+  # iam-service:
+  #   build: .
+  #   platform: linux/amd64
+  #   ports:
+  #     - "50051:50051"
+  #   environment:
+  #     - DB_HOST=postgres
+  #     - DB_PORT=5432
+  #     - DB_USER=iam_user
+  #     - DB_PASSWORD=iam_password
+  #     - DB_NAME=iam_db
+  #     - REDIS_HOST=redis
+  #     - REDIS_PORT=6379
+  #     - REDIS_PASSWORD=redispass
+  #     - MASTER_KEY=${MASTER_KEY:-default_insecure_key_32bytes}
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #   healthcheck:
+  #     test: ["CMD", "grpc_health_probe", "-addr=:50051"]
+  #     interval: 30s
+  #     timeout: 5s
+  #     start_period: 10s
+
+  postgres:
+    image: postgres:13-alpine
+    platform: linux/amd64
+    environment:
+      - POSTGRES_USER=iam_user
+      - POSTGRES_PASSWORD=iam_password
+      - POSTGRES_DB=iam_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U iam_user -d iam_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "5433:5432"
+
+  redis:
+    image: redis:6-alpine
+    platform: linux/amd64
+    command: redis-server --requirepass redispass --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "redispass", "ping"]
+      interval: 5s
+      timeout: 3s
+    ports:
+      - "6379:6379"
+
+  # 添加 wait-for-postgres 服务
+  wait-for-postgres:
+    image: alpine:3.14
+    command: sh -c "while ! nc -z postgres 5432; do sleep 1; done; echo 'PostgreSQL is ready'"
+    depends_on:
+      - postgres
+
+  # 添加 migrate 服务
+  migrate:
+    image: migrate/migrate
+    volumes:
+      - ./migrations:/migrations
+    environment:
+      - DB_URL=postgres://iam_user:iam_password@postgres:5432/iam_db?sslmode=disable
+    command: ["-path=/migrations", "-database", "$$DB_URL", "up"]
+    depends_on:
+      wait-for-postgres:
+        condition: service_completed_successfully
+
+volumes:
+  postgres_data:
+  redis_data:

@@ -53,7 +53,7 @@ go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@lat
 2. 执行迁移：
 
 ```bash
-migrate -path migrations -database "postgres://username:password@localhost:5432/iam_db?sslmode=disable" up
+migrate -path /Users/mac/workspace/vgo-iam/migrations/ -database "postgres://postgres:maile@321@10.0.0.200:5432/vgo_iam?sslmode=disable" up
 ```
 3. 回滚迁移：
 
@@ -65,6 +65,12 @@ migrate -path migrations -database "postgres://username:password@localhost:5432/
 docker run -v $(pwd)/migrations:/migrations --network host migrate/migrate \
   -path=/migrations/ \
   -database "postgres://username:password@localhost:5432/iam_db?sslmode=disable" up
+```
+
+4.
+```bash
+go build -ldflags "-X github.com/vera-byte/vgo-iam/internal/version.Version=1.2.3 -X github.com/vera-byte/vgo-iam/internal/version.Commit=$(git rev-parse HEAD) -X github.com/vera-byte/vgo-iam/internal/version.BuildTime=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
 ```
 
 # 手动备份数据库

@@ -4,12 +4,13 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"log"
 	"strings"
 	"time"
 
 	"github.com/gocraft/dbr/v2"
 	_ "github.com/lib/pq"
+	"github.com/vera-byte/vgo-iam/internal/util"
+	"go.uber.org/zap"
 )
 
 // PostgresStore PostgreSQL存储
@@ -33,7 +34,7 @@ func NewPostgresStore(dsn string) (*PostgresStore, error) {
 	// 带超时的连接测试
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	if err := db.PingContext(ctx); err != nil {
+	if pingErr := db.PingContext(ctx); pingErr != nil {
 		db.Close()
 		return nil, fmt.Errorf("db ping failed: %w", err)
 	}
@@ -43,7 +44,7 @@ func NewPostgresStore(dsn string) (*PostgresStore, error) {
 	db.SetMaxIdleConns(5)                   // 小于MaxOpenConns
 	db.SetConnMaxLifetime(30 * time.Minute) // 避免云服务断开
 	db.SetConnMaxIdleTime(5 * time.Minute)  // 主动回收闲置连接
-
+	monitorConnection(db, 10*time.Second)
 	// 创建dbr连接（关键修正）
 	conn, err := dbr.Open("postgres", dsn, nil)
 	if err != nil {
@@ -68,7 +69,7 @@ func monitorConnection(db *sql.DB, interval time.Duration) {
 		cancel()
 
 		if err != nil {
-			log.Printf("[WARN] Database connection unhealthy: %v", err)
+			util.Logger.Warn("Database connection unhealthy", zap.Error(err))
 		}
 	}
 }

@@ -11,7 +11,8 @@
             "mode": "debug",
             "program": "${workspaceFolder}/cmd/server/main.go",
             "output": "${workspaceFolder}/debug/iam",
-            "showLog": true
+            "showLog": true,
+            "cwd": "${workspaceFolder}"
         }
     ]
 }

@@ -6,3 +6,10 @@ database:
 
 security:
   master_key: "MWZjMTk4NzVkN2E4YzlmZmQwNjJiZWE2N2E3MGU1" # 实际使用时替换为安全密钥
+
+log:
+  level: info
+  format: console
+  directory: logs
+  filename: iam.log
+  to_stdout: true

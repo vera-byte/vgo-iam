@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 
+	"github.com/google/uuid"
 	"github.com/vera-byte/vgo-iam/internal/config"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -13,7 +15,7 @@ import (
 
 var Logger *zap.Logger
 
-func InitLogger(cfg config.LogConfig) error {
+func InitLogger(cfg config.LogConfig) (*zap.Logger, error) {
 	var cores []zapcore.Core
 
 	// 日志级别
@@ -25,7 +27,7 @@ func InitLogger(cfg config.LogConfig) error {
 	// 输出到文件
 	if cfg.Directory != "" && cfg.Filename != "" {
 		if err := os.MkdirAll(cfg.Directory, 0755); err != nil {
-			return err
+			return nil, err
 		}
 		logfile := filepath.Join(cfg.Directory, cfg.Filename)
 		fileWriter := zapcore.AddSync(&lumberjack.Logger{
@@ -43,15 +45,30 @@ func InitLogger(cfg config.LogConfig) error {
 	// 输出到终端
 	if cfg.ToStdout {
 		// 终端建议用 Console encoder
-		consoleEncoder := zapcore.NewConsoleEncoder(zap.NewDevelopmentEncoderConfig())
-		cores = append(cores, zapcore.NewCore(consoleEncoder, zapcore.AddSync(os.Stdout), level))
+		consoleConfig := zap.NewDevelopmentEncoderConfig()
+		consoleConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+		consoleEncoder := zapcore.NewConsoleEncoder(consoleConfig)
+		cores = append(cores, zapcore.NewCore(consoleEncoder, zapcore.Lock(os.Stdout), level))
 	}
 
 	if len(cores) == 0 {
-		return fmt.Errorf("no log output configured")
+		return nil, fmt.Errorf("no log output configured")
 	}
 
 	Logger = zap.New(zapcore.NewTee(cores...))
 	fmt.Println("Logger initialized, pointer:", Logger)
-	return nil
+	return Logger, nil
+}
+
+// 添加请求ID生成
+func GenerateRequestID() string {
+	return fmt.Sprintf("req-%s-%d", uuid.New().String()[:8], time.Now().UnixNano()%1000000)
+}
+
+// 添加带请求ID的日志函数
+func WithRequestID(logger *zap.Logger, reqID string) *zap.Logger {
+	if reqID == "" {
+		reqID = GenerateRequestID()
+	}
+	return logger.With(zap.String("request_id", reqID))
 }

@@ -1,62 +1,109 @@
 package main
 
 import (
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
 
-	"github.com/vera-byte/vgo-iam/internal/api"
-	"github.com/vera-byte/vgo-iam/internal/auth"
-	"github.com/vera-byte/vgo-iam/internal/bootstrap"
-	"github.com/vera-byte/vgo-iam/internal/policy"
-	"github.com/vera-byte/vgo-iam/internal/service"
-	"github.com/vera-byte/vgo-iam/internal/store"
-	"github.com/vera-byte/vgo-iam/internal/util"
-	iamv1 "github.com/vera-byte/vgo-iam/pkg/proto"
+	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
+
+	"github.com/vera-byte/vgo-iam/internal/bootstrap"
+	"github.com/vera-byte/vgo-iam/internal/util"
+	"github.com/vera-byte/vgo-iam/internal/version"
+	iamv1 "github.com/vera-byte/vgo-iam/pkg/proto"
 )
 
+// ServerCmd 代表server命令
+var ServerCmd = &cobra.Command{
+	Use:   "server",
+	Short: "Start the IAM server and handle command line requests",
+	Long: `Start the IAM server and handle command line requests such as creating users,
+getting user information, and getting user policies.`,
+	Run: func(cmd *cobra.Command, args []string) {
+		startServer(cmd)
+	},
+}
+
 func main() {
-	cfg, lis, session := bootstrap.Start()
+	if err := ServerCmd.Execute(); err != nil {
+		log.Fatal(err)
+	}
+}
 
-	// 初始化存储层
-	userStore := store.NewUserStore(session)
-	policyStore := store.NewPolicyStore(session)
-	accessKeyStore := store.NewAccessKeyStore(session)
+var (
+	createUser  string
+	getUser     string
+	getPolicies string
+	noServer    bool
+)
 
-	// 初始化服务层
-	userService := service.NewUserService(userStore, policyStore)
-	policyService := service.NewPolicyService(policyStore)
-	accessKeyService := service.NewAccessKeyService(accessKeyStore, userStore, []byte(cfg.Security.MasterKey))
-	policyEngine := policy.NewPolicyEngine(userService)
+func init() {
+	// 添加标志
+	ServerCmd.Flags().StringVar(&createUser, "create-user", "", "Create a new user")
+	ServerCmd.Flags().StringVar(&getUser, "get-user", "", "Get user information by username")
+	ServerCmd.Flags().StringVar(&getPolicies, "get-policies", "", "Get policies for a user")
+	ServerCmd.Flags().BoolVar(&noServer, "no-server", false, "Run command without starting server")
+}
 
-	// 创建gRPC服务器
-	grpcServer := grpc.NewServer(
-		grpc.UnaryInterceptor(auth.AccessKeyInterceptor(accessKeyStore)),
-	)
-	iamServer := api.NewIAMServer(
-		userService,
-		policyService,
-		accessKeyService,
-		policyEngine,
-		[]byte(cfg.Security.MasterKey),
-	)
-	iamv1.RegisterIAMServer(grpcServer, iamServer)
+func startServer(cmd *cobra.Command) {
+	// 从命令行获取参数值
+	createUser, _ = cmd.Flags().GetString("create-user")
+	getUser, _ = cmd.Flags().GetString("get-user")
+	getPolicies, _ = cmd.Flags().GetString("get-policies")
+	noServer, _ = cmd.Flags().GetBool("no-server")
 
-	// 启动gRPC服务
-	go func() {
-		util.Logger.Info("IAM server running")
-		if err := grpcServer.Serve(lis); err != nil {
-			util.Logger.Error("failed to serve")
-		}
-	}()
+	// 初始化日志
+	logger, err := util.InitLogger(util.DefaultLogConfig())
+	if err != nil {
+		log.Fatalf("Failed to initialize logger: %v", err)
+	}
 
-	// 优雅关闭
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-	<-quit
+	// 打印版本信息
+	logger.Info("Starting VGO-IAM service")
+	logger.Info("Version: " + version.Version)
+	logger.Info("Commit: " + version.Commit)
+	logger.Info("Build Time: " + version.BuildTime)
 
-	util.Logger.Info("Shutting down server...")
-	grpcServer.GracefulStop()
-	util.Logger.Info("Server gracefully stopped")
+	// 启动服务并获取配置
+	cfg, lis := bootstrap.Start()
+
+	// 初始化服务
+	logger.Info("Initializing services...")
+	iamServer, session := bootstrap.InitServices(cfg)
+	defer session.Close()
+	// 由于InitServices不返回错误，我们不需要错误处理
+
+	// 处理命令行请求
+	hasCommand := false
+
+	// 如果没有命令行请求或请求了启动服务器
+	if !hasCommand || !noServer {
+		// 创建gRPC服务器
+		server := grpc.NewServer()
+		iamv1.RegisterIAMServer(server, iamServer)
+
+		// 使用从bootstrap.Start()获取的listener
+		logger.Info("Using listener from bootstrap.Start()")
+
+		// 启动服务协程
+		go func() {
+			logger.Info("Starting gRPC server on port 50051")
+			if err := server.Serve(lis); err != nil {
+				logger.Fatal("Failed to serve", util.Err(err))
+			}
+		}()
+
+		// 优雅关闭
+		quit := make(chan os.Signal, 1)
+		signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+		<-quit
+		logger.Info("Shutting down server...")
+		server.GracefulStop()
+		logger.Info("Server exiting")
+	} else {
+		logger.Info("Server not started (--no-server flag set)")
+	}
+
 }

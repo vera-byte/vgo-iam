@@ -14,6 +14,7 @@ type AccessKeyStore interface {
 	GetByID(id int) (*model.AccessKey, error)
 	GetByAccessKeyID(accessKeyID string) (*model.AccessKey, error)
 	ListByUser(userID int) ([]*model.AccessKey, error)
+	ListAll() ([]*model.AccessKey, error)
 	UpdateStatus(accessKeyID, status string) error
 	RotateKey(accessKeyID string, masterKey []byte) (*model.AccessKey, error)
 }
@@ -127,6 +128,21 @@ func (s *accessKeyStore) RotateKey(accessKeyID string, masterKey []byte) (*model
 		SecretAccessKey: newSecret,
 		Status:          ak.Status,
 	}, nil
+}
+
+// ListAll 获取所有访问密钥
+func (s *accessKeyStore) ListAll() ([]*model.AccessKey, error) {
+	var aks []*model.AccessKey
+	_, err := s.session.Select(
+		"id",
+		"user_id",
+		"access_key_id",
+		"status",
+		"created_at",
+		"updated_at",
+	).From("access_keys").
+		Load(&aks)
+	return aks, err
 }
 
 // generateRandomSecret 生成随机密钥

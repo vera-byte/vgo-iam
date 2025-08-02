@@ -28,25 +28,25 @@ func VerifySignatureV4(signature, requestData, timestamp, secretKey string) (boo
 	}
 
 	// 2. 构建待签字符串
-	stringToSign := buildStringToSign(timestamp, requestData)
+	stringToSign := BuildStringToSign(timestamp, requestData)
 
 	// 3. 计算签名
-	computedSignature := calculateSignature(stringToSign, secretKey, timestamp)
+	computedSignature := CalculateSignature(stringToSign, secretKey, timestamp)
 
 	// 4. 比较签名
 	return computedSignature == signature, nil
 }
 
-// buildStringToSign 构建待签名字符串
-func buildStringToSign(timestamp, requestData string) string {
+// BuildStringToSign 构建待签名字符串
+func BuildStringToSign(timestamp, requestData string) string {
 	return fmt.Sprintf("%s\n%s\n%s",
 		authHeaderPrefix,
 		timestamp,
 		sha256Hash(requestData))
 }
 
-// calculateSignature 计算签名
-func calculateSignature(stringToSign, secretKey, timestamp string) string {
+// CalculateSignature 计算签名
+func CalculateSignature(stringToSign, secretKey, timestamp string) string {
 	// 步骤1: 从时间戳中提取日期
 	date := timestamp[0:8]
 

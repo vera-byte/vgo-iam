@@ -4,52 +4,69 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"strings"
 
+	"sync"
+	"time"
+
+	"github.com/patrickmn/go-cache"
 	"github.com/vera-byte/vgo-iam/internal/model"
 	"github.com/vera-byte/vgo-iam/internal/service"
 )
 
-// PolicyEngine 策略评估引擎，负责权限检查的核心逻辑
+// 修改PolicyEngine结构体
 type PolicyEngine struct {
-	userService *service.UserService // 用户服务用于获取用户关联的策略
+	userService *service.UserService
+	cache       *cache.Cache // 添加缓存
+	mu          sync.RWMutex
 }
 
-// NewPolicyEngine 创建新的策略引擎实例
+// 初始化缓存
 func NewPolicyEngine(userService *service.UserService) *PolicyEngine {
 	return &PolicyEngine{
 		userService: userService,
+		cache:       cache.New(5*time.Minute, 10*time.Minute), // 5分钟过期，10分钟清理
 	}
 }
 
-// Evaluate 评估用户是否有权限执行指定操作
-// 参数:
-// - user: 要检查的用户对象
-// - action: 要执行的操作 (如 "ecs:StartInstance")
-// - resource: 要访问的资源ARN (如 "acs:ecs:cn-beijing:123456:instance/i-123456")
-// 返回值:
-// - bool: 是否允许操作
-// - error: 检查过程中发生的错误
+// 修改Evaluate方法添加缓存逻辑
 func (e *PolicyEngine) Evaluate(user *model.User, action, resource string) (bool, error) {
-	// 1. 获取用户关联的所有策略
+	// 创建缓存键
+	cacheKey := fmt.Sprintf("%d:%s:%s", user.ID, action, resource)
+
+	// 尝试从缓存获取
+	e.mu.RLock()
+	cachedResult, found := e.cache.Get(cacheKey)
+	e.mu.RUnlock()
+	if found {
+		return cachedResult.(bool), nil
+	}
+
+	// 缓存未命中，执行实际评估
 	policies, err := e.userService.GetUserPolicies(context.Background(), user.ID)
 	if err != nil {
 		return false, err
 	}
 
-	// 2. 检查每个策略是否允许该操作
+	result := false
 	for _, policy := range policies {
 		allowed, match, err := e.evaluateSinglePolicy(policy, action, resource)
 		if err != nil {
 			return false, err
 		}
 		if match {
-			return allowed, nil
+			result = allowed
+			break
 		}
 	}
 
-	// 3. 默认拒绝原则：没有明确允许即视为拒绝
-	return false, nil
+	// 存入缓存
+	e.mu.Lock()
+	e.cache.Set(cacheKey, result, cache.DefaultExpiration)
+	e.mu.Unlock()
+
+	return result, nil
 }
 
 // evaluateSinglePolicy 评估单个策略是否允许指定操作

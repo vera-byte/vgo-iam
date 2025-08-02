@@ -1,9 +1,12 @@
-{"level":"info","ts":1753869595.558655,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
-{"level":"info","ts":1753869595.5589828,"msg":"config loaded successfully"}
-{"level":"info","ts":1753869595.5589929,"msg":"logger initialized successfully"}
-{"level":"info","ts":1753871576.363551,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
-{"level":"info","ts":1753871576.3639271,"msg":"config loaded successfully"}
-{"level":"info","ts":1753871576.36396,"msg":"logger initialized successfully"}
-{"level":"info","ts":1753952672.471945,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
-{"level":"info","ts":1753952672.472338,"msg":"config loaded successfully"}
-{"level":"info","ts":1753952672.472351,"msg":"logger initialized successfully"}
+Logger initialized, pointer: &{[0x140001f8330 0x140001f8360] false false <nil> <nil>  0x1400000d110 6 0 {}}
+2025-08-02T19:02:48.648+0800	INFO	Starting VGO-IAM service
+2025-08-02T19:02:48.648+0800	INFO	Version: v1.0.0
+2025-08-02T19:02:48.648+0800	INFO	Commit: b67d523
+2025-08-02T19:02:48.648+0800	INFO	Build Time: 2025-08-02T19:02:46Z
+Logger initialized, pointer: &{0x140001f8a80 false false <nil> <nil>  0x1400000d1b8 6 0 {}}
+2025-08-02T19:02:48.649+0800	INFO	Initializing services...
+�启动","version":"v1.0.0","commit":"b67d523","build_time":"2025-08-02T19:02:46Z"}
+{"level":"info","ts":1754132568.6492171,"msg":"config loaded successfully"}
+{"level":"info","ts":1754132568.64922,"msg":"logger initialized successfully"}
+{"level":"info","ts":1754132568.6492229,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1754132568.649455,"msg":"Initializing services..."}

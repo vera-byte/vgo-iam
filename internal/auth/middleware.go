@@ -2,6 +2,7 @@ package auth
 
 import (
 	"context"
+	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -10,6 +11,23 @@ import (
 
 	"github.com/vera-byte/vgo-iam/internal/store"
 )
+
+// verifyTimestamp 验证时间戳是否在允许范围内
+func verifyTimestamp(timestamp string) bool {
+	// 解析ISO8601时间戳
+	reqTime, err := time.Parse(time.RFC3339, timestamp)
+	if err != nil {
+		return false
+	}
+
+	// 检查时间戳是否在允许范围内（±5分钟）
+	now := time.Now()
+	diff := now.Sub(reqTime)
+	if diff.Abs() > 5*time.Minute {
+		return false
+	}
+	return true
+}
 
 // AccessKeyInterceptor gRPC访问密钥验证拦截器
 func AccessKeyInterceptor(akStore store.AccessKeyStore) grpc.UnaryServerInterceptor {
@@ -33,6 +51,11 @@ func AccessKeyInterceptor(akStore store.AccessKeyStore) grpc.UnaryServerIntercep
 
 		if accessKeyID == "" || signature == "" || timestamp == "" || requestData == "" {
 			return nil, status.Error(codes.Unauthenticated, "missing authentication parameters")
+		}
+
+		// 验证时间戳
+		if !verifyTimestamp(timestamp) {
+			return nil, status.Error(codes.Unauthenticated, "invalid or expired timestamp")
 		}
 
 		// 验证访问密钥

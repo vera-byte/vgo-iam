@@ -10,10 +10,27 @@ import (
 
 	"github.com/spf13/viper"
 	"github.com/vera-byte/vgo-iam/internal/config"
+	"go.uber.org/zap"
 )
 
-// ValidateEmail 验证邮箱格式
-func ValidateEmail(email string) bool {
+// DefaultLogConfig 返回默认的日志配置
+func DefaultLogConfig() config.LogConfig {
+	return config.LogConfig{
+		Level:      "info",
+		Format:     "console",
+		Directory:  "logs",
+		Filename:   "iam.log",
+		ToStdout:   true,
+		}
+	}
+
+// Err 返回一个带有错误信息的zap.Field
+func Err(err error) zap.Field {
+	return zap.Error(err)
+}
+
+	// ValidateEmail 验证邮箱格式
+	func ValidateEmail(email string) bool {
 	pattern := `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`
 	match, _ := regexp.MatchString(pattern, email)
 	return match

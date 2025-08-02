@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/ptypes"
+	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -43,10 +44,17 @@ func NewIAMServer(
 }
 
 func (s *IAMServer) CreateUser(ctx context.Context, req *iamv1.CreateUserRequest) (*iamv1.User, error) {
+	reqID := util.GenerateRequestID()
+	logger := util.WithRequestID(util.Logger, reqID)
+	logger.Info("CreateUser request received", zap.String("username", req.Name))
+
 	user, err := s.userService.CreateUser(ctx, req.Name, req.DisplayName, req.Email)
 	if err != nil {
+		logger.Error("Failed to create user", zap.Error(err))
 		return nil, status.Errorf(codes.Internal, "failed to create user: %v", err)
 	}
+
+	logger.Info("User created successfully", zap.String("username", user.Name), zap.Int("user_id", user.ID))
 	return convertUserToProto(user), nil
 }
 
@@ -128,6 +136,12 @@ func (s *IAMServer) UpdateAccessKeyStatus(ctx context.Context, req *iamv1.Update
 		return nil, status.Error(codes.InvalidArgument, "status must be either 'active' or 'inactive'")
 	}
 
+	// 先获取访问密钥信息
+	ak, err := s.accessKeyService.GetAccessKey(ctx, req.AccessKeyId)
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "access key not found: %v", err)
+	}
+
 	// 调用服务层更新状态
 	updatedKey, err := s.accessKeyService.UpdateStatus(ctx, req.AccessKeyId, req.Status)
 	if err != nil {
@@ -135,7 +149,7 @@ func (s *IAMServer) UpdateAccessKeyStatus(ctx context.Context, req *iamv1.Update
 	}
 
 	// 获取关联用户信息
-	user, err := s.userService.GetUser(ctx, "")
+	user, err := s.userService.GetUser(ctx, ak.UserName)
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "associated user not found: %v", err)
 	}
@@ -168,9 +182,9 @@ func (s *IAMServer) VerifyAccessKey(ctx context.Context, req *iamv1.VerifyReques
 	}
 
 	// 4. 获取用户名
-	user, err := s.userService.GetUser(ctx, "")
+	user, err := s.userService.GetUser(ctx, ak.UserName)
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "user not found")
+		return nil, status.Errorf(codes.NotFound, "user not found: %v", err)
 	}
 
 	return &iamv1.VerifyResponse{

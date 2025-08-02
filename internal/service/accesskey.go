@@ -4,10 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/vera-byte/vgo-iam/internal/model"
 	"github.com/vera-byte/vgo-iam/internal/store"
 	"github.com/vera-byte/vgo-iam/internal/util"
+	"go.uber.org/zap"
 )
 
 // AccessKeyService 访问密钥服务
@@ -123,4 +125,26 @@ func (s *AccessKeyService) GetAccessKey(ctx context.Context, accessKeyID string)
 	ak.UserName = user.Name
 
 	return ak, nil
+}
+
+// 添加密钥轮换检查
+func (s *AccessKeyService) CheckAndRotateExpiredKeys(ctx context.Context) error {
+	// 获取所有访问密钥
+	allKeys, err := s.accessKeyStore.ListAll()
+	if err != nil {
+		return err
+	}
+
+	// 检查并轮换过期密钥（假设90天过期）
+	expiryDuration := 90 * 24 * time.Hour
+	now := time.Now()
+
+	for _, key := range allKeys {
+		if now.Sub(key.CreatedAt) > expiryDuration {
+			if _, err := s.RotateAccessKey(ctx, key.AccessKeyID); err != nil {
+				util.Logger.Warn("Failed to rotate expired key", zap.String("access_key_id", key.AccessKeyID))
+			}
+		}
+	}
+	return nil
 }

@@ -97,3 +97,33 @@ func (s *PostgresStore) Close() error {
 	}
 	return nil
 }
+
+// 添加重试工具函数
+func withRetry(maxRetries int, fn func() error) error {
+	var err error
+	for i := 0; i < maxRetries; i++ {
+		err = fn()
+		if err == nil {
+			return nil
+		}
+		// 指数退避重试
+		time.Sleep(time.Duration(1<<i) * 100 * time.Millisecond)
+	}
+	return fmt.Errorf("after %d retries: %w", maxRetries, err)
+}
+
+// 修改查询执行方法
+func (s *PostgresStore) ExecQuery(query string, args ...interface{}) (sql.Result, error) {
+	return s.Session.Exec(query, args...)
+}
+
+// 添加带重试的查询方法
+func (s *PostgresStore) ExecQueryWithRetry(query string, args ...interface{}) (sql.Result, error) {
+	var result sql.Result
+	err := withRetry(3, func() error {
+		var execErr error
+		result, execErr = s.ExecQuery(query, args...)
+		return execErr
+	})
+	return result, err
+}

@@ -27,6 +27,11 @@ type IAMServer struct {
 	masterKey        []byte
 }
 
+// AccessKeyService 返回accessKeyService
+func (s *IAMServer) AccessKeyService() *service.AccessKeyService {
+	return s.accessKeyService
+}
+
 func NewIAMServer(
 	userService *service.UserService,
 	policyService *service.PolicyService,

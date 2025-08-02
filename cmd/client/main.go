@@ -16,7 +16,7 @@ import (
 
 func main() {
 	// 连接到gRPC服务器
-	conn, err := grpc.Dial("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.Dial("localhost:8899", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("无法连接到服务器: %v", err)
 	}

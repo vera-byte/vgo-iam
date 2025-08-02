@@ -1,5 +1,5 @@
 grpc:
-  port: "50051"
+  port: "8899"
 
 database:
   dsn: "postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"

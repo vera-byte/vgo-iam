@@ -1,0 +1,7 @@
+Logger initialized, pointer: &{[0x140001f4330 0x140001f4360] false false <nil> <nil>  0x1400000d110 6 0 {}}
+2025-08-02T19:14:18.506+0800	INFO	Starting VGO-IAM service
+2025-08-02T19:14:18.506+0800	INFO	Version: v1.0.0
+2025-08-02T19:14:18.506+0800	INFO	Commit: unknown
+2025-08-02T19:14:18.506+0800	INFO	Build Time: unknown
+Logger initialized, pointer: &{0x140001f4a80 false false <nil> <nil>  0x1400000d1b8 6 0 {}}
+2025-08-02T19:14:18.506+0800	INFO	Initializing services...

@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 
+	"github.com/vera-byte/vgo-iam/internal/auth"
 	"github.com/vera-byte/vgo-iam/internal/bootstrap"
 	"github.com/vera-byte/vgo-iam/internal/util"
 	"github.com/vera-byte/vgo-iam/internal/version"
@@ -75,13 +76,20 @@ func startServer(cmd *cobra.Command) {
 	defer session.Close()
 	// 由于InitServices不返回错误，我们不需要错误处理
 
+	// 获取accessKeyService并获取其存储实现
+	accessKeyService := iamServer.AccessKeyService()
+	accessKeyStore := accessKeyService.GetStore()
+
 	// 处理命令行请求
-	hasCommand := false
+	hasCommand := createUser != "" || getUser != "" || getPolicies != ""
 
 	// 如果没有命令行请求或请求了启动服务器
 	if !hasCommand || !noServer {
-		// 创建gRPC服务器
-		server := grpc.NewServer()
+		// 创建gRPC服务器并添加认证中间件
+		// 创建gRPC服务器并添加认证中间件
+		server := grpc.NewServer(
+			grpc.UnaryInterceptor(auth.AccessKeyInterceptor(accessKeyStore)),
+		)
 		iamv1.RegisterIAMServer(server, iamServer)
 
 		// 使用从bootstrap.Start()获取的listener

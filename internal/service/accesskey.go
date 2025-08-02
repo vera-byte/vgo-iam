@@ -127,6 +127,11 @@ func (s *AccessKeyService) GetAccessKey(ctx context.Context, accessKeyID string)
 	return ak, nil
 }
 
+// GetStore 返回访问密钥存储实现
+func (s *AccessKeyService) GetStore() store.AccessKeyStore {
+	return s.accessKeyStore
+}
+
 // 添加密钥轮换检查
 func (s *AccessKeyService) CheckAndRotateExpiredKeys(ctx context.Context) error {
 	// 获取所有访问密钥

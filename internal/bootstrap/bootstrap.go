@@ -12,10 +12,11 @@ import (
 	"github.com/vera-byte/vgo-iam/internal/store"
 	"github.com/vera-byte/vgo-iam/internal/version"
 	vgokit "github.com/vera-byte/vgo-kit"
+	"github.com/vera-byte/vgo-kit/db"
 	"go.uber.org/zap"
 )
 
-func Banner(cfg *config.LogConfig) string {
+func Banner() {
 	art := `
  __      ___      _        ___ ___    _    __  __ 
  \ \    / (_)    | |      |_ _/ _ \  / \  |  \/  |
@@ -23,19 +24,20 @@ func Banner(cfg *config.LogConfig) string {
    \_/\_/ | |/ __| |/ /    | | |_| / ___ \| |  | |
           |_|\___|_|\_\   |___\___/_/   \_\_|  |_|
 `
-	if cfg.ToStdout {
-		fmt.Println(art)
-	}
-	return art
+	fmt.Println(art)
+
 }
 
 // InitServices 初始化服务层和API层
 // 返回IAMServer实例，用于gRPC服务和命令行操作
 func InitServices(cfg *config.AppConfig) (*api.IAMServer, *dbr.Session) {
 	// 初始化数据库连接
-	sess, err := store.NewPostgresStore(cfg.Database.DSN)
+	sess, err := db.NewPostgresStore(cfg.Database.DSN)
 	if err != nil {
 		vgokit.Log.Error("failed to connect to database", zap.Error(err))
+		// 为了调试，先打印详细错误信息
+		fmt.Printf("Database connection failed: %v\n", err)
+		fmt.Printf("DSN: %s\n", cfg.Database.DSN)
 		panic(err)
 	}
 	vgokit.Log.Info("database connected successfully", zap.String("dsn", cfg.Database.DSN))
@@ -70,7 +72,7 @@ func Start() (*config.AppConfig, net.Listener) {
 		panic(err)
 	}
 
-	Banner(&cfg.Log)
+	Banner()
 
 	vgokit.Log.Info("VGO-IAM 服务启动",
 		zap.String("version", version.Version),

@@ -1,5 +1,5 @@
 grpc:
-  port: "8899"
+  port: "50051"
 
 database:
   dsn: "postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"
@@ -12,9 +12,10 @@ log:
   format: console
   directory: logs
   filename: iam.log
-  to_stdout: true
+  stdout: true
 
 sentry:
   enabled: true
-  dsn: "https://042331a8f34db905cdf8a1700b58b591@sentry.mailevw.com/6"
-  environment: "production"
+  dsn: "https://d019949ed7dddcc9ea45a73a1144685d@sentry.mailevw.com/18"
+  environment: "development"
+  debug: true

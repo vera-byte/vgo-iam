@@ -1,27 +1,161 @@
-{"level":"info","ts":1754362156.7260501,"msg":"Starting VGO-IAM service"}
-{"level":"info","ts":1754362156.7270458,"msg":"Version: v1.0.0"}
-{"level":"info","ts":1754362156.727264,"msg":"Commit: unknown"}
-{"level":"info","ts":1754362156.727436,"msg":"Build Time: unknown"}
-{"level":"info","ts":1754362170.202374,"msg":"Initializing services..."}
+{"level":"info","ts":1755600097.383549,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755600097.3841338,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755600097.38416,"msg":"Commit: unknown"}
+{"level":"info","ts":1755600097.3841732,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755600097.384566,"msg":"Initializing services..."}
 ion":"v1.0.0","commit":"unknown","build_time":"unknown"}
-{"level":"info","ts":1754362170.2020638,"msg":"config loaded successfully"}
-{"level":"info","ts":1754362170.2020822,"msg":"logger initialized successfully"}
-{"level":"info","ts":1754362170.202089,"msg":"gRPC server will listen on","address":":8899"}
-{"level":"info","ts":1755069315.810355,"msg":"Starting VGO-IAM service"}
-{"level":"info","ts":1755069315.8110878,"msg":"Version: v1.0.0"}
-{"level":"info","ts":1755069315.81112,"msg":"Commit: unknown"}
-{"level":"info","ts":1755069315.811136,"msg":"Build Time: unknown"}
-{"level":"info","ts":1755069315.94083,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
-{"level":"info","ts":1755069315.9408908,"msg":"config loaded successfully"}
-{"level":"info","ts":1755069315.940897,"msg":"logger initialized successfully"}
-{"level":"info","ts":1755069315.940901,"msg":"gRPC server will listen on","address":":8899"}
-{"level":"info","ts":1755069315.9410272,"msg":"Initializing services..."}
-{"level":"info","ts":1755596715.41312,"msg":"Starting VGO-IAM service"}
-{"level":"info","ts":1755596715.4134989,"msg":"Version: v1.0.0"}
-{"level":"info","ts":1755596715.4135082,"msg":"Commit: unknown"}
-{"level":"info","ts":1755596715.413512,"msg":"Build Time: unknown"}
-{"level":"info","ts":1755596715.413561,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
-{"level":"info","ts":1755596715.413567,"msg":"config loaded successfully"}
-{"level":"info","ts":1755596715.4135702,"msg":"logger initialized successfully"}
-{"level":"info","ts":1755596715.413574,"msg":"gRPC server will listen on","address":":8899"}
-{"level":"info","ts":1755596715.4137962,"msg":"Initializing services..."}
+{"level":"info","ts":1755600097.384398,"msg":"config loaded successfully"}
+{"level":"info","ts":1755600097.384402,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755600097.384406,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755600158.759617,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755600158.7596722,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755600158.759678,"msg":"Commit: unknown"}
+{"level":"info","ts":1755600158.759682,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755600158.759806,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755600158.759827,"msg":"config loaded successfully"}
+{"level":"info","ts":1755600158.759831,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755600158.759834,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755600158.7599921,"msg":"Initializing services..."}
+{"level":"info","ts":1755600183.0962088,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755600183.096415,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755600183.0964239,"msg":"Commit: unknown"}
+{"level":"info","ts":1755600183.096429,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755600183.096468,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755600183.0964758,"msg":"config loaded successfully"}
+{"level":"info","ts":1755600183.09648,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755600183.0964851,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755600183.096689,"msg":"Initializing services..."}
+{"level":"info","ts":1755600268.876597,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755600268.8769548,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755600268.876992,"msg":"Commit: unknown"}
+{"level":"info","ts":1755600268.8770041,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755600268.877142,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755600268.8771682,"msg":"config loaded successfully"}
+{"level":"info","ts":1755600268.877177,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755600268.877186,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755600268.877759,"msg":"Initializing services..."}
+{"level":"info","ts":1755600280.285585,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755600280.2858272,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755600280.285843,"msg":"Commit: unknown"}
+{"level":"info","ts":1755600280.285853,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755600280.285959,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755600280.28597,"msg":"config loaded successfully"}
+{"level":"info","ts":1755600280.285978,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755600280.286002,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755600280.2863,"msg":"Initializing services..."}
+{"level":"info","ts":1755600322.010336,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755600322.010777,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755600322.010823,"msg":"Commit: unknown"}
+{"level":"info","ts":1755600322.010854,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755600329.690586,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755600329.690774,"msg":"config loaded successfully"}
+{"level":"info","ts":1755600329.690791,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755600329.690807,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755600341.39134,"msg":"Initializing services..."}
+{"level":"info","ts":1755600352.703601,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755600352.703768,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755600352.7037828,"msg":"Commit: unknown"}
+{"level":"info","ts":1755600352.7037928,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755600352.7039812,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755600352.704001,"msg":"config loaded successfully"}
+{"level":"info","ts":1755600352.7040799,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755600352.7041159,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755600352.704403,"msg":"Initializing services..."}
+{"level":"info","ts":1755600637.867073,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755600637.8672209,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755600637.867234,"msg":"Commit: unknown"}
+{"level":"info","ts":1755600637.867243,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755600637.867357,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755600637.867397,"msg":"config loaded successfully"}
+{"level":"info","ts":1755600637.867405,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755600637.867421,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755600637.867729,"msg":"Initializing services..."}
+{"level":"info","ts":1755600664.7894678,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755600664.789609,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755600664.789623,"msg":"Commit: unknown"}
+{"level":"info","ts":1755600664.789631,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755600664.7897348,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755600664.7897532,"msg":"config loaded successfully"}
+{"level":"info","ts":1755600664.7897758,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755600664.7897868,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755600664.7900429,"msg":"Initializing services..."}
+{"level":"info","ts":1755600759.314877,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755600759.31565,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755600759.315665,"msg":"Commit: unknown"}
+{"level":"info","ts":1755600759.315677,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755600759.315773,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755600759.3157918,"msg":"config loaded successfully"}
+{"level":"info","ts":1755600759.3158011,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755600759.315808,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755600759.316092,"msg":"Initializing services..."}
+{"level":"info","ts":1755600770.7321138,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755600770.7322109,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755600770.732218,"msg":"Commit: unknown"}
+{"level":"info","ts":1755600770.732227,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755600770.732277,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755600770.7322838,"msg":"config loaded successfully"}
+{"level":"info","ts":1755600770.732289,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755600770.7322938,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755600770.732497,"msg":"Initializing services..."}
+{"level":"info","ts":1755600826.8431082,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755600826.843389,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755600826.843411,"msg":"Commit: unknown"}
+{"level":"info","ts":1755600826.843422,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755600826.843552,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755600826.843589,"msg":"config loaded successfully"}
+{"level":"info","ts":1755600826.8435981,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755600826.843605,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755600826.843869,"msg":"Initializing services..."}
+{"level":"info","ts":1755600837.8664021,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755600837.86654,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755600837.866553,"msg":"Commit: unknown"}
+{"level":"info","ts":1755600837.86658,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755600837.86675,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755600837.866763,"msg":"config loaded successfully"}
+{"level":"info","ts":1755600837.866771,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755600837.8667798,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755600837.867069,"msg":"Initializing services..."}
+{"level":"info","ts":1755600846.698454,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755600846.698841,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755600846.698955,"msg":"Commit: unknown"}
+{"level":"info","ts":1755600846.699044,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755600846.69925,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755600846.699271,"msg":"config loaded successfully"}
+{"level":"info","ts":1755600846.699281,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755600846.69929,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755600846.6995862,"msg":"Initializing services..."}
+{"level":"info","ts":1755600860.804826,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755600860.80499,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755600860.8050199,"msg":"Commit: unknown"}
+{"level":"info","ts":1755600860.8050308,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755600860.8051379,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755600860.805182,"msg":"config loaded successfully"}
+{"level":"info","ts":1755600860.8051908,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755600860.8051982,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755600860.80563,"msg":"Initializing services..."}
+{"level":"info","ts":1755601004.540703,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755601004.540979,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755601004.540994,"msg":"Commit: unknown"}
+{"level":"info","ts":1755601004.541002,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755601004.541104,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755601004.5411232,"msg":"config loaded successfully"}
+{"level":"info","ts":1755601004.541137,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755601004.541145,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755601004.5414028,"msg":"Initializing services..."}
+{"level":"info","ts":1755601004.609878,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1755601013.4686122,"msg":"Services initialized successfully"}
+{"level":"info","ts":1755601013.469295,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1755601013.469465,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1755601075.3865988,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755601075.3867369,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755601075.386751,"msg":"Commit: unknown"}
+{"level":"info","ts":1755601075.38676,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755601075.386882,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755601075.386912,"msg":"config loaded successfully"}
+{"level":"info","ts":1755601075.386931,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755601075.3869472,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755601075.38724,"msg":"Initializing services..."}
+{"level":"info","ts":1755601075.562939,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1755601075.56304,"msg":"Services initialized successfully"}
+{"level":"info","ts":1755601075.563128,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1755601075.56317,"msg":"Starting gRPC server on port 50051"}

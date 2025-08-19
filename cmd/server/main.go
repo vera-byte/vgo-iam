@@ -13,7 +13,7 @@ import (
 	"github.com/vera-byte/vgo-iam/internal/bootstrap"
 	"github.com/vera-byte/vgo-iam/internal/version"
 	iamv1 "github.com/vera-byte/vgo-iam/pkg/proto"
-	_ "github.com/vera-byte/vgo-kit"
+
 	vgokit "github.com/vera-byte/vgo-kit"
 	"go.uber.org/zap"
 )
@@ -56,7 +56,6 @@ func startServer(cmd *cobra.Command) {
 	getUser, _ = cmd.Flags().GetString("get-user")
 	getPolicies, _ = cmd.Flags().GetString("get-policies")
 	noServer, _ = cmd.Flags().GetBool("no-server")
-
 	// 打印版本信息
 	vgokit.Log.Info("Starting VGO-IAM service")
 	vgokit.Log.Info("Version: " + version.Version)
@@ -70,7 +69,7 @@ func startServer(cmd *cobra.Command) {
 	vgokit.Log.Info("Initializing services...")
 	iamServer, session := bootstrap.InitServices(cfg)
 	defer session.Close()
-	// 由于InitServices不返回错误，我们不需要错误处理
+	vgokit.Log.Info("Services initialized successfully")
 
 	// 获取accessKeyService并获取其存储实现
 	accessKeyService := iamServer.AccessKeyService()
@@ -81,7 +80,6 @@ func startServer(cmd *cobra.Command) {
 
 	// 如果没有命令行请求或请求了启动服务器
 	if !hasCommand || !noServer {
-		// 创建gRPC服务器并添加认证中间件
 		// 创建gRPC服务器并添加认证中间件
 		server := grpc.NewServer(
 			grpc.UnaryInterceptor(auth.AccessKeyInterceptor(accessKeyStore)),

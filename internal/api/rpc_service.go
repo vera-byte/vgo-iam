@@ -16,6 +16,7 @@ import (
 	"github.com/vera-byte/vgo-iam/internal/service"
 	"github.com/vera-byte/vgo-iam/internal/util"
 	iamv1 "github.com/vera-byte/vgo-iam/pkg/proto"
+	vgokit "github.com/vera-byte/vgo-kit"
 )
 
 type IAMServer struct {
@@ -49,17 +50,16 @@ func NewIAMServer(
 }
 
 func (s *IAMServer) CreateUser(ctx context.Context, req *iamv1.CreateUserRequest) (*iamv1.User, error) {
-	reqID := util.GenerateRequestID()
-	logger := util.WithRequestID(util.Logger, reqID)
-	logger.Info("CreateUser request received", zap.String("username", req.Name))
+
+	vgokit.Log.Info("CreateUser request received", zap.String("username", req.Name))
 
 	user, err := s.userService.CreateUser(ctx, req.Name, req.DisplayName, req.Email)
 	if err != nil {
-		logger.Error("Failed to create user", zap.Error(err))
+		vgokit.Log.Error("Failed to create user", zap.Error(err))
 		return nil, status.Errorf(codes.Internal, "failed to create user: %v", err)
 	}
 
-	logger.Info("User created successfully", zap.String("username", user.Name), zap.Int("user_id", user.ID))
+	vgokit.Log.Info("User created successfully", zap.String("username", user.Name), zap.Int("user_id", user.ID))
 	return convertUserToProto(user), nil
 }
 

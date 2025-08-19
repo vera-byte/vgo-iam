@@ -10,8 +10,8 @@ import (
 	"github.com/vera-byte/vgo-iam/internal/policy"
 	"github.com/vera-byte/vgo-iam/internal/service"
 	"github.com/vera-byte/vgo-iam/internal/store"
-	"github.com/vera-byte/vgo-iam/internal/util"
 	"github.com/vera-byte/vgo-iam/internal/version"
+	vgokit "github.com/vera-byte/vgo-kit"
 	"go.uber.org/zap"
 )
 
@@ -35,10 +35,10 @@ func InitServices(cfg *config.AppConfig) (*api.IAMServer, *dbr.Session) {
 	// 初始化数据库连接
 	sess, err := store.NewPostgresStore(cfg.Database.DSN)
 	if err != nil {
-		util.Logger.Error("failed to connect to database", zap.Error(err))
+		vgokit.Log.Error("failed to connect to database", zap.Error(err))
 		panic(err)
 	}
-	util.Logger.Info("database connected successfully", zap.String("dsn", cfg.Database.DSN))
+	vgokit.Log.Info("database connected successfully", zap.String("dsn", cfg.Database.DSN))
 
 	// 初始化存储层
 	userStore := store.NewUserStore(sess.Session)
@@ -64,32 +64,28 @@ func InitServices(cfg *config.AppConfig) (*api.IAMServer, *dbr.Session) {
 }
 
 func Start() (*config.AppConfig, net.Listener) {
-	cfg, err := util.LoadConfig("config/config.yaml")
-	if err != nil {
+
+	var cfg *config.AppConfig
+	if err := vgokit.Cfg.Unmarshal(&cfg); err != nil {
 		panic(err)
 	}
 
-	if _, initLoggerErr := util.InitLogger(cfg.Log); initLoggerErr != nil {
-		panic(initLoggerErr)
-	}
-	defer util.Logger.Sync()
-
 	Banner(&cfg.Log)
 
-	util.Logger.Info("VGO-IAM 服务启动",
+	vgokit.Log.Info("VGO-IAM 服务启动",
 		zap.String("version", version.Version),
 		zap.String("commit", version.Commit),
 		zap.String("build_time", version.BuildTime),
 	)
 
-	util.Logger.Info("config loaded successfully")
-	util.Logger.Info("logger initialized successfully")
+	vgokit.Log.Info("config loaded successfully")
+	vgokit.Log.Info("logger initialized successfully")
 
 	listenAddr := ":" + cfg.GRPC.Port
-	util.Logger.Info("gRPC server will listen on", zap.String("address", listenAddr))
+	vgokit.Log.Info("gRPC server will listen on", zap.String("address", listenAddr))
 	lis, err := net.Listen("tcp", listenAddr)
 	if err != nil {
-		util.Logger.Error("failed to listen", zap.Error(err))
+		vgokit.Log.Error("failed to listen", zap.Error(err))
 		panic(err)
 	}
 

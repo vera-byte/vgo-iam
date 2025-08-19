@@ -4,33 +4,19 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"fmt"
-	"path/filepath"
 	"regexp"
 	"strings"
 
-	"github.com/spf13/viper"
-	"github.com/vera-byte/vgo-iam/internal/config"
 	"go.uber.org/zap"
 )
-
-// DefaultLogConfig 返回默认的日志配置
-func DefaultLogConfig() config.LogConfig {
-	return config.LogConfig{
-		Level:      "info",
-		Format:     "console",
-		Directory:  "logs",
-		Filename:   "iam.log",
-		ToStdout:   true,
-		}
-	}
 
 // Err 返回一个带有错误信息的zap.Field
 func Err(err error) zap.Field {
 	return zap.Error(err)
 }
 
-	// ValidateEmail 验证邮箱格式
-	func ValidateEmail(email string) bool {
+// ValidateEmail 验证邮箱格式
+func ValidateEmail(email string) bool {
 	pattern := `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`
 	match, _ := regexp.MatchString(pattern, email)
 	return match
@@ -94,30 +80,4 @@ func ParsePolicyResource(resource string) (service, resourceType, resourceID str
 		return "", "", ""
 	}
 	return parts[0], parts[1], parts[2]
-}
-
-func LoadConfig(configPath string) (*config.AppConfig, error) {
-	v := viper.New()
-
-	// 1. 设置配置类型和文件名
-	v.SetConfigType("yaml")
-	v.SetConfigName(filepath.Base(configPath)) // 不带扩展名的文件名
-	v.AddConfigPath(filepath.Dir(configPath))  // 配置文件所在目录
-
-	// 2. 自动读取环境变量（可选）
-	v.AutomaticEnv()
-	v.SetEnvPrefix("IAM") // 环境变量前缀 IAM_SERVER_HOST
-
-	// 3. 读取配置文件
-	if err := v.ReadInConfig(); err != nil {
-		return nil, fmt.Errorf("failed to read config: %w", err)
-	}
-
-	// 4. 反序列化到结构体
-	var cfg config.AppConfig
-	if err := v.Unmarshal(&cfg); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal config: %w", err)
-	}
-
-	return &cfg, nil
 }

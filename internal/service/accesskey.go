@@ -9,6 +9,7 @@ import (
 	"github.com/vera-byte/vgo-iam/internal/model"
 	"github.com/vera-byte/vgo-iam/internal/store"
 	"github.com/vera-byte/vgo-iam/internal/util"
+	vgokit "github.com/vera-byte/vgo-kit"
 	"go.uber.org/zap"
 )
 
@@ -147,7 +148,7 @@ func (s *AccessKeyService) CheckAndRotateExpiredKeys(ctx context.Context) error 
 	for _, key := range allKeys {
 		if now.Sub(key.CreatedAt) > expiryDuration {
 			if _, err := s.RotateAccessKey(ctx, key.AccessKeyID); err != nil {
-				util.Logger.Warn("Failed to rotate expired key", zap.String("access_key_id", key.AccessKeyID))
+				vgokit.Log.Warn("Failed to rotate expired key", zap.String("access_key_id", key.AccessKeyID))
 			}
 		}
 	}

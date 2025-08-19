@@ -9,7 +9,7 @@ import (
 
 	"github.com/gocraft/dbr/v2"
 	_ "github.com/lib/pq"
-	"github.com/vera-byte/vgo-iam/internal/util"
+	vgokit "github.com/vera-byte/vgo-kit"
 	"go.uber.org/zap"
 )
 
@@ -69,7 +69,7 @@ func monitorConnection(db *sql.DB, interval time.Duration) {
 		cancel()
 
 		if err != nil {
-			util.Logger.Warn("Database connection unhealthy", zap.Error(err))
+			vgokit.Log.Warn("Database connection unhealthy", zap.Error(err))
 		}
 	}
 }
@@ -109,7 +109,8 @@ func withRetry(maxRetries int, fn func() error) error {
 		// 指数退避重试
 		time.Sleep(time.Duration(1<<i) * 100 * time.Millisecond)
 	}
-	return fmt.Errorf("after %d retries: %w", maxRetries, err)
+	vgokit.Log.Error("after %d retries: %w", zap.Int("maxRetries", maxRetries), zap.Error(err))
+	return err
 }
 
 // 修改查询执行方法

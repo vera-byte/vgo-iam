@@ -1,0 +1,24 @@
+# 数据库配置
+database:
+  dsn: "host=localhost port=5432 user=postgres password=postgres dbname=vgo_iam sslmode=disable"
+
+# gRPC服务配置
+grpc:
+  port: "50051"
+
+# 安全配置
+security:
+  master_key: "your-master-key-here"
+
+# 日志配置
+log:
+  level: "info"           # 日志级别: debug, info, warn, error, fatal
+  directory: "./logs"     # 日志目录
+  filename: "app.log"     # 日志文件名
+  to_stdout: true         # 是否输出到控制台
+
+# Sentry配置
+sentry:
+  enabled: false          # 是否启用Sentry
+  dsn: "your-sentry-dsn"  # Sentry DSN
+  environment: "development"  # 运行环境: development, staging, production

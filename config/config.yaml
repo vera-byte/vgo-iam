@@ -13,3 +13,8 @@ log:
   directory: logs
   filename: iam.log
   to_stdout: true
+
+sentry:
+  enabled: true
+  dsn: "https://042331a8f34db905cdf8a1700b58b591@sentry.mailevw.com/6"
+  environment: "production"

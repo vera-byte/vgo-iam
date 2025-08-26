@@ -40,6 +40,11 @@ func (s *PolicyService) CreatePolicy(ctx context.Context, name, description, pol
 	return policy, nil
 }
 
+// GetStore 返回策略存储
+func (s *PolicyService) GetStore() store.PolicyStore {
+	return s.policyStore
+}
+
 // UpdatePolicy 更新策略
 func (s *PolicyService) UpdatePolicy(ctx context.Context, name, description, policyDocument string) (*model.Policy, error) {
 	// 获取策略

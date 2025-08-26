@@ -10,16 +10,16 @@ import (
 
 // UserStore 用户存储接口
 type UserStore interface {
-	Create(user *model.User) error
-	GetByID(id int) (*model.User, error)
+	Create(user *model.User) (int64, error)
+	GetByID(id int64) (*model.User, error)
 	GetByName(name string) (*model.User, error)
 	GetByEmail(email string) (*model.User, error)
 	List() ([]*model.User, error)
 	Update(user *model.User) error
-	Delete(id int) error
-	AttachPolicy(userID, policyID int) error
-	DetachPolicy(userID, policyID int) error
-	ListPolicies(userID int) ([]*model.Policy, error)
+	Delete(id int64) error
+	AttachPolicy(userID int64, policyID int) error
+	DetachPolicy(userID int64, policyID int) error
+	ListPolicies(userID int64) ([]*model.Policy, error)
 }
 
 // userStore 用户存储实现
@@ -32,24 +32,21 @@ func NewUserStore(session *dbr.Session) UserStore {
 	return &userStore{session: session}
 }
 
-func (s *userStore) Create(user *model.User) error {
-
-	_, err := s.session.InsertInto("users").
-		Columns(
-			"name",
-			"display_name",
-			"email",
-		).
-		Values(
-			user.Name,
-			user.DisplayName,
-			user.Email,
-		).Exec()
-
-	return err
+// 创建并返回用户id
+func (s *userStore) Create(user *model.User) (int64, error) {
+	var userId int64
+	err := s.session.InsertInto("users").
+		Columns("name", "display_name", "email").
+		Values(user.Name, user.DisplayName, user.Email).
+		Returning("id").
+		Load(&userId)
+	if err != nil {
+		return 0, err
+	}
+	return userId, nil
 }
 
-func (s *userStore) GetByID(id int) (*model.User, error) {
+func (s *userStore) GetByID(id int64) (*model.User, error) {
 	var user model.User
 	err := s.session.Select("*").
 		From("users").
@@ -98,14 +95,14 @@ func (s *userStore) Update(user *model.User) error {
 	return err
 }
 
-func (s *userStore) Delete(id int) error {
+func (s *userStore) Delete(id int64) error {
 	_, err := s.session.DeleteFrom("users").
 		Where("id = ?", id).
 		Exec()
 	return err
 }
 
-func (s *userStore) AttachPolicy(userID, policyID int) error {
+func (s *userStore) AttachPolicy(userID int64, policyID int) error {
 	_, err := s.session.InsertInto("user_policies").
 		Columns("user_id", "policy_id").
 		Values(userID, policyID).
@@ -113,14 +110,14 @@ func (s *userStore) AttachPolicy(userID, policyID int) error {
 	return err
 }
 
-func (s *userStore) DetachPolicy(userID, policyID int) error {
+func (s *userStore) DetachPolicy(userID int64, policyID int) error {
 	_, err := s.session.DeleteFrom("user_policies").
 		Where("user_id = ? AND policy_id = ?", userID, policyID).
 		Exec()
 	return err
 }
 
-func (s *userStore) ListPolicies(userID int) ([]*model.Policy, error) {
+func (s *userStore) ListPolicies(userID int64) ([]*model.Policy, error) {
 	var policies []*model.Policy
 	_, err := s.session.Select("p.*").
 		From("policies p").

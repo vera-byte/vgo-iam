@@ -159,3 +159,738 @@ ion":"v1.0.0","commit":"unknown","build_time":"unknown"}
 {"level":"info","ts":1755601075.56304,"msg":"Services initialized successfully"}
 {"level":"info","ts":1755601075.563128,"msg":"Using listener from bootstrap.Start()"}
 {"level":"info","ts":1755601075.56317,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1755655771.2495658,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755655771.2499142,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755655771.249931,"msg":"Commit: unknown"}
+{"level":"info","ts":1755655771.24994,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755655771.2500322,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755655771.2500439,"msg":"config loaded successfully"}
+{"level":"info","ts":1755655771.250051,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755655771.250057,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755655771.250325,"msg":"Initializing services..."}
+{"level":"info","ts":1755655771.3224142,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1755655771.322624,"msg":"Services initialized successfully"}
+{"level":"info","ts":1755655771.322846,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1755655771.322891,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1755658129.522966,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755658129.52322,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755658129.5233018,"msg":"Commit: unknown"}
+{"level":"info","ts":1755658129.5233128,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755658129.5233989,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755658129.5234182,"msg":"config loaded successfully"}
+{"level":"info","ts":1755658129.523427,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755658129.523443,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755658129.523704,"msg":"Initializing services..."}
+{"level":"info","ts":1755658129.585462,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1755658129.585612,"msg":"Services initialized successfully"}
+{"level":"info","ts":1755658129.5857081,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1755658129.5857458,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1755658510.756435,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755658510.7568388,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755658510.7568572,"msg":"Commit: unknown"}
+{"level":"info","ts":1755658510.756866,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755658510.757035,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755658510.75709,"msg":"config loaded successfully"}
+{"level":"info","ts":1755658510.75714,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755658510.757189,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755658510.757718,"msg":"Initializing services..."}
+{"level":"info","ts":1755658510.8879528,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1755658510.888284,"msg":"Services initialized successfully"}
+{"level":"info","ts":1755658510.888443,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1755658510.8884952,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1755658538.1495261,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755658538.149772,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755658538.149795,"msg":"Commit: unknown"}
+{"level":"info","ts":1755658538.149809,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755658538.14992,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755658538.149943,"msg":"config loaded successfully"}
+{"level":"info","ts":1755658538.149952,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755658538.14996,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755658538.15028,"msg":"Initializing services..."}
+{"level":"info","ts":1755658538.368288,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1755658538.368403,"msg":"Services initialized successfully"}
+{"level":"info","ts":1755658538.3684962,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1755658538.368528,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1755658641.913441,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755658641.913811,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755658641.913826,"msg":"Commit: unknown"}
+{"level":"info","ts":1755658641.913835,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755658641.913984,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755658641.913996,"msg":"config loaded successfully"}
+{"level":"info","ts":1755658641.914003,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755658641.91401,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755658641.914273,"msg":"Initializing services..."}
+{"level":"info","ts":1755658641.949281,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1755658641.949481,"msg":"Services initialized successfully"}
+{"level":"info","ts":1755658641.949793,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1755658641.949854,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1755659071.8371782,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755659071.8374588,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755659071.837473,"msg":"Commit: unknown"}
+{"level":"info","ts":1755659071.837481,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755659071.837557,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755659071.837567,"msg":"config loaded successfully"}
+{"level":"info","ts":1755659071.837574,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755659071.8375812,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755659071.837848,"msg":"Initializing services..."}
+{"level":"info","ts":1755659071.876838,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1755659071.876937,"msg":"Services initialized successfully"}
+{"level":"info","ts":1755659071.877873,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1755659071.8779898,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1755659097.323929,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755659097.3240802,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755659097.324116,"msg":"Commit: unknown"}
+{"level":"info","ts":1755659097.3241532,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755659097.324251,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755659097.3242629,"msg":"config loaded successfully"}
+{"level":"info","ts":1755659097.3242712,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755659097.324279,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755659097.324627,"msg":"Initializing services..."}
+{"level":"info","ts":1755659097.3801038,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1755659097.380345,"msg":"Services initialized successfully"}
+{"level":"info","ts":1755659097.38044,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1755659097.380484,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1755673636.7522628,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755673636.7525172,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755673636.752531,"msg":"Commit: unknown"}
+{"level":"info","ts":1755673636.7525399,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755673636.752645,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755673636.7526689,"msg":"config loaded successfully"}
+{"level":"info","ts":1755673636.752686,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755673636.7527082,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755673636.753011,"msg":"Initializing services..."}
+{"level":"info","ts":1755673636.811137,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1755673636.8112562,"msg":"Services initialized successfully"}
+{"level":"info","ts":1755673636.811376,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1755673636.811563,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1755673818.091244,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755673818.0914161,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755673818.0914292,"msg":"Commit: unknown"}
+{"level":"info","ts":1755673818.091438,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755673818.091559,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755673818.091576,"msg":"config loaded successfully"}
+{"level":"info","ts":1755673818.091584,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755673818.0915918,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755673818.091867,"msg":"Initializing services..."}
+{"level":"info","ts":1755673818.226939,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1755673818.227131,"msg":"Services initialized successfully"}
+{"level":"info","ts":1755673818.227245,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1755673818.2273018,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1755673933.332821,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755673933.3329878,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755673933.333023,"msg":"Commit: unknown"}
+{"level":"info","ts":1755673933.333062,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755673933.3331578,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755673933.333175,"msg":"config loaded successfully"}
+{"level":"info","ts":1755673933.333185,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755673933.3331919,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755673933.33349,"msg":"Initializing services..."}
+{"level":"info","ts":1755673933.376698,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1755673933.376839,"msg":"Services initialized successfully"}
+{"level":"info","ts":1755673933.3769238,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1755673933.3769898,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1755674026.632055,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755674026.6323662,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755674026.6323788,"msg":"Commit: unknown"}
+{"level":"info","ts":1755674026.632396,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755674026.632523,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755674026.63254,"msg":"config loaded successfully"}
+{"level":"info","ts":1755674026.6325471,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755674026.632554,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755674026.632821,"msg":"Initializing services..."}
+{"level":"info","ts":1755674026.665986,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1755674026.666074,"msg":"Services initialized successfully"}
+{"level":"info","ts":1755674026.666157,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1755674026.666185,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1755676084.271161,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755676084.271324,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755676084.271345,"msg":"Commit: unknown"}
+{"level":"info","ts":1755676084.271404,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755676084.271531,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755676084.2716448,"msg":"config loaded successfully"}
+{"level":"info","ts":1755676084.271723,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755676084.271744,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755676084.27216,"msg":"Initializing services..."}
+{"level":"info","ts":1755676084.407064,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1755676084.40718,"msg":"Services initialized successfully"}
+{"level":"info","ts":1755676084.407289,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1755676084.407346,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1755676123.88348,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755676123.883617,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755676123.883639,"msg":"Commit: unknown"}
+{"level":"info","ts":1755676123.8836539,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755676123.883735,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755676123.883748,"msg":"config loaded successfully"}
+{"level":"info","ts":1755676123.883771,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755676123.8837938,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755676123.884078,"msg":"Initializing services..."}
+{"level":"info","ts":1755676123.922946,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1755676123.9230652,"msg":"Services initialized successfully"}
+{"level":"info","ts":1755676123.92315,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1755676123.92327,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1755676924.354492,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755676924.354625,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755676924.3546371,"msg":"Commit: unknown"}
+{"level":"info","ts":1755676924.354645,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755676924.354727,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755676924.354738,"msg":"config loaded successfully"}
+{"level":"info","ts":1755676924.3547451,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755676924.354752,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755676924.355028,"msg":"Initializing services..."}
+{"level":"info","ts":1755676924.394924,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1755676924.395294,"msg":"Services initialized successfully"}
+{"level":"info","ts":1755676924.395475,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1755676924.395602,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1755676970.912597,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755676970.912715,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755676970.912728,"msg":"Commit: unknown"}
+{"level":"info","ts":1755676970.912736,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755676970.9128451,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755676970.912865,"msg":"config loaded successfully"}
+{"level":"info","ts":1755676970.912874,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755676970.9128819,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755676970.9132092,"msg":"Initializing services..."}
+{"level":"info","ts":1755676971.000205,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1755676971.000316,"msg":"Services initialized successfully"}
+{"level":"info","ts":1755676971.000482,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1755676971.0006,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1755677178.472003,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755677178.4721348,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755677178.472147,"msg":"Commit: unknown"}
+{"level":"info","ts":1755677178.4721549,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755677178.4722402,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755677178.472251,"msg":"config loaded successfully"}
+{"level":"info","ts":1755677178.472258,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755677178.472267,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755677178.472569,"msg":"Initializing services..."}
+{"level":"info","ts":1755677178.594223,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"error","ts":1755677178.5942788,"msg":"master key is empty","masterKey":""}
+{"level":"info","ts":1755677196.97507,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755677196.975343,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755677196.975362,"msg":"Commit: unknown"}
+{"level":"info","ts":1755677196.9753711,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755677196.97549,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755677196.975502,"msg":"config loaded successfully"}
+{"level":"info","ts":1755677196.975509,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755677196.975519,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755677196.975797,"msg":"Initializing services..."}
+{"level":"info","ts":1755677197.01453,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"error","ts":1755677294.6649442,"msg":"master key is empty","masterKey":""}
+{"level":"info","ts":1755677722.954693,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755677722.955078,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755677722.955103,"msg":"Commit: unknown"}
+{"level":"info","ts":1755677722.955113,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755677722.955282,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755677722.9553258,"msg":"config loaded successfully"}
+{"level":"info","ts":1755677722.955334,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755677722.955382,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755677722.955713,"msg":"Initializing services..."}
+{"level":"info","ts":1755677723.00066,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1755677730.6375859,"msg":"Services initialized successfully"}
+{"level":"info","ts":1755677730.638083,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1755677730.638315,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1755685542.2792718,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755685542.279401,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755685542.279414,"msg":"Commit: unknown"}
+{"level":"info","ts":1755685542.279423,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755685542.27953,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755685542.279562,"msg":"config loaded successfully"}
+{"level":"info","ts":1755685542.279575,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755685542.279615,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755685542.2799401,"msg":"Initializing services..."}
+{"level":"info","ts":1755685542.409316,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1755685542.40945,"msg":"Services initialized successfully"}
+{"level":"info","ts":1755685542.409539,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1755685542.409653,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1755685937.899629,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755685937.899782,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755685937.8998668,"msg":"Commit: unknown"}
+{"level":"info","ts":1755685937.900794,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755685937.900906,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755685937.9009368,"msg":"config loaded successfully"}
+{"level":"info","ts":1755685937.900959,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755685937.900974,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755685937.901284,"msg":"Initializing services..."}
+{"level":"info","ts":1755685937.946802,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1755685937.9469042,"msg":"Services initialized successfully"}
+{"level":"info","ts":1755685937.946988,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1755685937.9470952,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1755757604.161292,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755757604.1614258,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755757604.161441,"msg":"Commit: unknown"}
+{"level":"info","ts":1755757604.161454,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755757604.1616042,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755757604.1616251,"msg":"config loaded successfully"}
+{"level":"info","ts":1755757604.1616352,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755757604.161702,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755757604.162109,"msg":"Initializing services..."}
+{"level":"info","ts":1755757604.2065248,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1755757604.206676,"msg":"Services initialized successfully"}
+{"level":"info","ts":1755757604.206808,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1755757604.206902,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1755759902.755429,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755759902.755578,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755759902.7555919,"msg":"Commit: unknown"}
+{"level":"info","ts":1755759902.7556,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755759902.755788,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755759902.755815,"msg":"config loaded successfully"}
+{"level":"info","ts":1755759902.7558222,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755759902.755827,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755759902.756181,"msg":"Initializing services..."}
+{"level":"info","ts":1755759902.7997608,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1755759902.799963,"msg":"Services initialized successfully"}
+{"level":"info","ts":1755759902.8002079,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1755759902.80036,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1755761348.6040819,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755761348.606286,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755761348.60631,"msg":"Commit: unknown"}
+{"level":"info","ts":1755761348.6063201,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755761348.606417,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755761348.606432,"msg":"config loaded successfully"}
+{"level":"info","ts":1755761348.6064389,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755761348.606446,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755761348.606733,"msg":"Initializing services..."}
+{"level":"info","ts":1755761348.652574,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1755761348.65269,"msg":"Services initialized successfully"}
+{"level":"info","ts":1755761348.6527948,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1755761348.6530051,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1755761527.040452,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755761527.0405838,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755761527.040607,"msg":"Commit: unknown"}
+{"level":"info","ts":1755761527.0406551,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755761527.040842,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755761527.040863,"msg":"config loaded successfully"}
+{"level":"info","ts":1755761527.040874,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755761527.040958,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755761527.041489,"msg":"Initializing services..."}
+{"level":"info","ts":1755761527.079666,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1755761527.079784,"msg":"Services initialized successfully"}
+{"level":"info","ts":1755761527.079867,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1755761527.079898,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1755761647.610475,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755761647.610686,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755761647.610723,"msg":"Commit: unknown"}
+{"level":"info","ts":1755761647.6107352,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755761647.6110458,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755761647.611152,"msg":"config loaded successfully"}
+{"level":"info","ts":1755761647.611167,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755761647.6111841,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755761647.611846,"msg":"Initializing services..."}
+{"level":"info","ts":1755761647.653334,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1755761647.653447,"msg":"Services initialized successfully"}
+{"level":"info","ts":1755761647.653586,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1755761647.653638,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1755762547.839694,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755762547.8399801,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755762547.840021,"msg":"Commit: unknown"}
+{"level":"info","ts":1755762547.840103,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755762547.840325,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755762547.84034,"msg":"config loaded successfully"}
+{"level":"info","ts":1755762547.840348,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755762547.8403552,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755762547.840681,"msg":"Initializing services..."}
+{"level":"info","ts":1755762547.979419,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1755762547.979528,"msg":"Services initialized successfully"}
+{"level":"info","ts":1755762547.979627,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1755762547.979688,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1755763037.717985,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1755763037.718575,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1755763037.718624,"msg":"Commit: unknown"}
+{"level":"info","ts":1755763037.718635,"msg":"Build Time: unknown"}
+{"level":"info","ts":1755763037.7188962,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1755763037.7189262,"msg":"config loaded successfully"}
+{"level":"info","ts":1755763037.718936,"msg":"logger initialized successfully"}
+{"level":"info","ts":1755763037.718945,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1755763037.719585,"msg":"Initializing services..."}
+{"level":"info","ts":1755763037.760989,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1755763037.761247,"msg":"Services initialized successfully"}
+{"level":"info","ts":1755763037.761394,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1755763037.761666,"msg":"Starting gRPC server on port 50051"}
+{"level":"warn","ts":1755763132.709316,"msg":"Database connection unhealthy","error":"context deadline exceeded"}
+{"level":"info","ts":1756175908.1136498,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1756175908.1144938,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1756175908.11451,"msg":"Commit: unknown"}
+{"level":"info","ts":1756175908.11452,"msg":"Build Time: unknown"}
+{"level":"info","ts":1756175908.114602,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1756175908.114617,"msg":"config loaded successfully"}
+{"level":"info","ts":1756175908.1146398,"msg":"logger initialized successfully"}
+{"level":"info","ts":1756175908.1146529,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1756175908.11495,"msg":"Initializing services..."}
+{"level":"info","ts":1756175908.198025,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756175908.198154,"msg":"Services initialized successfully"}
+{"level":"info","ts":1756175908.1982532,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1756175908.198308,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1756177306.9001632,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1756177306.9003,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1756177306.9003131,"msg":"Commit: unknown"}
+{"level":"info","ts":1756177306.900321,"msg":"Build Time: unknown"}
+{"level":"info","ts":1756177306.9004421,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1756177306.900469,"msg":"config loaded successfully"}
+{"level":"info","ts":1756177306.900477,"msg":"logger initialized successfully"}
+{"level":"info","ts":1756177306.900485,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1756177306.9007418,"msg":"Initializing services..."}
+{"level":"info","ts":1756177306.9510221,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756177306.951155,"msg":"Services initialized successfully"}
+{"level":"info","ts":1756177306.951259,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1756177306.951287,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1756177988.811952,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1756177988.8121212,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1756177988.812136,"msg":"Commit: unknown"}
+{"level":"info","ts":1756177988.812177,"msg":"Build Time: unknown"}
+{"level":"info","ts":1756177988.812459,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1756177988.812475,"msg":"config loaded successfully"}
+{"level":"info","ts":1756177988.812483,"msg":"logger initialized successfully"}
+{"level":"info","ts":1756177988.81249,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1756177988.812951,"msg":"Initializing services..."}
+{"level":"info","ts":1756177988.857784,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756177988.858064,"msg":"Services initialized successfully"}
+{"level":"info","ts":1756177988.858148,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1756177988.858193,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1756178033.829845,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1756178033.8300002,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1756178033.830013,"msg":"Commit: unknown"}
+{"level":"info","ts":1756178033.8300219,"msg":"Build Time: unknown"}
+{"level":"info","ts":1756178033.830129,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1756178033.830143,"msg":"config loaded successfully"}
+{"level":"info","ts":1756178033.83015,"msg":"logger initialized successfully"}
+{"level":"info","ts":1756178033.83016,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1756178033.830442,"msg":"Initializing services..."}
+{"level":"info","ts":1756178033.874793,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756178033.874988,"msg":"Services initialized successfully"}
+{"level":"info","ts":1756178033.8751109,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1756178033.875189,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1756178092.5903559,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1756178092.590506,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1756178092.590518,"msg":"Commit: unknown"}
+{"level":"info","ts":1756178092.5905259,"msg":"Build Time: unknown"}
+{"level":"info","ts":1756178092.5906482,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1756178092.59067,"msg":"config loaded successfully"}
+{"level":"info","ts":1756178092.590679,"msg":"logger initialized successfully"}
+{"level":"info","ts":1756178092.5906901,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1756178092.5909991,"msg":"Initializing services..."}
+{"level":"info","ts":1756178092.6307478,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756178092.630899,"msg":"Services initialized successfully"}
+{"level":"info","ts":1756178092.630996,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1756178092.6310909,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1756178863.390511,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1756178863.390659,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1756178863.390672,"msg":"Commit: unknown"}
+{"level":"info","ts":1756178863.39068,"msg":"Build Time: unknown"}
+{"level":"info","ts":1756178863.390777,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1756178863.390788,"msg":"config loaded successfully"}
+{"level":"info","ts":1756178863.390795,"msg":"logger initialized successfully"}
+{"level":"info","ts":1756178863.390804,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1756178863.391061,"msg":"Initializing services..."}
+{"level":"info","ts":1756178863.433144,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756178863.433259,"msg":"Services initialized successfully"}
+{"level":"info","ts":1756178863.4333708,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1756178863.43343,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1756191770.978048,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1756191770.978307,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1756191770.978322,"msg":"Commit: unknown"}
+{"level":"info","ts":1756191770.9783301,"msg":"Build Time: unknown"}
+{"level":"info","ts":1756191770.9784582,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1756191770.978477,"msg":"config loaded successfully"}
+{"level":"info","ts":1756191770.978486,"msg":"logger initialized successfully"}
+{"level":"info","ts":1756191770.978496,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1756191770.978754,"msg":"Initializing services..."}
+{"level":"info","ts":1756191771.018286,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756191771.0186481,"msg":"Services initialized successfully"}
+{"level":"info","ts":1756191771.01917,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1756191771.0194502,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1756191829.77993,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1756191829.780056,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1756191829.780069,"msg":"Commit: unknown"}
+{"level":"info","ts":1756191829.780077,"msg":"Build Time: unknown"}
+{"level":"info","ts":1756191829.780181,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1756191829.780192,"msg":"config loaded successfully"}
+{"level":"info","ts":1756191829.7801988,"msg":"logger initialized successfully"}
+{"level":"info","ts":1756191829.780205,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1756191829.7804868,"msg":"Initializing services..."}
+{"level":"info","ts":1756191829.9595158,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756191829.95973,"msg":"Services initialized successfully"}
+{"level":"info","ts":1756191829.959956,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1756191829.960012,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1756193261.094232,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1756193261.094382,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1756193261.094395,"msg":"Commit: unknown"}
+{"level":"info","ts":1756193261.094403,"msg":"Build Time: unknown"}
+{"level":"info","ts":1756193261.094522,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1756193261.0945349,"msg":"config loaded successfully"}
+{"level":"info","ts":1756193261.094542,"msg":"logger initialized successfully"}
+{"level":"info","ts":1756193261.0945542,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1756193261.0948238,"msg":"Initializing services..."}
+{"level":"info","ts":1756193261.1314619,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"error","ts":1756193261.131552,"msg":"master key is empty","masterKey":""}
+{"level":"info","ts":1756193337.304078,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1756193337.304335,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1756193337.304352,"msg":"Commit: unknown"}
+{"level":"info","ts":1756193337.30436,"msg":"Build Time: unknown"}
+{"level":"info","ts":1756193337.304497,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1756193337.304516,"msg":"config loaded successfully"}
+{"level":"info","ts":1756193337.3045251,"msg":"logger initialized successfully"}
+{"level":"info","ts":1756193337.304533,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1756193337.304822,"msg":"Initializing services..."}
+{"level":"info","ts":1756193337.37804,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756193337.3781838,"msg":"Services initialized successfully"}
+{"level":"info","ts":1756193337.378317,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1756193337.378422,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1756193910.6431239,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1756193910.6432981,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1756193910.64331,"msg":"Commit: unknown"}
+{"level":"info","ts":1756193910.643318,"msg":"Build Time: unknown"}
+{"level":"info","ts":1756193910.643438,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1756193910.643449,"msg":"config loaded successfully"}
+{"level":"info","ts":1756193910.643457,"msg":"logger initialized successfully"}
+{"level":"info","ts":1756193910.643469,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1756193910.643876,"msg":"Initializing services..."}
+{"level":"info","ts":1756193910.677974,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756193910.678134,"msg":"Services initialized successfully"}
+{"level":"info","ts":1756193910.678327,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1756193910.678507,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1756194603.595689,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1756194603.595838,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1756194603.59585,"msg":"Commit: unknown"}
+{"level":"info","ts":1756194603.595857,"msg":"Build Time: unknown"}
+{"level":"info","ts":1756194603.595959,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1756194603.5959702,"msg":"config loaded successfully"}
+{"level":"info","ts":1756194603.595977,"msg":"logger initialized successfully"}
+{"level":"info","ts":1756194603.5959868,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1756194603.596237,"msg":"Initializing services..."}
+{"level":"info","ts":1756194603.661386,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756194603.661528,"msg":"Services initialized successfully"}
+{"level":"info","ts":1756194603.6616151,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1756194603.661673,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1756195654.775363,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1756195654.776155,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1756195654.776201,"msg":"Commit: unknown"}
+{"level":"info","ts":1756195654.776222,"msg":"Build Time: unknown"}
+{"level":"info","ts":1756195654.776445,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1756195654.776492,"msg":"config loaded successfully"}
+{"level":"info","ts":1756195654.776503,"msg":"logger initialized successfully"}
+{"level":"info","ts":1756195654.7765188,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1756195654.776875,"msg":"Initializing services..."}
+{"level":"info","ts":1756195654.858916,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756195654.859058,"msg":"Services initialized successfully"}
+{"level":"error","ts":1756195655.1974988,"msg":"Failed to attach policy to admin user","error":"pq: duplicate key value violates unique constraint \"user_policies_pkey\""}
+{"level":"info","ts":1756195655.198267,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1756195655.198401,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1756195737.1601012,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1756195737.1602502,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1756195737.1602938,"msg":"Commit: unknown"}
+{"level":"info","ts":1756195737.160311,"msg":"Build Time: unknown"}
+{"level":"info","ts":1756195737.160514,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1756195737.1605692,"msg":"config loaded successfully"}
+{"level":"info","ts":1756195737.160579,"msg":"logger initialized successfully"}
+{"level":"info","ts":1756195737.160623,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1756195737.1612139,"msg":"Initializing services..."}
+{"level":"info","ts":1756195737.1994612,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756195737.1997068,"msg":"Services initialized successfully"}
+{"level":"info","ts":1756195737.4447381,"msg":"Admin user not found, creating..."}
+{"level":"error","ts":1756195737.45723,"msg":"Failed to create admin user","error":"pq: relation \"users\" does not exist"}
+{"level":"info","ts":1756195737.458099,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1756195737.45831,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1756196556.494466,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756196556.539031,"msg":"Admin user not found, creating..."}
+{"level":"error","ts":1756196556.554581,"msg":"Failed to create admin user","error":"pq: relation \"users\" does not exist"}
+{"level":"info","ts":1756196556.556015,"msg":"Admin user initialization completed successfully"}
+{"level":"info","ts":1756196689.943721,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756196702.388201,"msg":"Admin user not found, creating..."}
+{"level":"error","ts":1756196702.407634,"msg":"Failed to create admin user","error":"pq: relation \"users\" does not exist"}
+{"level":"info","ts":1756196702.408551,"msg":"Admin user initialization completed successfully"}
+{"level":"info","ts":1756196980.359668,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756196980.400867,"msg":"Admin user not found, creating..."}
+{"level":"error","ts":1756196980.415209,"msg":"Failed to create admin user","error":"pq: relation \"users\" does not exist"}
+{"level":"fatal","ts":1756196980.419456,"msg":"create admin user failed","error":"pq: relation \"users\" does not exist"}
+{"level":"info","ts":1756197004.184064,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756197004.223207,"msg":"Admin user not found, creating..."}
+{"level":"info","ts":1756197004.248238,"msg":"Admin user created successfully"}
+{"level":"info","ts":1756197004.2546308,"msg":"Admin policy not found, creating..."}
+{"level":"error","ts":1756197004.254666,"msg":"Failed to create admin policy","error":"invalid policy document"}
+{"level":"fatal","ts":1756197004.255411,"msg":"create admin user failed","error":"invalid policy document"}
+{"level":"info","ts":1756197068.149276,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756197068.1978712,"msg":"Admin policy not found, creating..."}
+{"level":"error","ts":1756197089.455255,"msg":"Failed to create admin policy","error":"invalid policy document"}
+{"level":"fatal","ts":1756197089.457608,"msg":"create admin user failed","error":"invalid policy document"}
+{"level":"info","ts":1756197180.113738,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756197180.162107,"msg":"Admin policy not found, creating..."}
+{"level":"error","ts":1756197180.186414,"msg":"Failed to create admin policy","error":"pq: invalid input syntax for type json"}
+{"level":"fatal","ts":1756197180.187295,"msg":"create admin user failed","error":"pq: invalid input syntax for type json"}
+{"level":"info","ts":1756197203.989729,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756197204.032752,"msg":"Admin policy not found, creating..."}
+{"level":"info","ts":1756197204.0486898,"msg":"Admin policy created successfully"}
+{"level":"info","ts":1756197204.0865622,"msg":"No access keys found for admin, creating..."}
+{"level":"info","ts":1756197204.103403,"msg":"Admin access key created","access_key_id":"rVXFG_oD9vwHZnq_UykS","secret_access_key":"uKiexT_mAuN7jJGDvETQI-bLrPLeEHVm3cSmguqv"}
+{"level":"info","ts":1756197204.103452,"msg":"Admin user initialization completed successfully"}
+{"level":"info","ts":1756197216.181754,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"error","ts":1756197216.267311,"msg":"Failed to attach policy to admin user","error":"pq: duplicate key value violates unique constraint \"user_policies_pkey\""}
+{"level":"fatal","ts":1756197216.268262,"msg":"create admin user failed","error":"pq: duplicate key value violates unique constraint \"user_policies_pkey\""}
+{"level":"info","ts":1756197480.946337,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756197545.6223118,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"error","ts":1756197545.8063731,"msg":"Failed to initialize admin user","error":"pq: duplicate key value violates unique constraint \"user_policies_pkey\""}
+{"level":"info","ts":1756197545.807033,"msg":"Admin user initialization completed successfully"}
+{"level":"info","ts":1756197640.3509839,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"error","ts":1756197640.409503,"msg":"Failed to initialize admin user","error":"pq: relation \"users\" does not exist","error":"pq: relation \"policies\" does not exist"}
+{"level":"info","ts":1756197640.410217,"msg":"Admin user initialization completed successfully"}
+{"level":"info","ts":1756197658.5108259,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"error","ts":1756197691.724345,"msg":"Failed to initialize admin user","error":"pq: relation \"users\" does not exist","error":"pq: relation \"policies\" does not exist"}
+{"level":"info","ts":1756197691.727006,"msg":"Admin user initialization completed successfully"}
+{"level":"info","ts":1756198584.878499,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"error","ts":1756198584.9381602,"msg":"表不存在","error":"pq: relation \"users\" does not exist"}
+{"level":"error","ts":1756198584.94841,"msg":"表不存在","error":"pq: relation \"policies\" does not exist"}
+{"level":"info","ts":1756198584.948603,"msg":"Admin user not found, creating..."}
+{"level":"error","ts":1756198584.9744189,"msg":"Failed to create admin user","error":"pq: relation \"users\" does not exist"}
+{"level":"fatal","ts":1756198584.974684,"msg":"create admin user failed","error":"pq: relation \"users\" does not exist"}
+{"level":"info","ts":1756198611.8274071,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"error","ts":1756198628.494742,"msg":"表不存在","error":"pq: relation \"users\" does not exist"}
+{"level":"error","ts":1756198628.5059881,"msg":"表不存在","error":"pq: relation \"policies\" does not exist"}
+{"level":"info","ts":1756198628.50635,"msg":"Admin user not found, creating..."}
+{"level":"error","ts":1756198628.524758,"msg":"Failed to create admin user","error":"pq: relation \"users\" does not exist"}
+{"level":"fatal","ts":1756198628.529134,"msg":"create admin user failed","error":"pq: relation \"users\" does not exist"}
+{"level":"info","ts":1756199995.752959,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1756199995.753205,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1756199995.75322,"msg":"Commit: unknown"}
+{"level":"info","ts":1756199995.7532291,"msg":"Build Time: unknown"}
+{"level":"info","ts":1756199995.753319,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1756199995.75333,"msg":"config loaded successfully"}
+{"level":"info","ts":1756199995.7533371,"msg":"logger initialized successfully"}
+{"level":"info","ts":1756199995.753344,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1756199995.75362,"msg":"Initializing services..."}
+{"level":"info","ts":1756199995.804064,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756199995.804204,"msg":"Services initialized successfully"}
+{"level":"info","ts":1756199995.804328,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1756199995.8043861,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1756200086.641284,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756200107.093854,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756200138.6073952,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756200236.4159622,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1756200236.4160872,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1756200236.416098,"msg":"Commit: unknown"}
+{"level":"info","ts":1756200236.416107,"msg":"Build Time: unknown"}
+{"level":"info","ts":1756200236.4162161,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1756200236.416227,"msg":"config loaded successfully"}
+{"level":"info","ts":1756200236.416234,"msg":"logger initialized successfully"}
+{"level":"info","ts":1756200236.416241,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1756200236.416501,"msg":"Initializing services..."}
+{"level":"info","ts":1756200236.4693,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756200236.469437,"msg":"Services initialized successfully"}
+{"level":"info","ts":1756200236.4695182,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1756200236.469572,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1756200253.819105,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756200327.2959192,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756200522.20268,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756200522.260519,"msg":"Admin policy not found, creating..."}
+{"level":"info","ts":1756200585.898151,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756200585.960743,"msg":"管理员用户创建成功","user_id":0}
+{"level":"info","ts":1756200585.960845,"msg":"正在设置管理员用户密码...","user_id":0}
+{"level":"error","ts":1756200585.973509,"msg":"设置管理员密码失败","error":"user not found"}
+{"level":"info","ts":1756200655.880272,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"error","ts":1756200655.93228,"msg":"创建管理员用户失败","error":"username already exists"}
+{"level":"info","ts":1756200703.316229,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"error","ts":1756200703.402581,"msg":"创建管理员用户失败","error":"pq: relation \"users\" does not exist"}
+{"level":"info","ts":1756200734.767818,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756200734.828177,"msg":"管理员用户创建成功","user_id":0}
+{"level":"info","ts":1756200734.828224,"msg":"正在设置管理员用户密码...","user_id":0}
+{"level":"error","ts":1756200734.833796,"msg":"设置管理员密码失败","error":"user not found"}
+{"level":"info","ts":1756201648.008338,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756201648.068734,"msg":"管理员用户创建成功","user_id":1}
+{"level":"info","ts":1756201648.06881,"msg":"正在设置管理员用户密码...","user_id":1}
+{"level":"info","ts":1756201648.164216,"msg":"管理员用户密码设置成功"}
+{"level":"info","ts":1756201648.16874,"msg":"Admin policy not found, creating..."}
+{"level":"info","ts":1756201648.1777039,"msg":"Admin policy created successfully"}
+{"level":"info","ts":1756201648.2188852,"msg":"No access keys found for admin, creating..."}
+{"level":"info","ts":1756201648.232706,"msg":"Admin access key created","access_key_id":"C3O7Uae2I2Coiah3u0g6","secret_access_key":"H7rfvcY2v9uUYccI8CzopjxqQgpCR5glzgQqcOCM"}
+{"level":"info","ts":1756202101.893398,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756202101.948103,"msg":"管理员用户创建成功","user_id":1}
+{"level":"info","ts":1756202101.94832,"msg":"正在设置管理员用户密码...","user_id":1}
+{"level":"info","ts":1756202102.0481,"msg":"管理员用户密码设置成功"}
+{"level":"info","ts":1756202102.052619,"msg":"Admin policy not found, creating..."}
+{"level":"info","ts":1756202102.068152,"msg":"Admin policy created successfully"}
+{"level":"info","ts":1756202102.0915709,"msg":"No access keys found for admin, creating..."}
+{"level":"error","ts":1756202102.102964,"msg":"Failed to create admin access key","error":"failed to create access key: pq: invalid byte sequence for encoding \"UTF8\": 0xba"}
+{"level":"info","ts":1756202207.455008,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756202207.512813,"msg":"管理员用户创建成功","user_id":1}
+{"level":"info","ts":1756202207.512962,"msg":"正在设置管理员用户密码...","user_id":1}
+{"level":"info","ts":1756202207.6129558,"msg":"管理员用户密码设置成功"}
+{"level":"info","ts":1756202207.619429,"msg":"Admin policy not found, creating..."}
+{"level":"info","ts":1756202207.630631,"msg":"Admin policy created successfully"}
+{"level":"info","ts":1756202207.659934,"msg":"No access keys found for admin, creating..."}
+{"level":"error","ts":1756202207.757968,"msg":"Failed to create admin access key","error":"failed to create access key: pq: invalid byte sequence for encoding \"UTF8\": 0xef 0x1b 0x88"}
+{"level":"info","ts":1756202494.576928,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"error","ts":1756202494.615231,"msg":"创建管理员用户失败","error":"username already exists"}
+{"level":"info","ts":1756202521.828477,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756202521.886176,"msg":"管理员用户创建成功","user_id":1}
+{"level":"info","ts":1756202521.8863518,"msg":"正在设置管理员用户密码...","user_id":1}
+{"level":"info","ts":1756202521.988384,"msg":"管理员用户密码设置成功"}
+{"level":"info","ts":1756202521.9943109,"msg":"Admin policy not found, creating..."}
+{"level":"info","ts":1756202522.00816,"msg":"Admin policy created successfully"}
+{"level":"info","ts":1756202522.032068,"msg":"No access keys found for admin, creating..."}
+{"level":"info","ts":1756202522.042046,"msg":"Admin access key created","access_key_id":"rqMXIc39E32rUNHbXmgE","secret_access_key":"CcYKlMCFIMdTGPqeEZ2YdG59hLuM40PfyFoZbKRW"}
+{"level":"info","ts":1756202669.146482,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1756202669.146653,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1756202669.146702,"msg":"Commit: unknown"}
+{"level":"info","ts":1756202669.146732,"msg":"Build Time: unknown"}
+{"level":"info","ts":1756202669.146899,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1756202669.146941,"msg":"config loaded successfully"}
+{"level":"info","ts":1756202669.146989,"msg":"logger initialized successfully"}
+{"level":"info","ts":1756202669.1471128,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1756202669.147455,"msg":"Initializing services..."}
+{"level":"info","ts":1756202669.191277,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756202669.1913831,"msg":"Services initialized successfully"}
+{"level":"info","ts":1756202669.191456,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1756202669.191513,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1756202829.378398,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1756202829.378626,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1756202829.3786628,"msg":"Commit: unknown"}
+{"level":"info","ts":1756202829.3787022,"msg":"Build Time: unknown"}
+{"level":"info","ts":1756202829.379065,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1756202829.379091,"msg":"config loaded successfully"}
+{"level":"info","ts":1756202829.379101,"msg":"logger initialized successfully"}
+{"level":"info","ts":1756202829.3791091,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1756202829.379413,"msg":"Initializing services..."}
+{"level":"info","ts":1756202829.41425,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756202829.414496,"msg":"Services initialized successfully"}
+{"level":"info","ts":1756202829.414688,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1756202829.414814,"msg":"Starting gRPC server on port 50051"}
+{"level":"warn","ts":1756202990.034217,"msg":"Database connection unhealthy","error":"context deadline exceeded"}
+{"level":"info","ts":1756203022.4522722,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1756203022.4524171,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1756203022.4524312,"msg":"Commit: unknown"}
+{"level":"info","ts":1756203022.452439,"msg":"Build Time: unknown"}
+{"level":"info","ts":1756203022.452547,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1756203022.45256,"msg":"config loaded successfully"}
+{"level":"info","ts":1756203022.452568,"msg":"logger initialized successfully"}
+{"level":"info","ts":1756203022.452574,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1756203022.4528298,"msg":"Initializing services..."}
+{"level":"info","ts":1756203022.4871528,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756203022.4872909,"msg":"Services initialized successfully"}
+{"level":"info","ts":1756203022.4873831,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1756203022.487427,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1756203031.6475542,"msg":"CreateUser request received","username":"testuser"}
+{"level":"info","ts":1756203031.661901,"msg":"User created successfully","username":"testuser","user_id":2}
+{"level":"info","ts":1756203243.2748008,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1756203243.274949,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1756203243.274962,"msg":"Commit: unknown"}
+{"level":"info","ts":1756203243.275001,"msg":"Build Time: unknown"}
+{"level":"info","ts":1756203243.275091,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1756203243.275103,"msg":"config loaded successfully"}
+{"level":"info","ts":1756203243.27511,"msg":"logger initialized successfully"}
+{"level":"info","ts":1756203243.2751172,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1756203243.2753532,"msg":"Initializing services..."}
+{"level":"info","ts":1756203243.318333,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756203243.318466,"msg":"Services initialized successfully"}
+{"level":"info","ts":1756203243.318586,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1756203243.318727,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1756203263.698074,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1756203263.698224,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1756203263.698252,"msg":"Commit: unknown"}
+{"level":"info","ts":1756203263.698266,"msg":"Build Time: unknown"}
+{"level":"info","ts":1756203263.698411,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1756203263.698428,"msg":"config loaded successfully"}
+{"level":"info","ts":1756203263.698436,"msg":"logger initialized successfully"}
+{"level":"info","ts":1756203263.6984441,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1756203263.698781,"msg":"Initializing services..."}
+{"level":"info","ts":1756203263.7393742,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756203263.7395,"msg":"Services initialized successfully"}
+{"level":"info","ts":1756203263.739577,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1756203263.739624,"msg":"Starting gRPC server on port 50051"}

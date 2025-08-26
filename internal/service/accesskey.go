@@ -2,10 +2,12 @@ package service
 
 import (
 	"context"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"time"
 
+	"github.com/vera-byte/vgo-iam/internal/crypto"
 	"github.com/vera-byte/vgo-iam/internal/model"
 	"github.com/vera-byte/vgo-iam/internal/store"
 	"github.com/vera-byte/vgo-iam/internal/util"
@@ -17,11 +19,15 @@ import (
 type AccessKeyService struct {
 	accessKeyStore store.AccessKeyStore
 	userStore      store.UserStore
-	masterKey      []byte
+	masterKey      string
 }
 
 // NewAccessKeyService 创建访问密钥服务实例
-func NewAccessKeyService(accessKeyStore store.AccessKeyStore, userStore store.UserStore, masterKey []byte) *AccessKeyService {
+func NewAccessKeyService(accessKeyStore store.AccessKeyStore, userStore store.UserStore, masterKey string) *AccessKeyService {
+	if masterKey == "" {
+		err := vgokit.Log.Error("master key is empty", zap.String("masterKey", masterKey))
+		panic(err)
+	}
 	return &AccessKeyService{
 		accessKeyStore: accessKeyStore,
 		userStore:      userStore,
@@ -43,6 +49,7 @@ func (s *AccessKeyService) CreateAccessKey(ctx context.Context, userName string)
 
 	// 创建访问密钥
 	ak := model.NewAccessKey(user.ID, accessKeyID, secretKey)
+	fmt.Printf("masterKey: %s\n", s.masterKey)
 	if err := s.accessKeyStore.Create(ak, s.masterKey); err != nil {
 		return nil, fmt.Errorf("failed to create access key: %w", err)
 	}
@@ -58,7 +65,22 @@ func (s *AccessKeyService) ListAccessKeys(ctx context.Context, userName string) 
 		return nil, errors.New("user not found")
 	}
 
-	return s.accessKeyStore.ListByUser(user.ID)
+	aks, err := s.accessKeyStore.ListByUser(user.ID)
+	// 解密所有密钥
+	for _, ak := range aks {
+		if len(ak.EncryptedSecretAccessKey) > 0 && s.masterKey != "" {
+			key, err := hex.DecodeString(s.masterKey)
+			if err != nil {
+				return nil, err
+			}
+			decryptedSecret, err := crypto.DecryptKey([]byte(ak.EncryptedSecretAccessKey), key)
+			if err != nil {
+				return nil, err
+			}
+			ak.SecretAccessKey = string(decryptedSecret)
+		}
+	}
+	return aks, err
 }
 
 // UpdateStatus 更新访问密钥状态
@@ -74,7 +96,7 @@ func (s *AccessKeyService) UpdateStatus(ctx context.Context, accessKeyID, status
 	}
 
 	// 获取更新后的密钥信息
-	ak, err := s.accessKeyStore.GetByAccessKeyID(accessKeyID)
+	ak, err := s.accessKeyStore.GetByAccessKeyID(accessKeyID, s.masterKey)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get updated access key: %w", err)
 	}
@@ -94,7 +116,7 @@ func (s *AccessKeyService) UpdateAccessKeyStatus(ctx context.Context, accessKeyI
 	}
 
 	// 获取更新后的密钥
-	return s.accessKeyStore.GetByAccessKeyID(accessKeyID)
+	return s.accessKeyStore.GetByAccessKeyID(accessKeyID, s.masterKey)
 }
 
 // RotateAccessKey 轮换访问密钥
@@ -111,7 +133,7 @@ func (s *AccessKeyService) GetAccessKey(ctx context.Context, accessKeyID string)
 	}
 
 	// 从存储层获取密钥
-	ak, err := s.accessKeyStore.GetByAccessKeyID(accessKeyID)
+	ak, err := s.accessKeyStore.GetByAccessKeyID(accessKeyID, s.masterKey)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get access key: %w", err)
 	}
@@ -131,6 +153,11 @@ func (s *AccessKeyService) GetAccessKey(ctx context.Context, accessKeyID string)
 // GetStore 返回访问密钥存储实现
 func (s *AccessKeyService) GetStore() store.AccessKeyStore {
 	return s.accessKeyStore
+}
+
+// GetMasterKey 获取主密钥
+func (s *AccessKeyService) GetMasterKey() string {
+	return s.masterKey
 }
 
 // 添加密钥轮换检查

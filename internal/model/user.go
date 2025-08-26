@@ -6,7 +6,7 @@ import (
 
 // User 用户模型
 type User struct {
-	ID          int       `json:"id"`
+	ID          int64     `json:"id"`
 	Name        string    `json:"name"`         // 用户名（唯一）
 	DisplayName string    `json:"display_name"` // 显示名称
 	Email       string    `json:"email"`        // 邮箱（唯一）

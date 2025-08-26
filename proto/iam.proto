@@ -91,10 +91,10 @@ message ListAccessKeysResponse { repeated AccessKey access_keys = 1; }
 
 // 验证相关消息
 message VerifyRequest {
-  string access_key_id = 1;
-  string signature = 2;
-  string request_data = 3; // 序列化的请求数据
-  string timestamp = 4;    // ISO8601格式
+  // string access_key_id = 1;
+  // string signature = 2;
+  // string request_data = 3; // 序列化的请求数据
+  // string timestamp = 4;    // ISO8601格式
 }
 
 message VerifyResponse {

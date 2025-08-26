@@ -50,14 +50,16 @@ func (s *UserService) CreateUser(ctx context.Context, name, displayName, email s
 		UpdatedAt:   time.Now(),
 	}
 
-	if err := s.userStore.Create(user); err != nil {
+	if userId, err := s.userStore.Create(user); err != nil {
 		return nil, err
+	} else {
+		user.ID = userId
 	}
 
 	return user, nil
 }
 
-func (s *UserService) GetUserPolicies(ctx context.Context, userID int) ([]*model.Policy, error) {
+func (s *UserService) GetUserPolicies(ctx context.Context, userID int64) ([]*model.Policy, error) {
 	return s.userStore.ListPolicies(userID)
 }
 func (s *UserService) GetUser(ctx context.Context, name string) (*model.User, error) {
@@ -89,4 +91,24 @@ func (s *UserService) ListUserPolicies(ctx context.Context, userName string) ([]
 		return nil, errors.New("user not found")
 	}
 	return s.userStore.ListPolicies(user.ID)
+}
+
+// UpdateUserPassword 设置用户密码
+func (s *UserService) UpdateUserPassword(ctx context.Context, userID int64, password string) error {
+	// 获取用户
+	user, err := s.userStore.GetByID(userID)
+	if err != nil {
+		return errors.New("user not found")
+	}
+
+	// 生成密码哈希
+	passwordHash, err := util.HashPassword(password)
+	if err != nil {
+		return err
+	}
+
+	// 更新用户密码
+	user.Password = passwordHash
+	user.UpdatedAt = time.Now()
+	return s.userStore.Update(user)
 }

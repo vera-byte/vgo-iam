@@ -56,9 +56,14 @@ func ValidatePolicyDocument(policyDoc string) bool {
 
 // GenerateAccessKeyID 生成访问密钥ID
 func GenerateAccessKeyID() string {
-	b := make([]byte, 10)
+	b := make([]byte, 15) // 增加字节数以确保足够的编码长度
 	_, _ = rand.Read(b)
-	return base64.RawURLEncoding.EncodeToString(b)[:20]
+	encoded := base64.RawURLEncoding.EncodeToString(b)
+	// 确保不会越界，取前20个字符或全部字符
+	if len(encoded) >= 20 {
+		return encoded[:20]
+	}
+	return encoded
 }
 
 // GenerateSecretAccessKey 生成密钥

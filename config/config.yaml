@@ -4,8 +4,11 @@ grpc:
 database:
   dsn: "postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"
 
-security:
-  master_key: "MWZjMTk4NzVkN2E4YzlmZmQwNjJiZWE2N2E3MGU1" # 实际使用时替换为安全密钥
+middleware:
+  master_key: "0b9caecb31b882aa86cfeb68cd41c9ff28c21a02e8d507f442e805ea88925ec3" # 实际使用时替换为安全密钥
+  # 忽略认证
+  ignore:
+    - "/iam.v1.IAM/VerifyAccessKey"
 
 log:
   level: info

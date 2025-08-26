@@ -1,4 +1,4 @@
-package auth
+package signature
 
 import (
 	"crypto/hmac"
@@ -6,49 +6,87 @@ import (
 	"encoding/base64"
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 )
 
 const (
-	authHeaderPrefix = "IAM-HMAC-SHA256"
-	timeFormat       = "20060102T150405Z"
+	AuthHeaderPrefix = "IAM-HMAC-SHA256"
+	TimeFormat       = time.RFC3339
 )
 
 // VerifySignatureV4 验证V4签名
-func VerifySignatureV4(signature, requestData, timestamp, secretKey string) (bool, error) {
-	// 1. 验证时间窗口 (通常为±15分钟)
-	t, err := time.Parse(timeFormat, timestamp)
+func VerifySignV4(signature, requestData, timestamp, secretKey string) (bool, error) {
+	timestampInt, err := strconv.ParseInt(timestamp, 10, 64)
 	if err != nil {
-		return false, fmt.Errorf("invalid timestamp format")
+		return false, err
 	}
 
-	if time.Since(t).Abs() > 15*time.Minute {
+	// 1. 验证时间窗口 (通常为±15分钟)
+	if !verifyTimestamp(timestampInt) {
 		return false, fmt.Errorf("request expired")
 	}
 
 	// 2. 构建待签字符串
-	stringToSign := BuildStringToSign(timestamp, requestData)
+	stringToSign := buildStringToSign(timestampInt, requestData)
 
 	// 3. 计算签名
-	computedSignature := CalculateSignature(stringToSign, secretKey, timestamp)
+	computedSignature := calculateSignature(stringToSign, secretKey, timestampInt)
 
 	// 4. 比较签名
 	return computedSignature == signature, nil
 }
 
+type SignV4Result struct {
+	SecretKey   string
+	AccessKeyID string
+	Signature   string
+	Timestamp   int64
+}
+
+// Sign 签名V4
+func SignV4(accessKeyID, secretKey, requestData string) SignV4Result {
+
+	timestamp := time.Now().Unix()
+
+	// 1. 构建待签字符串
+	stringToSign := buildStringToSign(timestamp, requestData)
+
+	// 2. 计算签名
+	return SignV4Result{
+		SecretKey:   secretKey,
+		AccessKeyID: accessKeyID,
+		Signature:   calculateSignature(stringToSign, secretKey, timestamp),
+		Timestamp:   timestamp,
+	}
+}
+
+// verifyTimestamp 验证时间戳是否在允许范围内
+func verifyTimestamp(timestamp int64) bool {
+
+	// 转换为时间
+	t := time.Unix(timestamp, 0)
+
+	// 检查时间戳是否在允许范围内（±5分钟）
+	now := time.Now()
+	diff := now.Sub(t)
+	return diff.Abs() <= 5*time.Minute
+
+}
+
 // BuildStringToSign 构建待签名字符串
-func BuildStringToSign(timestamp, requestData string) string {
-	return fmt.Sprintf("%s\n%s\n%s",
-		authHeaderPrefix,
+func buildStringToSign(timestamp int64, requestData string) string {
+	return fmt.Sprintf("%s\n%d\n%s",
+		AuthHeaderPrefix,
 		timestamp,
 		sha256Hash(requestData))
 }
 
 // CalculateSignature 计算签名
-func CalculateSignature(stringToSign, secretKey, timestamp string) string {
+func calculateSignature(stringToSign, secretKey string, timestamp int64) string {
 	// 步骤1: 从时间戳中提取日期
-	date := timestamp[0:8]
+	date := time.Unix(timestamp, 0).Format("20060102")
 
 	// 步骤2: 派生签名密钥
 	dateKey := hmacSha256("IAM"+secretKey, date)

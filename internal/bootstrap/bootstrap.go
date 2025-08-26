@@ -50,7 +50,7 @@ func InitServices(cfg *config.AppConfig) (*api.IAMServer, *dbr.Session) {
 	// 初始化服务层
 	userService := service.NewUserService(userStore, policyStore)
 	policyService := service.NewPolicyService(policyStore)
-	accessKeyService := service.NewAccessKeyService(accessKeyStore, userStore, []byte(cfg.Security.MasterKey))
+	accessKeyService := service.NewAccessKeyService(accessKeyStore, userStore, cfg.Middleware.MasterKey)
 	policyEngine := policy.NewPolicyEngine(userService)
 
 	// 初始化API层
@@ -59,7 +59,7 @@ func InitServices(cfg *config.AppConfig) (*api.IAMServer, *dbr.Session) {
 		policyService,
 		accessKeyService,
 		policyEngine,
-		[]byte(cfg.Security.MasterKey),
+		[]byte(cfg.Middleware.MasterKey),
 	)
 
 	return server, sess.Session
@@ -67,10 +67,7 @@ func InitServices(cfg *config.AppConfig) (*api.IAMServer, *dbr.Session) {
 
 func Start() (*config.AppConfig, net.Listener) {
 
-	var cfg *config.AppConfig
-	if err := vgokit.Cfg.Unmarshal(&cfg); err != nil {
-		panic(err)
-	}
+	cfg := config.LodIAMConfig()
 
 	Banner()
 

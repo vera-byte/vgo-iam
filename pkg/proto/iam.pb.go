@@ -724,10 +724,6 @@ func (x *ListAccessKeysResponse) GetAccessKeys() []*AccessKey {
 // 验证相关消息
 type VerifyRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	AccessKeyId   string                 `protobuf:"bytes,1,opt,name=access_key_id,json=accessKeyId,proto3" json:"access_key_id,omitempty"`
-	Signature     string                 `protobuf:"bytes,2,opt,name=signature,proto3" json:"signature,omitempty"`
-	RequestData   string                 `protobuf:"bytes,3,opt,name=request_data,json=requestData,proto3" json:"request_data,omitempty"` // 序列化的请求数据
-	Timestamp     string                 `protobuf:"bytes,4,opt,name=timestamp,proto3" json:"timestamp,omitempty"`                        // ISO8601格式
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -760,34 +756,6 @@ func (x *VerifyRequest) ProtoReflect() protoreflect.Message {
 // Deprecated: Use VerifyRequest.ProtoReflect.Descriptor instead.
 func (*VerifyRequest) Descriptor() ([]byte, []int) {
 	return file_proto_iam_proto_rawDescGZIP(), []int{12}
-}
-
-func (x *VerifyRequest) GetAccessKeyId() string {
-	if x != nil {
-		return x.AccessKeyId
-	}
-	return ""
-}
-
-func (x *VerifyRequest) GetSignature() string {
-	if x != nil {
-		return x.Signature
-	}
-	return ""
-}
-
-func (x *VerifyRequest) GetRequestData() string {
-	if x != nil {
-		return x.RequestData
-	}
-	return ""
-}
-
-func (x *VerifyRequest) GetTimestamp() string {
-	if x != nil {
-		return x.Timestamp
-	}
-	return ""
 }
 
 type VerifyResponse struct {
@@ -1003,12 +971,8 @@ const file_proto_iam_proto_rawDesc = "" +
 	"updated_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"L\n" +
 	"\x16ListAccessKeysResponse\x122\n" +
 	"\vaccess_keys\x18\x01 \x03(\v2\x11.iam.v1.AccessKeyR\n" +
-	"accessKeys\"\x92\x01\n" +
-	"\rVerifyRequest\x12\"\n" +
-	"\raccess_key_id\x18\x01 \x01(\tR\vaccessKeyId\x12\x1c\n" +
-	"\tsignature\x18\x02 \x01(\tR\tsignature\x12!\n" +
-	"\frequest_data\x18\x03 \x01(\tR\vrequestData\x12\x1c\n" +
-	"\ttimestamp\x18\x04 \x01(\tR\ttimestamp\"C\n" +
+	"accessKeys\"\x0f\n" +
+	"\rVerifyRequest\"C\n" +
 	"\x0eVerifyResponse\x12\x14\n" +
 	"\x05valid\x18\x01 \x01(\bR\x05valid\x12\x1b\n" +
 	"\tuser_name\x18\x02 \x01(\tR\buserName\"i\n" +

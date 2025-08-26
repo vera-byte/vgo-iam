@@ -1,6 +1,9 @@
 package store
 
 import (
+	"encoding/base64"
+	"encoding/hex"
+	"errors"
 	"time"
 
 	"github.com/gocraft/dbr/v2"
@@ -10,13 +13,13 @@ import (
 
 // AccessKeyStore 访问密钥存储接口
 type AccessKeyStore interface {
-	Create(ak *model.AccessKey, masterKey []byte) error
-	GetByID(id int) (*model.AccessKey, error)
-	GetByAccessKeyID(accessKeyID string) (*model.AccessKey, error)
-	ListByUser(userID int) ([]*model.AccessKey, error)
+	Create(ak *model.AccessKey, masterKey string) error
+	GetByID(id int64) (*model.AccessKey, error)
+	GetByAccessKeyID(accessKeyID string, masterKey string) (*model.AccessKey, error)
+	ListByUser(userID int64) ([]*model.AccessKey, error)
 	ListAll() ([]*model.AccessKey, error)
 	UpdateStatus(accessKeyID, status string) error
-	RotateKey(accessKeyID string, masterKey []byte) (*model.AccessKey, error)
+	RotateKey(accessKeyID string, masterKey string) (*model.AccessKey, error)
 }
 
 // accessKeyStore 访问密钥存储实现
@@ -29,9 +32,13 @@ func NewAccessKeyStore(session *dbr.Session) AccessKeyStore {
 	return &accessKeyStore{session: session}
 }
 
-func (s *accessKeyStore) Create(ak *model.AccessKey, masterKey []byte) error {
+func (s *accessKeyStore) Create(ak *model.AccessKey, masterKey string) error {
 	// 加密密钥
-	encryptedSecret, err := crypto.EncryptKey([]byte(ak.SecretAccessKey), masterKey)
+	key, err := hex.DecodeString(masterKey)
+	if err != nil {
+		return err
+	}
+	encryptedSecret, err := crypto.EncryptKey([]byte(ak.SecretAccessKey), key)
 	if err != nil {
 		return err
 	}
@@ -46,14 +53,14 @@ func (s *accessKeyStore) Create(ak *model.AccessKey, masterKey []byte) error {
 		Values(
 			ak.UserID,
 			ak.AccessKeyID,
-			encryptedSecret,
+			base64.StdEncoding.EncodeToString(encryptedSecret),
 			ak.Status,
 		).Exec()
 
 	return err
 }
 
-func (s *accessKeyStore) GetByID(id int) (*model.AccessKey, error) {
+func (s *accessKeyStore) GetByID(id int64) (*model.AccessKey, error) {
 	var ak model.AccessKey
 	err := s.session.Select("*").
 		From("access_keys").
@@ -63,7 +70,7 @@ func (s *accessKeyStore) GetByID(id int) (*model.AccessKey, error) {
 	return &ak, err
 }
 
-func (s *accessKeyStore) GetByAccessKeyID(accessKeyID string) (*model.AccessKey, error) {
+func (s *accessKeyStore) GetByAccessKeyID(accessKeyID string, masterKey string) (*model.AccessKey, error) {
 	var ak model.AccessKey
 	err := s.session.Select(
 		"id",
@@ -72,12 +79,39 @@ func (s *accessKeyStore) GetByAccessKeyID(accessKeyID string) (*model.AccessKey,
 		"status",
 		"created_at",
 		"updated_at",
+		"encrypted_secret_access_key",
 	).From("access_keys").
 		Where("access_key_id = ?", accessKeyID).
 		LoadOne(&ak)
-	return &ak, err
+	if err != nil {
+		return nil, err
+	}
+
+	// 检查加密密钥是否为空
+	if len(ak.EncryptedSecretAccessKey) == 0 {
+		return nil, errors.New("encrypted secret access key is empty")
+	}
+
+	// 解密密钥
+	if masterKey != "" {
+		key, err := hex.DecodeString(masterKey)
+		if err != nil {
+			return nil, err
+		}
+		ciphertext, err := base64.StdEncoding.DecodeString(ak.EncryptedSecretAccessKey)
+		if err != nil {
+			return nil, err
+		}
+		decryptedSecret, err := crypto.DecryptKey(ciphertext, key)
+		if err != nil {
+			return nil, err
+		}
+		ak.SecretAccessKey = string(decryptedSecret)
+	}
+
+	return &ak, nil
 }
-func (s *accessKeyStore) ListByUser(userID int) ([]*model.AccessKey, error) {
+func (s *accessKeyStore) ListByUser(userID int64) ([]*model.AccessKey, error) {
 	var aks []*model.AccessKey
 	_, err := s.session.Select("*").
 		From("access_keys").
@@ -95,9 +129,9 @@ func (s *accessKeyStore) UpdateStatus(accessKeyID, status string) error {
 	return err
 }
 
-func (s *accessKeyStore) RotateKey(accessKeyID string, masterKey []byte) (*model.AccessKey, error) {
+func (s *accessKeyStore) RotateKey(accessKeyID string, masterKey string) (*model.AccessKey, error) {
 	// 1. 获取现有密钥
-	ak, err := s.GetByAccessKeyID(accessKeyID)
+	ak, err := s.GetByAccessKeyID(accessKeyID, masterKey)
 	if err != nil {
 		return nil, err
 	}
@@ -106,7 +140,11 @@ func (s *accessKeyStore) RotateKey(accessKeyID string, masterKey []byte) (*model
 	newSecret := generateRandomSecret()
 
 	// 3. 加密新密钥
-	encryptedSecret, err := crypto.EncryptKey([]byte(newSecret), masterKey)
+	key, err := hex.DecodeString(masterKey)
+	if err != nil {
+		return nil, err
+	}
+	encryptedSecret, err := crypto.EncryptKey([]byte(newSecret), key)
 	if err != nil {
 		return nil, err
 	}

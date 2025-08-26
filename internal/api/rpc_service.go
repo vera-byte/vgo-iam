@@ -5,12 +5,12 @@ import (
 	"time"
 
 	"github.com/golang/protobuf/ptypes"
+	"github.com/vera-byte/vgo-iam/pkg/signature"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	"github.com/vera-byte/vgo-iam/internal/auth"
 	"github.com/vera-byte/vgo-iam/internal/model"
 	"github.com/vera-byte/vgo-iam/internal/policy"
 	"github.com/vera-byte/vgo-iam/internal/service"
@@ -31,6 +31,16 @@ type IAMServer struct {
 // AccessKeyService 返回accessKeyService
 func (s *IAMServer) AccessKeyService() *service.AccessKeyService {
 	return s.accessKeyService
+}
+
+// UserService 返回userService
+func (s *IAMServer) UserService() *service.UserService {
+	return s.userService
+}
+
+// PolicyService 返回policyService
+func (s *IAMServer) PolicyService() *service.PolicyService {
+	return s.policyService
 }
 
 func NewIAMServer(
@@ -59,7 +69,7 @@ func (s *IAMServer) CreateUser(ctx context.Context, req *iamv1.CreateUserRequest
 		return nil, status.Errorf(codes.Internal, "failed to create user: %v", err)
 	}
 
-	vgokit.Log.Info("User created successfully", zap.String("username", user.Name), zap.Int("user_id", user.ID))
+	vgokit.Log.Info("User created successfully", zap.String("username", user.Name), zap.Int64("user_id", user.ID))
 	return convertUserToProto(user), nil
 }
 
@@ -94,12 +104,12 @@ func (s *IAMServer) AttachUserPolicy(ctx context.Context, req *iamv1.AttachUserP
 func (s *IAMServer) CreateAccessKey(ctx context.Context, req *iamv1.CreateAccessKeyRequest) (*iamv1.AccessKey, error) {
 	user, err := s.userService.GetUser(ctx, req.UserName)
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "user not found: %v", err)
+		return nil, status.Errorf(codes.NotFound, "用户不存在: %v", err)
 	}
 
 	ak, err := s.accessKeyService.CreateAccessKey(ctx, user.Name)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to create access key: %v", err)
+		return nil, status.Errorf(codes.Internal, "创建访问密钥失败: %v", err)
 	}
 
 	return &iamv1.AccessKey{
@@ -169,27 +179,33 @@ func (s *IAMServer) UpdateAccessKeyStatus(ctx context.Context, req *iamv1.Update
 }
 
 func (s *IAMServer) VerifyAccessKey(ctx context.Context, req *iamv1.VerifyRequest) (*iamv1.VerifyResponse, error) {
+	var (
+		AccessKeyId = vgokit.GetMetadataValue(ctx, "access-key-id")
+		sign        = vgokit.GetMetadataValue(ctx, "signature")
+		timestamp   = vgokit.GetMetadataValue(ctx, "x-iam-date")
+		requestData = vgokit.GetMetadataValue(ctx, "request-data")
+	)
 	// 1. 获取访问密钥
-	ak, err := s.accessKeyService.GetAccessKey(ctx, req.AccessKeyId)
+	ak, err := s.accessKeyService.GetAccessKey(ctx, AccessKeyId)
 	if err != nil {
-		return nil, status.Errorf(codes.Unauthenticated, "invalid access key")
+		return nil, status.Errorf(codes.NotFound, "无效的访问密钥")
 	}
 
 	// 2. 验证密钥状态
 	if ak.Status != "active" {
-		return nil, status.Errorf(codes.PermissionDenied, "access key is inactive")
+		return nil, status.Errorf(codes.InvalidArgument, "密钥已失效")
 	}
 
 	// 3. 验证签名
-	valid, err := auth.VerifySignatureV4(req.Signature, req.RequestData, req.Timestamp, ak.SecretAccessKey)
+	valid, err := signature.VerifySignV4(sign, requestData, timestamp, ak.SecretAccessKey)
 	if err != nil || !valid {
-		return nil, status.Errorf(codes.Unauthenticated, "signature verification failed")
+		return nil, status.Errorf(codes.Unauthenticated, "签名验证失败")
 	}
 
 	// 4. 获取用户名
 	user, err := s.userService.GetUser(ctx, ak.UserName)
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "user not found: %v", err)
+		return nil, status.Errorf(codes.NotFound, "访问密钥关联用户不存在: %v", err)
 	}
 
 	return &iamv1.VerifyResponse{
@@ -201,12 +217,12 @@ func (s *IAMServer) VerifyAccessKey(ctx context.Context, req *iamv1.VerifyReques
 func (s *IAMServer) CheckPermission(ctx context.Context, req *iamv1.CheckPermissionRequest) (*iamv1.CheckPermissionResponse, error) {
 	user, err := s.userService.GetUser(ctx, req.UserName)
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "user not found")
+		return nil, status.Errorf(codes.NotFound, "用户不存在")
 	}
 
 	allowed, err := s.policyEngine.Evaluate(user, req.Action, req.Resource)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "permission check failed")
+		return nil, status.Errorf(codes.Internal, "权限检查失败: %v", err)
 	}
 
 	return &iamv1.CheckPermissionResponse{Allowed: allowed}, nil

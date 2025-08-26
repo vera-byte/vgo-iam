@@ -24,7 +24,7 @@ CREATE TABLE access_keys (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     access_key_id VARCHAR(20) NOT NULL UNIQUE,
-    encrypted_secret_access_key TEXT NOT NULL,
+    encrypted_secret_access_key VARCHAR(255) NOT NULL,
     status VARCHAR(10) NOT NULL CHECK (status IN ('active', 'inactive')),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP

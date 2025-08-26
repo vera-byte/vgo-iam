@@ -44,8 +44,10 @@ require (
 require (
 	github.com/getsentry/sentry-go v0.35.1 // indirect
 	github.com/spf13/viper v1.20.1
+	golang.org/x/crypto v0.40.0
 	golang.org/x/net v0.42.0 // indirect
 	golang.org/x/sys v0.34.0 // indirect
+	golang.org/x/term v0.33.0
 	golang.org/x/text v0.27.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250728155136-f173205681a0 // indirect
 )

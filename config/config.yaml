@@ -18,7 +18,7 @@ log:
   stdout: true
 
 sentry:
-  enabled: true
+  enabled: false
   dsn: "https://d019949ed7dddcc9ea45a73a1144685d@sentry.mailevw.com/18"
   environment: "development"
   debug: true

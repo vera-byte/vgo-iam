@@ -39,7 +39,7 @@ var ServerCmd = &cobra.Command{
 	Long: `Start the IAM server and handle command line requests such as creating users,
 getting user information, and getting user policies.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		startServer(cmd)
+		startServer()
 	},
 }
 
@@ -129,12 +129,6 @@ func init() {
 	rootCmd.AddCommand(ServerCmd)
 	rootCmd.AddCommand(InitAdminCmd)
 
-	// 添加服务器命令行标志
-	ServerCmd.Flags().StringVar(&createUser, "create-user", "", "Create a new user")
-	ServerCmd.Flags().StringVar(&getUser, "get-user", "", "Get user information")
-	ServerCmd.Flags().StringVar(&getPolicies, "get-policies", "", "Get policies for a user")
-	ServerCmd.Flags().BoolVar(&noServer, "no-server", false, "Run command without starting server")
-
 }
 
 // 读取密码（不回显）
@@ -217,15 +211,7 @@ func initAdminUser(userService *service.UserService, policyService *service.Poli
 	return nil
 }
 
-func startServer(cmd *cobra.Command) {
-	// 从命令行获取参数值
-	createUser, _ = cmd.Flags().GetString("create-user")
-	getUser, _ = cmd.Flags().GetString("get-user")
-	getPolicies, _ = cmd.Flags().GetString("get-policies")
-	noServer, _ = cmd.Flags().GetBool("no-server")
-
-	// 检查是否有命令行请求
-	hasCommand := createUser != "" || getUser != "" || getPolicies != ""
+func startServer() {
 
 	// 打印版本信息
 	vgokit.Log.Info("Starting VGO-IAM service")
@@ -247,37 +233,31 @@ func startServer(cmd *cobra.Command) {
 	accessKeyStore := accessKeyService.GetStore()
 
 	// 处理命令行请求
-	hasCommand = createUser != "" || getUser != "" || getPolicies != ""
 
-	// 如果没有命令行请求或请求了启动服务器
-	if !hasCommand || !noServer {
-		// 创建gRPC服务器并添加认证中间件
-		server := grpc.NewServer(
-			grpc.UnaryInterceptor(auth.AccessKeyInterceptor(accessKeyStore)),
-		)
-		iamv1.RegisterIAMServer(server, iamServer)
+	// 创建gRPC服务器并添加认证中间件
+	server := grpc.NewServer(
+		grpc.UnaryInterceptor(auth.AccessKeyInterceptor(accessKeyStore)),
+	)
+	iamv1.RegisterIAMServer(server, iamServer)
 
-		// 使用从bootstrap.Start()获取的listener
-		vgokit.Log.Info("Using listener from bootstrap.Start()")
+	// 使用从bootstrap.Start()获取的listener
+	vgokit.Log.Info("Using listener from bootstrap.Start()")
 
-		// 启动服务协程
-		go func() {
-			vgokit.Log.Info("Starting gRPC server on port 50051")
-			if err := server.Serve(lis); err != nil {
-				vgokit.Log.Fatal("Failed to serve", zap.Error(err))
-			}
-		}()
+	// 启动服务协程
+	go func() {
+		vgokit.Log.Info("Starting gRPC server on port 50051")
+		if err := server.Serve(lis); err != nil {
+			vgokit.Log.Fatal("Failed to serve", zap.Error(err))
+		}
+	}()
 
-		// 优雅关闭
-		quit := make(chan os.Signal, 1)
-		signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-		<-quit
-		vgokit.Log.Info("Shutting down server...")
-		server.GracefulStop()
-		vgokit.Log.Info("Server exiting")
-		vgokit.Log.Close()
-	} else {
-		vgokit.Log.Info("Server not started (--no-server flag set)")
-	}
+	// 优雅关闭
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+	vgokit.Log.Info("Shutting down server...")
+	server.GracefulStop()
+	vgokit.Log.Info("Server exiting")
+	vgokit.Log.Close()
 
 }

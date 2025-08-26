@@ -957,3 +957,18 @@ ion":"v1.0.0","commit":"unknown","build_time":"unknown"}
 {"level":"info","ts":1756203944.042639,"msg":"Starting gRPC server on port 50051"}
 {"level":"info","ts":1756203949.534512,"msg":"Shutting down server..."}
 {"level":"info","ts":1756203949.534836,"msg":"Server exiting"}
+{"level":"info","ts":1756205073.411608,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1756205073.412011,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1756205073.412021,"msg":"Commit: unknown"}
+{"level":"info","ts":1756205073.412029,"msg":"Build Time: unknown"}
+{"level":"info","ts":1756205073.4120991,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1756205073.412108,"msg":"config loaded successfully"}
+{"level":"info","ts":1756205073.412114,"msg":"logger initialized successfully"}
+{"level":"info","ts":1756205073.41212,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1756205073.412538,"msg":"Initializing services..."}
+{"level":"info","ts":1756205073.460562,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756205073.460862,"msg":"Services initialized successfully"}
+{"level":"info","ts":1756205073.46095,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1756205073.461247,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1756205075.0678332,"msg":"Shutting down server..."}
+{"level":"info","ts":1756205075.068037,"msg":"Server exiting"}

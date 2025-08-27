@@ -22,3 +22,13 @@ sentry:
   dsn: "https://d019949ed7dddcc9ea45a73a1144685d@sentry.mailevw.com/18"
   environment: "development"
   debug: true
+
+ratelimit:
+  enabled: false
+  type: "memory" # "redis" or "memory"
+  limit: 100 # 每分钟最大请求数
+  window: "1m" # 时间窗口
+  prefix: "iam_ratelimit"
+  redis_addr: "localhost:6379"
+  redis_db: 0
+  redis_pass: ""

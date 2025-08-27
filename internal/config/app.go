@@ -1,6 +1,8 @@
 package config
 
 import (
+	"time"
+
 	vgokit "github.com/vera-byte/vgo-kit"
 	"go.uber.org/zap"
 )
@@ -13,8 +15,9 @@ type AppConfig struct {
 	Database struct {
 		DSN string `mapstructure:"dsn"`
 	} `mapstructure:"database"`
-	Log        LogConfig    `mapstructure:"log"`
-	Sentry     SentryConfig `mapstructure:"sentry"`
+	Log        LogConfig        `mapstructure:"log"`
+	Sentry     SentryConfig     `mapstructure:"sentry"`
+	RateLimit  RateLimitConfig  `mapstructure:"ratelimit"`
 	Middleware struct {
 		Ignore    []string `mapstructure:"ignore"`
 		MasterKey string   `mapstructure:"master_key"`
@@ -32,6 +35,17 @@ type SentryConfig struct {
 	Enabled     bool   `mapstructure:"enabled"`
 	DSN         string `mapstructure:"dsn"`
 	Environment string `mapstructure:"environment"`
+}
+
+type RateLimitConfig struct {
+	Enabled   bool          `mapstructure:"enabled"`
+	Type      string        `mapstructure:"type"`
+	Limit     int           `mapstructure:"limit"`
+	Window    time.Duration `mapstructure:"window"`
+	Prefix    string        `mapstructure:"prefix"`
+	RedisAddr string        `mapstructure:"redis_addr"`
+	RedisDB   int           `mapstructure:"redis_db"`
+	RedisPass string        `mapstructure:"redis_pass"`
 }
 
 func LodIAMConfig() *AppConfig {

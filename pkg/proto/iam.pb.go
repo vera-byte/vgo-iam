@@ -452,17 +452,1162 @@ func (x *Policy) GetUpdatedAt() *timestamppb.Timestamp {
 	return nil
 }
 
+// 开发者认证相关消息
+type SubmitDeveloperVerificationRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	DeveloperType string                 `protobuf:"bytes,1,opt,name=developer_type,json=developerType,proto3" json:"developer_type,omitempty"` // individual/enterprise
+	// 个人开发者信息
+	RealName       string `protobuf:"bytes,2,opt,name=real_name,json=realName,proto3" json:"real_name,omitempty"`
+	IdCardNumber   string `protobuf:"bytes,3,opt,name=id_card_number,json=idCardNumber,proto3" json:"id_card_number,omitempty"`
+	IdCardFrontUrl string `protobuf:"bytes,4,opt,name=id_card_front_url,json=idCardFrontUrl,proto3" json:"id_card_front_url,omitempty"`
+	IdCardBackUrl  string `protobuf:"bytes,5,opt,name=id_card_back_url,json=idCardBackUrl,proto3" json:"id_card_back_url,omitempty"`
+	// 企业开发者信息
+	CompanyName           string `protobuf:"bytes,6,opt,name=company_name,json=companyName,proto3" json:"company_name,omitempty"`
+	BusinessLicenseNumber string `protobuf:"bytes,7,opt,name=business_license_number,json=businessLicenseNumber,proto3" json:"business_license_number,omitempty"`
+	BusinessLicenseUrl    string `protobuf:"bytes,8,opt,name=business_license_url,json=businessLicenseUrl,proto3" json:"business_license_url,omitempty"`
+	LegalRepresentative   string `protobuf:"bytes,9,opt,name=legal_representative,json=legalRepresentative,proto3" json:"legal_representative,omitempty"`
+	CompanyAddress        string `protobuf:"bytes,10,opt,name=company_address,json=companyAddress,proto3" json:"company_address,omitempty"`
+	unknownFields         protoimpl.UnknownFields
+	sizeCache             protoimpl.SizeCache
+}
+
+func (x *SubmitDeveloperVerificationRequest) Reset() {
+	*x = SubmitDeveloperVerificationRequest{}
+	mi := &file_proto_iam_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SubmitDeveloperVerificationRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SubmitDeveloperVerificationRequest) ProtoMessage() {}
+
+func (x *SubmitDeveloperVerificationRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_iam_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SubmitDeveloperVerificationRequest.ProtoReflect.Descriptor instead.
+func (*SubmitDeveloperVerificationRequest) Descriptor() ([]byte, []int) {
+	return file_proto_iam_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *SubmitDeveloperVerificationRequest) GetDeveloperType() string {
+	if x != nil {
+		return x.DeveloperType
+	}
+	return ""
+}
+
+func (x *SubmitDeveloperVerificationRequest) GetRealName() string {
+	if x != nil {
+		return x.RealName
+	}
+	return ""
+}
+
+func (x *SubmitDeveloperVerificationRequest) GetIdCardNumber() string {
+	if x != nil {
+		return x.IdCardNumber
+	}
+	return ""
+}
+
+func (x *SubmitDeveloperVerificationRequest) GetIdCardFrontUrl() string {
+	if x != nil {
+		return x.IdCardFrontUrl
+	}
+	return ""
+}
+
+func (x *SubmitDeveloperVerificationRequest) GetIdCardBackUrl() string {
+	if x != nil {
+		return x.IdCardBackUrl
+	}
+	return ""
+}
+
+func (x *SubmitDeveloperVerificationRequest) GetCompanyName() string {
+	if x != nil {
+		return x.CompanyName
+	}
+	return ""
+}
+
+func (x *SubmitDeveloperVerificationRequest) GetBusinessLicenseNumber() string {
+	if x != nil {
+		return x.BusinessLicenseNumber
+	}
+	return ""
+}
+
+func (x *SubmitDeveloperVerificationRequest) GetBusinessLicenseUrl() string {
+	if x != nil {
+		return x.BusinessLicenseUrl
+	}
+	return ""
+}
+
+func (x *SubmitDeveloperVerificationRequest) GetLegalRepresentative() string {
+	if x != nil {
+		return x.LegalRepresentative
+	}
+	return ""
+}
+
+func (x *SubmitDeveloperVerificationRequest) GetCompanyAddress() string {
+	if x != nil {
+		return x.CompanyAddress
+	}
+	return ""
+}
+
+type GetDeveloperVerificationRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserName      string                 `protobuf:"bytes,1,opt,name=user_name,json=userName,proto3" json:"user_name,omitempty"`
+	DeveloperType string                 `protobuf:"bytes,2,opt,name=developer_type,json=developerType,proto3" json:"developer_type,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetDeveloperVerificationRequest) Reset() {
+	*x = GetDeveloperVerificationRequest{}
+	mi := &file_proto_iam_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetDeveloperVerificationRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetDeveloperVerificationRequest) ProtoMessage() {}
+
+func (x *GetDeveloperVerificationRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_iam_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetDeveloperVerificationRequest.ProtoReflect.Descriptor instead.
+func (*GetDeveloperVerificationRequest) Descriptor() ([]byte, []int) {
+	return file_proto_iam_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *GetDeveloperVerificationRequest) GetUserName() string {
+	if x != nil {
+		return x.UserName
+	}
+	return ""
+}
+
+func (x *GetDeveloperVerificationRequest) GetDeveloperType() string {
+	if x != nil {
+		return x.DeveloperType
+	}
+	return ""
+}
+
+type ListDeveloperVerificationsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Status        string                 `protobuf:"bytes,1,opt,name=status,proto3" json:"status,omitempty"` // pending/approved/rejected
+	Page          int32                  `protobuf:"varint,2,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize      int32                  `protobuf:"varint,3,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListDeveloperVerificationsRequest) Reset() {
+	*x = ListDeveloperVerificationsRequest{}
+	mi := &file_proto_iam_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListDeveloperVerificationsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListDeveloperVerificationsRequest) ProtoMessage() {}
+
+func (x *ListDeveloperVerificationsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_iam_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListDeveloperVerificationsRequest.ProtoReflect.Descriptor instead.
+func (*ListDeveloperVerificationsRequest) Descriptor() ([]byte, []int) {
+	return file_proto_iam_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *ListDeveloperVerificationsRequest) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *ListDeveloperVerificationsRequest) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *ListDeveloperVerificationsRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+type ReviewDeveloperVerificationRequest struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	VerificationId int64                  `protobuf:"varint,1,opt,name=verification_id,json=verificationId,proto3" json:"verification_id,omitempty"`
+	Status         string                 `protobuf:"bytes,2,opt,name=status,proto3" json:"status,omitempty"` // approved/rejected
+	ReviewComment  string                 `protobuf:"bytes,3,opt,name=review_comment,json=reviewComment,proto3" json:"review_comment,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *ReviewDeveloperVerificationRequest) Reset() {
+	*x = ReviewDeveloperVerificationRequest{}
+	mi := &file_proto_iam_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReviewDeveloperVerificationRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReviewDeveloperVerificationRequest) ProtoMessage() {}
+
+func (x *ReviewDeveloperVerificationRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_iam_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReviewDeveloperVerificationRequest.ProtoReflect.Descriptor instead.
+func (*ReviewDeveloperVerificationRequest) Descriptor() ([]byte, []int) {
+	return file_proto_iam_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *ReviewDeveloperVerificationRequest) GetVerificationId() int64 {
+	if x != nil {
+		return x.VerificationId
+	}
+	return 0
+}
+
+func (x *ReviewDeveloperVerificationRequest) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *ReviewDeveloperVerificationRequest) GetReviewComment() string {
+	if x != nil {
+		return x.ReviewComment
+	}
+	return ""
+}
+
+type DeveloperVerification struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	UserName      string                 `protobuf:"bytes,2,opt,name=user_name,json=userName,proto3" json:"user_name,omitempty"`
+	DeveloperType string                 `protobuf:"bytes,3,opt,name=developer_type,json=developerType,proto3" json:"developer_type,omitempty"`
+	Status        string                 `protobuf:"bytes,4,opt,name=status,proto3" json:"status,omitempty"`
+	// 个人开发者信息
+	RealName       string `protobuf:"bytes,5,opt,name=real_name,json=realName,proto3" json:"real_name,omitempty"`
+	IdCardNumber   string `protobuf:"bytes,6,opt,name=id_card_number,json=idCardNumber,proto3" json:"id_card_number,omitempty"`
+	IdCardFrontUrl string `protobuf:"bytes,7,opt,name=id_card_front_url,json=idCardFrontUrl,proto3" json:"id_card_front_url,omitempty"`
+	IdCardBackUrl  string `protobuf:"bytes,8,opt,name=id_card_back_url,json=idCardBackUrl,proto3" json:"id_card_back_url,omitempty"`
+	// 企业开发者信息
+	CompanyName           string `protobuf:"bytes,9,opt,name=company_name,json=companyName,proto3" json:"company_name,omitempty"`
+	BusinessLicenseNumber string `protobuf:"bytes,10,opt,name=business_license_number,json=businessLicenseNumber,proto3" json:"business_license_number,omitempty"`
+	BusinessLicenseUrl    string `protobuf:"bytes,11,opt,name=business_license_url,json=businessLicenseUrl,proto3" json:"business_license_url,omitempty"`
+	LegalRepresentative   string `protobuf:"bytes,12,opt,name=legal_representative,json=legalRepresentative,proto3" json:"legal_representative,omitempty"`
+	CompanyAddress        string `protobuf:"bytes,13,opt,name=company_address,json=companyAddress,proto3" json:"company_address,omitempty"`
+	// 审核信息
+	ReviewerName  string                 `protobuf:"bytes,14,opt,name=reviewer_name,json=reviewerName,proto3" json:"reviewer_name,omitempty"`
+	ReviewComment string                 `protobuf:"bytes,15,opt,name=review_comment,json=reviewComment,proto3" json:"review_comment,omitempty"`
+	ReviewedAt    *timestamppb.Timestamp `protobuf:"bytes,16,opt,name=reviewed_at,json=reviewedAt,proto3" json:"reviewed_at,omitempty"`
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,17,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,18,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeveloperVerification) Reset() {
+	*x = DeveloperVerification{}
+	mi := &file_proto_iam_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeveloperVerification) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeveloperVerification) ProtoMessage() {}
+
+func (x *DeveloperVerification) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_iam_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeveloperVerification.ProtoReflect.Descriptor instead.
+func (*DeveloperVerification) Descriptor() ([]byte, []int) {
+	return file_proto_iam_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *DeveloperVerification) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *DeveloperVerification) GetUserName() string {
+	if x != nil {
+		return x.UserName
+	}
+	return ""
+}
+
+func (x *DeveloperVerification) GetDeveloperType() string {
+	if x != nil {
+		return x.DeveloperType
+	}
+	return ""
+}
+
+func (x *DeveloperVerification) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *DeveloperVerification) GetRealName() string {
+	if x != nil {
+		return x.RealName
+	}
+	return ""
+}
+
+func (x *DeveloperVerification) GetIdCardNumber() string {
+	if x != nil {
+		return x.IdCardNumber
+	}
+	return ""
+}
+
+func (x *DeveloperVerification) GetIdCardFrontUrl() string {
+	if x != nil {
+		return x.IdCardFrontUrl
+	}
+	return ""
+}
+
+func (x *DeveloperVerification) GetIdCardBackUrl() string {
+	if x != nil {
+		return x.IdCardBackUrl
+	}
+	return ""
+}
+
+func (x *DeveloperVerification) GetCompanyName() string {
+	if x != nil {
+		return x.CompanyName
+	}
+	return ""
+}
+
+func (x *DeveloperVerification) GetBusinessLicenseNumber() string {
+	if x != nil {
+		return x.BusinessLicenseNumber
+	}
+	return ""
+}
+
+func (x *DeveloperVerification) GetBusinessLicenseUrl() string {
+	if x != nil {
+		return x.BusinessLicenseUrl
+	}
+	return ""
+}
+
+func (x *DeveloperVerification) GetLegalRepresentative() string {
+	if x != nil {
+		return x.LegalRepresentative
+	}
+	return ""
+}
+
+func (x *DeveloperVerification) GetCompanyAddress() string {
+	if x != nil {
+		return x.CompanyAddress
+	}
+	return ""
+}
+
+func (x *DeveloperVerification) GetReviewerName() string {
+	if x != nil {
+		return x.ReviewerName
+	}
+	return ""
+}
+
+func (x *DeveloperVerification) GetReviewComment() string {
+	if x != nil {
+		return x.ReviewComment
+	}
+	return ""
+}
+
+func (x *DeveloperVerification) GetReviewedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.ReviewedAt
+	}
+	return nil
+}
+
+func (x *DeveloperVerification) GetCreatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return nil
+}
+
+func (x *DeveloperVerification) GetUpdatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return nil
+}
+
+type ListDeveloperVerificationsResponse struct {
+	state         protoimpl.MessageState   `protogen:"open.v1"`
+	Verifications []*DeveloperVerification `protobuf:"bytes,1,rep,name=verifications,proto3" json:"verifications,omitempty"`
+	Total         int32                    `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
+	Page          int32                    `protobuf:"varint,3,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize      int32                    `protobuf:"varint,4,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListDeveloperVerificationsResponse) Reset() {
+	*x = ListDeveloperVerificationsResponse{}
+	mi := &file_proto_iam_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListDeveloperVerificationsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListDeveloperVerificationsResponse) ProtoMessage() {}
+
+func (x *ListDeveloperVerificationsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_iam_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListDeveloperVerificationsResponse.ProtoReflect.Descriptor instead.
+func (*ListDeveloperVerificationsResponse) Descriptor() ([]byte, []int) {
+	return file_proto_iam_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *ListDeveloperVerificationsResponse) GetVerifications() []*DeveloperVerification {
+	if x != nil {
+		return x.Verifications
+	}
+	return nil
+}
+
+func (x *ListDeveloperVerificationsResponse) GetTotal() int32 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+func (x *ListDeveloperVerificationsResponse) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *ListDeveloperVerificationsResponse) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+// 应用管理相关消息
+type CreateApplicationRequest struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	AppName        string                 `protobuf:"bytes,1,opt,name=app_name,json=appName,proto3" json:"app_name,omitempty"`
+	AppDescription string                 `protobuf:"bytes,2,opt,name=app_description,json=appDescription,proto3" json:"app_description,omitempty"`
+	AppType        string                 `protobuf:"bytes,3,opt,name=app_type,json=appType,proto3" json:"app_type,omitempty"` // web/mobile/desktop/api
+	AppIconUrl     string                 `protobuf:"bytes,4,opt,name=app_icon_url,json=appIconUrl,proto3" json:"app_icon_url,omitempty"`
+	AppWebsite     string                 `protobuf:"bytes,5,opt,name=app_website,json=appWebsite,proto3" json:"app_website,omitempty"`
+	CallbackUrls   []string               `protobuf:"bytes,6,rep,name=callback_urls,json=callbackUrls,proto3" json:"callback_urls,omitempty"`
+	AllowedOrigins []string               `protobuf:"bytes,7,rep,name=allowed_origins,json=allowedOrigins,proto3" json:"allowed_origins,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *CreateApplicationRequest) Reset() {
+	*x = CreateApplicationRequest{}
+	mi := &file_proto_iam_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateApplicationRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateApplicationRequest) ProtoMessage() {}
+
+func (x *CreateApplicationRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_iam_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateApplicationRequest.ProtoReflect.Descriptor instead.
+func (*CreateApplicationRequest) Descriptor() ([]byte, []int) {
+	return file_proto_iam_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *CreateApplicationRequest) GetAppName() string {
+	if x != nil {
+		return x.AppName
+	}
+	return ""
+}
+
+func (x *CreateApplicationRequest) GetAppDescription() string {
+	if x != nil {
+		return x.AppDescription
+	}
+	return ""
+}
+
+func (x *CreateApplicationRequest) GetAppType() string {
+	if x != nil {
+		return x.AppType
+	}
+	return ""
+}
+
+func (x *CreateApplicationRequest) GetAppIconUrl() string {
+	if x != nil {
+		return x.AppIconUrl
+	}
+	return ""
+}
+
+func (x *CreateApplicationRequest) GetAppWebsite() string {
+	if x != nil {
+		return x.AppWebsite
+	}
+	return ""
+}
+
+func (x *CreateApplicationRequest) GetCallbackUrls() []string {
+	if x != nil {
+		return x.CallbackUrls
+	}
+	return nil
+}
+
+func (x *CreateApplicationRequest) GetAllowedOrigins() []string {
+	if x != nil {
+		return x.AllowedOrigins
+	}
+	return nil
+}
+
+type GetApplicationRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AppId         int64                  `protobuf:"varint,1,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetApplicationRequest) Reset() {
+	*x = GetApplicationRequest{}
+	mi := &file_proto_iam_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetApplicationRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetApplicationRequest) ProtoMessage() {}
+
+func (x *GetApplicationRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_iam_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetApplicationRequest.ProtoReflect.Descriptor instead.
+func (*GetApplicationRequest) Descriptor() ([]byte, []int) {
+	return file_proto_iam_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *GetApplicationRequest) GetAppId() int64 {
+	if x != nil {
+		return x.AppId
+	}
+	return 0
+}
+
+type ListApplicationsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserName      string                 `protobuf:"bytes,1,opt,name=user_name,json=userName,proto3" json:"user_name,omitempty"`
+	Status        string                 `protobuf:"bytes,2,opt,name=status,proto3" json:"status,omitempty"` // active/inactive/suspended
+	Page          int32                  `protobuf:"varint,3,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize      int32                  `protobuf:"varint,4,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListApplicationsRequest) Reset() {
+	*x = ListApplicationsRequest{}
+	mi := &file_proto_iam_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListApplicationsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListApplicationsRequest) ProtoMessage() {}
+
+func (x *ListApplicationsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_iam_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListApplicationsRequest.ProtoReflect.Descriptor instead.
+func (*ListApplicationsRequest) Descriptor() ([]byte, []int) {
+	return file_proto_iam_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *ListApplicationsRequest) GetUserName() string {
+	if x != nil {
+		return x.UserName
+	}
+	return ""
+}
+
+func (x *ListApplicationsRequest) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *ListApplicationsRequest) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *ListApplicationsRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+type UpdateApplicationRequest struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	AppId          int64                  `protobuf:"varint,1,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"`
+	AppName        string                 `protobuf:"bytes,2,opt,name=app_name,json=appName,proto3" json:"app_name,omitempty"`
+	AppDescription string                 `protobuf:"bytes,3,opt,name=app_description,json=appDescription,proto3" json:"app_description,omitempty"`
+	AppType        string                 `protobuf:"bytes,4,opt,name=app_type,json=appType,proto3" json:"app_type,omitempty"`
+	AppIconUrl     string                 `protobuf:"bytes,5,opt,name=app_icon_url,json=appIconUrl,proto3" json:"app_icon_url,omitempty"`
+	AppWebsite     string                 `protobuf:"bytes,6,opt,name=app_website,json=appWebsite,proto3" json:"app_website,omitempty"`
+	CallbackUrls   []string               `protobuf:"bytes,7,rep,name=callback_urls,json=callbackUrls,proto3" json:"callback_urls,omitempty"`
+	AllowedOrigins []string               `protobuf:"bytes,8,rep,name=allowed_origins,json=allowedOrigins,proto3" json:"allowed_origins,omitempty"`
+	Status         string                 `protobuf:"bytes,9,opt,name=status,proto3" json:"status,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *UpdateApplicationRequest) Reset() {
+	*x = UpdateApplicationRequest{}
+	mi := &file_proto_iam_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateApplicationRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateApplicationRequest) ProtoMessage() {}
+
+func (x *UpdateApplicationRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_iam_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateApplicationRequest.ProtoReflect.Descriptor instead.
+func (*UpdateApplicationRequest) Descriptor() ([]byte, []int) {
+	return file_proto_iam_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *UpdateApplicationRequest) GetAppId() int64 {
+	if x != nil {
+		return x.AppId
+	}
+	return 0
+}
+
+func (x *UpdateApplicationRequest) GetAppName() string {
+	if x != nil {
+		return x.AppName
+	}
+	return ""
+}
+
+func (x *UpdateApplicationRequest) GetAppDescription() string {
+	if x != nil {
+		return x.AppDescription
+	}
+	return ""
+}
+
+func (x *UpdateApplicationRequest) GetAppType() string {
+	if x != nil {
+		return x.AppType
+	}
+	return ""
+}
+
+func (x *UpdateApplicationRequest) GetAppIconUrl() string {
+	if x != nil {
+		return x.AppIconUrl
+	}
+	return ""
+}
+
+func (x *UpdateApplicationRequest) GetAppWebsite() string {
+	if x != nil {
+		return x.AppWebsite
+	}
+	return ""
+}
+
+func (x *UpdateApplicationRequest) GetCallbackUrls() []string {
+	if x != nil {
+		return x.CallbackUrls
+	}
+	return nil
+}
+
+func (x *UpdateApplicationRequest) GetAllowedOrigins() []string {
+	if x != nil {
+		return x.AllowedOrigins
+	}
+	return nil
+}
+
+func (x *UpdateApplicationRequest) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+type DeleteApplicationRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AppId         int64                  `protobuf:"varint,1,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteApplicationRequest) Reset() {
+	*x = DeleteApplicationRequest{}
+	mi := &file_proto_iam_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteApplicationRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteApplicationRequest) ProtoMessage() {}
+
+func (x *DeleteApplicationRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_iam_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteApplicationRequest.ProtoReflect.Descriptor instead.
+func (*DeleteApplicationRequest) Descriptor() ([]byte, []int) {
+	return file_proto_iam_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *DeleteApplicationRequest) GetAppId() int64 {
+	if x != nil {
+		return x.AppId
+	}
+	return 0
+}
+
+type DeleteApplicationResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteApplicationResponse) Reset() {
+	*x = DeleteApplicationResponse{}
+	mi := &file_proto_iam_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteApplicationResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteApplicationResponse) ProtoMessage() {}
+
+func (x *DeleteApplicationResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_iam_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteApplicationResponse.ProtoReflect.Descriptor instead.
+func (*DeleteApplicationResponse) Descriptor() ([]byte, []int) {
+	return file_proto_iam_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *DeleteApplicationResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+type Application struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	Id             int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	UserName       string                 `protobuf:"bytes,2,opt,name=user_name,json=userName,proto3" json:"user_name,omitempty"`
+	AppName        string                 `protobuf:"bytes,3,opt,name=app_name,json=appName,proto3" json:"app_name,omitempty"`
+	AppDescription string                 `protobuf:"bytes,4,opt,name=app_description,json=appDescription,proto3" json:"app_description,omitempty"`
+	AppType        string                 `protobuf:"bytes,5,opt,name=app_type,json=appType,proto3" json:"app_type,omitempty"`
+	AppIconUrl     string                 `protobuf:"bytes,6,opt,name=app_icon_url,json=appIconUrl,proto3" json:"app_icon_url,omitempty"`
+	AppWebsite     string                 `protobuf:"bytes,7,opt,name=app_website,json=appWebsite,proto3" json:"app_website,omitempty"`
+	CallbackUrls   []string               `protobuf:"bytes,8,rep,name=callback_urls,json=callbackUrls,proto3" json:"callback_urls,omitempty"`
+	AllowedOrigins []string               `protobuf:"bytes,9,rep,name=allowed_origins,json=allowedOrigins,proto3" json:"allowed_origins,omitempty"`
+	Status         string                 `protobuf:"bytes,10,opt,name=status,proto3" json:"status,omitempty"`
+	CreatedAt      *timestamppb.Timestamp `protobuf:"bytes,11,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt      *timestamppb.Timestamp `protobuf:"bytes,12,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *Application) Reset() {
+	*x = Application{}
+	mi := &file_proto_iam_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Application) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Application) ProtoMessage() {}
+
+func (x *Application) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_iam_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Application.ProtoReflect.Descriptor instead.
+func (*Application) Descriptor() ([]byte, []int) {
+	return file_proto_iam_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *Application) GetId() int64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *Application) GetUserName() string {
+	if x != nil {
+		return x.UserName
+	}
+	return ""
+}
+
+func (x *Application) GetAppName() string {
+	if x != nil {
+		return x.AppName
+	}
+	return ""
+}
+
+func (x *Application) GetAppDescription() string {
+	if x != nil {
+		return x.AppDescription
+	}
+	return ""
+}
+
+func (x *Application) GetAppType() string {
+	if x != nil {
+		return x.AppType
+	}
+	return ""
+}
+
+func (x *Application) GetAppIconUrl() string {
+	if x != nil {
+		return x.AppIconUrl
+	}
+	return ""
+}
+
+func (x *Application) GetAppWebsite() string {
+	if x != nil {
+		return x.AppWebsite
+	}
+	return ""
+}
+
+func (x *Application) GetCallbackUrls() []string {
+	if x != nil {
+		return x.CallbackUrls
+	}
+	return nil
+}
+
+func (x *Application) GetAllowedOrigins() []string {
+	if x != nil {
+		return x.AllowedOrigins
+	}
+	return nil
+}
+
+func (x *Application) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *Application) GetCreatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return nil
+}
+
+func (x *Application) GetUpdatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return nil
+}
+
+type ListApplicationsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Applications  []*Application         `protobuf:"bytes,1,rep,name=applications,proto3" json:"applications,omitempty"`
+	Total         int32                  `protobuf:"varint,2,opt,name=total,proto3" json:"total,omitempty"`
+	Page          int32                  `protobuf:"varint,3,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize      int32                  `protobuf:"varint,4,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListApplicationsResponse) Reset() {
+	*x = ListApplicationsResponse{}
+	mi := &file_proto_iam_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListApplicationsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListApplicationsResponse) ProtoMessage() {}
+
+func (x *ListApplicationsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_iam_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListApplicationsResponse.ProtoReflect.Descriptor instead.
+func (*ListApplicationsResponse) Descriptor() ([]byte, []int) {
+	return file_proto_iam_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *ListApplicationsResponse) GetApplications() []*Application {
+	if x != nil {
+		return x.Applications
+	}
+	return nil
+}
+
+func (x *ListApplicationsResponse) GetTotal() int32 {
+	if x != nil {
+		return x.Total
+	}
+	return 0
+}
+
+func (x *ListApplicationsResponse) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *ListApplicationsResponse) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
 // 访问密钥相关消息
 type CreateAccessKeyRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserName      string                 `protobuf:"bytes,1,opt,name=user_name,json=userName,proto3" json:"user_name,omitempty"`
+	AppId         int64                  `protobuf:"varint,2,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"` // 关联的应用ID
+	Description   string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *CreateAccessKeyRequest) Reset() {
 	*x = CreateAccessKeyRequest{}
-	mi := &file_proto_iam_proto_msgTypes[7]
+	mi := &file_proto_iam_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -474,7 +1619,7 @@ func (x *CreateAccessKeyRequest) String() string {
 func (*CreateAccessKeyRequest) ProtoMessage() {}
 
 func (x *CreateAccessKeyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_iam_proto_msgTypes[7]
+	mi := &file_proto_iam_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -487,7 +1632,7 @@ func (x *CreateAccessKeyRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateAccessKeyRequest.ProtoReflect.Descriptor instead.
 func (*CreateAccessKeyRequest) Descriptor() ([]byte, []int) {
-	return file_proto_iam_proto_rawDescGZIP(), []int{7}
+	return file_proto_iam_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *CreateAccessKeyRequest) GetUserName() string {
@@ -497,16 +1642,31 @@ func (x *CreateAccessKeyRequest) GetUserName() string {
 	return ""
 }
 
+func (x *CreateAccessKeyRequest) GetAppId() int64 {
+	if x != nil {
+		return x.AppId
+	}
+	return 0
+}
+
+func (x *CreateAccessKeyRequest) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
 type ListAccessKeysRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserName      string                 `protobuf:"bytes,1,opt,name=user_name,json=userName,proto3" json:"user_name,omitempty"`
+	AppId         int64                  `protobuf:"varint,2,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"` // 可选，筛选特定应用的密钥
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ListAccessKeysRequest) Reset() {
 	*x = ListAccessKeysRequest{}
-	mi := &file_proto_iam_proto_msgTypes[8]
+	mi := &file_proto_iam_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -518,7 +1678,7 @@ func (x *ListAccessKeysRequest) String() string {
 func (*ListAccessKeysRequest) ProtoMessage() {}
 
 func (x *ListAccessKeysRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_iam_proto_msgTypes[8]
+	mi := &file_proto_iam_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -531,7 +1691,7 @@ func (x *ListAccessKeysRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListAccessKeysRequest.ProtoReflect.Descriptor instead.
 func (*ListAccessKeysRequest) Descriptor() ([]byte, []int) {
-	return file_proto_iam_proto_rawDescGZIP(), []int{8}
+	return file_proto_iam_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *ListAccessKeysRequest) GetUserName() string {
@@ -539,6 +1699,13 @@ func (x *ListAccessKeysRequest) GetUserName() string {
 		return x.UserName
 	}
 	return ""
+}
+
+func (x *ListAccessKeysRequest) GetAppId() int64 {
+	if x != nil {
+		return x.AppId
+	}
+	return 0
 }
 
 type UpdateAccessKeyStatusRequest struct {
@@ -551,7 +1718,7 @@ type UpdateAccessKeyStatusRequest struct {
 
 func (x *UpdateAccessKeyStatusRequest) Reset() {
 	*x = UpdateAccessKeyStatusRequest{}
-	mi := &file_proto_iam_proto_msgTypes[9]
+	mi := &file_proto_iam_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -563,7 +1730,7 @@ func (x *UpdateAccessKeyStatusRequest) String() string {
 func (*UpdateAccessKeyStatusRequest) ProtoMessage() {}
 
 func (x *UpdateAccessKeyStatusRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_iam_proto_msgTypes[9]
+	mi := &file_proto_iam_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -576,7 +1743,7 @@ func (x *UpdateAccessKeyStatusRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateAccessKeyStatusRequest.ProtoReflect.Descriptor instead.
 func (*UpdateAccessKeyStatusRequest) Descriptor() ([]byte, []int) {
-	return file_proto_iam_proto_rawDescGZIP(), []int{9}
+	return file_proto_iam_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *UpdateAccessKeyStatusRequest) GetAccessKeyId() string {
@@ -599,15 +1766,18 @@ type AccessKey struct {
 	SecretAccessKey string                 `protobuf:"bytes,2,opt,name=secret_access_key,json=secretAccessKey,proto3" json:"secret_access_key,omitempty"` // 仅在创建时返回
 	Status          string                 `protobuf:"bytes,3,opt,name=status,proto3" json:"status,omitempty"`
 	UserName        string                 `protobuf:"bytes,4,opt,name=user_name,json=userName,proto3" json:"user_name,omitempty"`
-	CreatedAt       *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	UpdatedAt       *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	AppId           int64                  `protobuf:"varint,5,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"`
+	AppName         string                 `protobuf:"bytes,6,opt,name=app_name,json=appName,proto3" json:"app_name,omitempty"`
+	Description     string                 `protobuf:"bytes,7,opt,name=description,proto3" json:"description,omitempty"`
+	CreatedAt       *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt       *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
 
 func (x *AccessKey) Reset() {
 	*x = AccessKey{}
-	mi := &file_proto_iam_proto_msgTypes[10]
+	mi := &file_proto_iam_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -619,7 +1789,7 @@ func (x *AccessKey) String() string {
 func (*AccessKey) ProtoMessage() {}
 
 func (x *AccessKey) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_iam_proto_msgTypes[10]
+	mi := &file_proto_iam_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -632,7 +1802,7 @@ func (x *AccessKey) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AccessKey.ProtoReflect.Descriptor instead.
 func (*AccessKey) Descriptor() ([]byte, []int) {
-	return file_proto_iam_proto_rawDescGZIP(), []int{10}
+	return file_proto_iam_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *AccessKey) GetAccessKeyId() string {
@@ -663,6 +1833,27 @@ func (x *AccessKey) GetUserName() string {
 	return ""
 }
 
+func (x *AccessKey) GetAppId() int64 {
+	if x != nil {
+		return x.AppId
+	}
+	return 0
+}
+
+func (x *AccessKey) GetAppName() string {
+	if x != nil {
+		return x.AppName
+	}
+	return ""
+}
+
+func (x *AccessKey) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
 func (x *AccessKey) GetCreatedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.CreatedAt
@@ -686,7 +1877,7 @@ type ListAccessKeysResponse struct {
 
 func (x *ListAccessKeysResponse) Reset() {
 	*x = ListAccessKeysResponse{}
-	mi := &file_proto_iam_proto_msgTypes[11]
+	mi := &file_proto_iam_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -698,7 +1889,7 @@ func (x *ListAccessKeysResponse) String() string {
 func (*ListAccessKeysResponse) ProtoMessage() {}
 
 func (x *ListAccessKeysResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_iam_proto_msgTypes[11]
+	mi := &file_proto_iam_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -711,7 +1902,7 @@ func (x *ListAccessKeysResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListAccessKeysResponse.ProtoReflect.Descriptor instead.
 func (*ListAccessKeysResponse) Descriptor() ([]byte, []int) {
-	return file_proto_iam_proto_rawDescGZIP(), []int{11}
+	return file_proto_iam_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *ListAccessKeysResponse) GetAccessKeys() []*AccessKey {
@@ -730,7 +1921,7 @@ type VerifyRequest struct {
 
 func (x *VerifyRequest) Reset() {
 	*x = VerifyRequest{}
-	mi := &file_proto_iam_proto_msgTypes[12]
+	mi := &file_proto_iam_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -742,7 +1933,7 @@ func (x *VerifyRequest) String() string {
 func (*VerifyRequest) ProtoMessage() {}
 
 func (x *VerifyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_iam_proto_msgTypes[12]
+	mi := &file_proto_iam_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -755,7 +1946,7 @@ func (x *VerifyRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VerifyRequest.ProtoReflect.Descriptor instead.
 func (*VerifyRequest) Descriptor() ([]byte, []int) {
-	return file_proto_iam_proto_rawDescGZIP(), []int{12}
+	return file_proto_iam_proto_rawDescGZIP(), []int{26}
 }
 
 type VerifyResponse struct {
@@ -768,7 +1959,7 @@ type VerifyResponse struct {
 
 func (x *VerifyResponse) Reset() {
 	*x = VerifyResponse{}
-	mi := &file_proto_iam_proto_msgTypes[13]
+	mi := &file_proto_iam_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -780,7 +1971,7 @@ func (x *VerifyResponse) String() string {
 func (*VerifyResponse) ProtoMessage() {}
 
 func (x *VerifyResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_iam_proto_msgTypes[13]
+	mi := &file_proto_iam_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -793,7 +1984,7 @@ func (x *VerifyResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use VerifyResponse.ProtoReflect.Descriptor instead.
 func (*VerifyResponse) Descriptor() ([]byte, []int) {
-	return file_proto_iam_proto_rawDescGZIP(), []int{13}
+	return file_proto_iam_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *VerifyResponse) GetValid() bool {
@@ -821,7 +2012,7 @@ type CheckPermissionRequest struct {
 
 func (x *CheckPermissionRequest) Reset() {
 	*x = CheckPermissionRequest{}
-	mi := &file_proto_iam_proto_msgTypes[14]
+	mi := &file_proto_iam_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -833,7 +2024,7 @@ func (x *CheckPermissionRequest) String() string {
 func (*CheckPermissionRequest) ProtoMessage() {}
 
 func (x *CheckPermissionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_iam_proto_msgTypes[14]
+	mi := &file_proto_iam_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -846,7 +2037,7 @@ func (x *CheckPermissionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CheckPermissionRequest.ProtoReflect.Descriptor instead.
 func (*CheckPermissionRequest) Descriptor() ([]byte, []int) {
-	return file_proto_iam_proto_rawDescGZIP(), []int{14}
+	return file_proto_iam_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *CheckPermissionRequest) GetUserName() string {
@@ -879,7 +2070,7 @@ type CheckPermissionResponse struct {
 
 func (x *CheckPermissionResponse) Reset() {
 	*x = CheckPermissionResponse{}
-	mi := &file_proto_iam_proto_msgTypes[15]
+	mi := &file_proto_iam_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -891,7 +2082,7 @@ func (x *CheckPermissionResponse) String() string {
 func (*CheckPermissionResponse) ProtoMessage() {}
 
 func (x *CheckPermissionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_iam_proto_msgTypes[15]
+	mi := &file_proto_iam_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -904,7 +2095,7 @@ func (x *CheckPermissionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CheckPermissionResponse.ProtoReflect.Descriptor instead.
 func (*CheckPermissionResponse) Descriptor() ([]byte, []int) {
-	return file_proto_iam_proto_rawDescGZIP(), []int{15}
+	return file_proto_iam_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *CheckPermissionResponse) GetAllowed() bool {
@@ -952,23 +2143,136 @@ const file_proto_iam_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
-	"updated_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"5\n" +
+	"updated_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"\xcb\x03\n" +
+	"\"SubmitDeveloperVerificationRequest\x12%\n" +
+	"\x0edeveloper_type\x18\x01 \x01(\tR\rdeveloperType\x12\x1b\n" +
+	"\treal_name\x18\x02 \x01(\tR\brealName\x12$\n" +
+	"\x0eid_card_number\x18\x03 \x01(\tR\fidCardNumber\x12)\n" +
+	"\x11id_card_front_url\x18\x04 \x01(\tR\x0eidCardFrontUrl\x12'\n" +
+	"\x10id_card_back_url\x18\x05 \x01(\tR\ridCardBackUrl\x12!\n" +
+	"\fcompany_name\x18\x06 \x01(\tR\vcompanyName\x126\n" +
+	"\x17business_license_number\x18\a \x01(\tR\x15businessLicenseNumber\x120\n" +
+	"\x14business_license_url\x18\b \x01(\tR\x12businessLicenseUrl\x121\n" +
+	"\x14legal_representative\x18\t \x01(\tR\x13legalRepresentative\x12'\n" +
+	"\x0fcompany_address\x18\n" +
+	" \x01(\tR\x0ecompanyAddress\"e\n" +
+	"\x1fGetDeveloperVerificationRequest\x12\x1b\n" +
+	"\tuser_name\x18\x01 \x01(\tR\buserName\x12%\n" +
+	"\x0edeveloper_type\x18\x02 \x01(\tR\rdeveloperType\"l\n" +
+	"!ListDeveloperVerificationsRequest\x12\x16\n" +
+	"\x06status\x18\x01 \x01(\tR\x06status\x12\x12\n" +
+	"\x04page\x18\x02 \x01(\x05R\x04page\x12\x1b\n" +
+	"\tpage_size\x18\x03 \x01(\x05R\bpageSize\"\x8c\x01\n" +
+	"\"ReviewDeveloperVerificationRequest\x12'\n" +
+	"\x0fverification_id\x18\x01 \x01(\x03R\x0everificationId\x12\x16\n" +
+	"\x06status\x18\x02 \x01(\tR\x06status\x12%\n" +
+	"\x0ereview_comment\x18\x03 \x01(\tR\rreviewComment\"\x82\x06\n" +
+	"\x15DeveloperVerification\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x1b\n" +
+	"\tuser_name\x18\x02 \x01(\tR\buserName\x12%\n" +
+	"\x0edeveloper_type\x18\x03 \x01(\tR\rdeveloperType\x12\x16\n" +
+	"\x06status\x18\x04 \x01(\tR\x06status\x12\x1b\n" +
+	"\treal_name\x18\x05 \x01(\tR\brealName\x12$\n" +
+	"\x0eid_card_number\x18\x06 \x01(\tR\fidCardNumber\x12)\n" +
+	"\x11id_card_front_url\x18\a \x01(\tR\x0eidCardFrontUrl\x12'\n" +
+	"\x10id_card_back_url\x18\b \x01(\tR\ridCardBackUrl\x12!\n" +
+	"\fcompany_name\x18\t \x01(\tR\vcompanyName\x126\n" +
+	"\x17business_license_number\x18\n" +
+	" \x01(\tR\x15businessLicenseNumber\x120\n" +
+	"\x14business_license_url\x18\v \x01(\tR\x12businessLicenseUrl\x121\n" +
+	"\x14legal_representative\x18\f \x01(\tR\x13legalRepresentative\x12'\n" +
+	"\x0fcompany_address\x18\r \x01(\tR\x0ecompanyAddress\x12#\n" +
+	"\rreviewer_name\x18\x0e \x01(\tR\freviewerName\x12%\n" +
+	"\x0ereview_comment\x18\x0f \x01(\tR\rreviewComment\x12;\n" +
+	"\vreviewed_at\x18\x10 \x01(\v2\x1a.google.protobuf.TimestampR\n" +
+	"reviewedAt\x129\n" +
+	"\n" +
+	"created_at\x18\x11 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
+	"\n" +
+	"updated_at\x18\x12 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"\xb0\x01\n" +
+	"\"ListDeveloperVerificationsResponse\x12C\n" +
+	"\rverifications\x18\x01 \x03(\v2\x1d.iam.v1.DeveloperVerificationR\rverifications\x12\x14\n" +
+	"\x05total\x18\x02 \x01(\x05R\x05total\x12\x12\n" +
+	"\x04page\x18\x03 \x01(\x05R\x04page\x12\x1b\n" +
+	"\tpage_size\x18\x04 \x01(\x05R\bpageSize\"\x8a\x02\n" +
+	"\x18CreateApplicationRequest\x12\x19\n" +
+	"\bapp_name\x18\x01 \x01(\tR\aappName\x12'\n" +
+	"\x0fapp_description\x18\x02 \x01(\tR\x0eappDescription\x12\x19\n" +
+	"\bapp_type\x18\x03 \x01(\tR\aappType\x12 \n" +
+	"\fapp_icon_url\x18\x04 \x01(\tR\n" +
+	"appIconUrl\x12\x1f\n" +
+	"\vapp_website\x18\x05 \x01(\tR\n" +
+	"appWebsite\x12#\n" +
+	"\rcallback_urls\x18\x06 \x03(\tR\fcallbackUrls\x12'\n" +
+	"\x0fallowed_origins\x18\a \x03(\tR\x0eallowedOrigins\".\n" +
+	"\x15GetApplicationRequest\x12\x15\n" +
+	"\x06app_id\x18\x01 \x01(\x03R\x05appId\"\x7f\n" +
+	"\x17ListApplicationsRequest\x12\x1b\n" +
+	"\tuser_name\x18\x01 \x01(\tR\buserName\x12\x16\n" +
+	"\x06status\x18\x02 \x01(\tR\x06status\x12\x12\n" +
+	"\x04page\x18\x03 \x01(\x05R\x04page\x12\x1b\n" +
+	"\tpage_size\x18\x04 \x01(\x05R\bpageSize\"\xb9\x02\n" +
+	"\x18UpdateApplicationRequest\x12\x15\n" +
+	"\x06app_id\x18\x01 \x01(\x03R\x05appId\x12\x19\n" +
+	"\bapp_name\x18\x02 \x01(\tR\aappName\x12'\n" +
+	"\x0fapp_description\x18\x03 \x01(\tR\x0eappDescription\x12\x19\n" +
+	"\bapp_type\x18\x04 \x01(\tR\aappType\x12 \n" +
+	"\fapp_icon_url\x18\x05 \x01(\tR\n" +
+	"appIconUrl\x12\x1f\n" +
+	"\vapp_website\x18\x06 \x01(\tR\n" +
+	"appWebsite\x12#\n" +
+	"\rcallback_urls\x18\a \x03(\tR\fcallbackUrls\x12'\n" +
+	"\x0fallowed_origins\x18\b \x03(\tR\x0eallowedOrigins\x12\x16\n" +
+	"\x06status\x18\t \x01(\tR\x06status\"1\n" +
+	"\x18DeleteApplicationRequest\x12\x15\n" +
+	"\x06app_id\x18\x01 \x01(\x03R\x05appId\"5\n" +
+	"\x19DeleteApplicationResponse\x12\x18\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\"\xb8\x03\n" +
+	"\vApplication\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x1b\n" +
+	"\tuser_name\x18\x02 \x01(\tR\buserName\x12\x19\n" +
+	"\bapp_name\x18\x03 \x01(\tR\aappName\x12'\n" +
+	"\x0fapp_description\x18\x04 \x01(\tR\x0eappDescription\x12\x19\n" +
+	"\bapp_type\x18\x05 \x01(\tR\aappType\x12 \n" +
+	"\fapp_icon_url\x18\x06 \x01(\tR\n" +
+	"appIconUrl\x12\x1f\n" +
+	"\vapp_website\x18\a \x01(\tR\n" +
+	"appWebsite\x12#\n" +
+	"\rcallback_urls\x18\b \x03(\tR\fcallbackUrls\x12'\n" +
+	"\x0fallowed_origins\x18\t \x03(\tR\x0eallowedOrigins\x12\x16\n" +
+	"\x06status\x18\n" +
+	" \x01(\tR\x06status\x129\n" +
+	"\n" +
+	"created_at\x18\v \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
+	"\n" +
+	"updated_at\x18\f \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"\x9a\x01\n" +
+	"\x18ListApplicationsResponse\x127\n" +
+	"\fapplications\x18\x01 \x03(\v2\x13.iam.v1.ApplicationR\fapplications\x12\x14\n" +
+	"\x05total\x18\x02 \x01(\x05R\x05total\x12\x12\n" +
+	"\x04page\x18\x03 \x01(\x05R\x04page\x12\x1b\n" +
+	"\tpage_size\x18\x04 \x01(\x05R\bpageSize\"n\n" +
 	"\x16CreateAccessKeyRequest\x12\x1b\n" +
-	"\tuser_name\x18\x01 \x01(\tR\buserName\"4\n" +
+	"\tuser_name\x18\x01 \x01(\tR\buserName\x12\x15\n" +
+	"\x06app_id\x18\x02 \x01(\x03R\x05appId\x12 \n" +
+	"\vdescription\x18\x03 \x01(\tR\vdescription\"K\n" +
 	"\x15ListAccessKeysRequest\x12\x1b\n" +
-	"\tuser_name\x18\x01 \x01(\tR\buserName\"Z\n" +
+	"\tuser_name\x18\x01 \x01(\tR\buserName\x12\x15\n" +
+	"\x06app_id\x18\x02 \x01(\x03R\x05appId\"Z\n" +
 	"\x1cUpdateAccessKeyStatusRequest\x12\"\n" +
 	"\raccess_key_id\x18\x01 \x01(\tR\vaccessKeyId\x12\x16\n" +
-	"\x06status\x18\x02 \x01(\tR\x06status\"\x86\x02\n" +
+	"\x06status\x18\x02 \x01(\tR\x06status\"\xda\x02\n" +
 	"\tAccessKey\x12\"\n" +
 	"\raccess_key_id\x18\x01 \x01(\tR\vaccessKeyId\x12*\n" +
 	"\x11secret_access_key\x18\x02 \x01(\tR\x0fsecretAccessKey\x12\x16\n" +
 	"\x06status\x18\x03 \x01(\tR\x06status\x12\x1b\n" +
-	"\tuser_name\x18\x04 \x01(\tR\buserName\x129\n" +
+	"\tuser_name\x18\x04 \x01(\tR\buserName\x12\x15\n" +
+	"\x06app_id\x18\x05 \x01(\x03R\x05appId\x12\x19\n" +
+	"\bapp_name\x18\x06 \x01(\tR\aappName\x12 \n" +
+	"\vdescription\x18\a \x01(\tR\vdescription\x129\n" +
 	"\n" +
-	"created_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
+	"created_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
-	"updated_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"L\n" +
+	"updated_at\x18\t \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"L\n" +
 	"\x16ListAccessKeysResponse\x122\n" +
 	"\vaccess_keys\x18\x01 \x03(\v2\x11.iam.v1.AccessKeyR\n" +
 	"accessKeys\"\x0f\n" +
@@ -981,13 +2285,22 @@ const file_proto_iam_proto_rawDesc = "" +
 	"\x06action\x18\x02 \x01(\tR\x06action\x12\x1a\n" +
 	"\bresource\x18\x03 \x01(\tR\bresource\"3\n" +
 	"\x17CheckPermissionResponse\x12\x18\n" +
-	"\aallowed\x18\x01 \x01(\bR\aallowed2\x92\x05\n" +
+	"\aallowed\x18\x01 \x01(\bR\aallowed2\xe0\v\n" +
 	"\x03IAM\x127\n" +
 	"\n" +
 	"CreateUser\x12\x19.iam.v1.CreateUserRequest\x1a\f.iam.v1.User\"\x00\x121\n" +
 	"\aGetUser\x12\x16.iam.v1.GetUserRequest\x1a\f.iam.v1.User\"\x00\x12=\n" +
 	"\fCreatePolicy\x12\x1b.iam.v1.CreatePolicyRequest\x1a\x0e.iam.v1.Policy\"\x00\x12W\n" +
-	"\x10AttachUserPolicy\x12\x1f.iam.v1.AttachUserPolicyRequest\x1a .iam.v1.AttachUserPolicyResponse\"\x00\x12F\n" +
+	"\x10AttachUserPolicy\x12\x1f.iam.v1.AttachUserPolicyRequest\x1a .iam.v1.AttachUserPolicyResponse\"\x00\x12j\n" +
+	"\x1bSubmitDeveloperVerification\x12*.iam.v1.SubmitDeveloperVerificationRequest\x1a\x1d.iam.v1.DeveloperVerification\"\x00\x12d\n" +
+	"\x18GetDeveloperVerification\x12'.iam.v1.GetDeveloperVerificationRequest\x1a\x1d.iam.v1.DeveloperVerification\"\x00\x12u\n" +
+	"\x1aListDeveloperVerifications\x12).iam.v1.ListDeveloperVerificationsRequest\x1a*.iam.v1.ListDeveloperVerificationsResponse\"\x00\x12j\n" +
+	"\x1bReviewDeveloperVerification\x12*.iam.v1.ReviewDeveloperVerificationRequest\x1a\x1d.iam.v1.DeveloperVerification\"\x00\x12L\n" +
+	"\x11CreateApplication\x12 .iam.v1.CreateApplicationRequest\x1a\x13.iam.v1.Application\"\x00\x12F\n" +
+	"\x0eGetApplication\x12\x1d.iam.v1.GetApplicationRequest\x1a\x13.iam.v1.Application\"\x00\x12W\n" +
+	"\x10ListApplications\x12\x1f.iam.v1.ListApplicationsRequest\x1a .iam.v1.ListApplicationsResponse\"\x00\x12L\n" +
+	"\x11UpdateApplication\x12 .iam.v1.UpdateApplicationRequest\x1a\x13.iam.v1.Application\"\x00\x12Z\n" +
+	"\x11DeleteApplication\x12 .iam.v1.DeleteApplicationRequest\x1a!.iam.v1.DeleteApplicationResponse\"\x00\x12F\n" +
 	"\x0fCreateAccessKey\x12\x1e.iam.v1.CreateAccessKeyRequest\x1a\x11.iam.v1.AccessKey\"\x00\x12Q\n" +
 	"\x0eListAccessKeys\x12\x1d.iam.v1.ListAccessKeysRequest\x1a\x1e.iam.v1.ListAccessKeysResponse\"\x00\x12R\n" +
 	"\x15UpdateAccessKeyStatus\x12$.iam.v1.UpdateAccessKeyStatusRequest\x1a\x11.iam.v1.AccessKey\"\x00\x12B\n" +
@@ -1006,57 +2319,96 @@ func file_proto_iam_proto_rawDescGZIP() []byte {
 	return file_proto_iam_proto_rawDescData
 }
 
-var file_proto_iam_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
+var file_proto_iam_proto_msgTypes = make([]protoimpl.MessageInfo, 30)
 var file_proto_iam_proto_goTypes = []any{
-	(*CreateUserRequest)(nil),            // 0: iam.v1.CreateUserRequest
-	(*GetUserRequest)(nil),               // 1: iam.v1.GetUserRequest
-	(*User)(nil),                         // 2: iam.v1.User
-	(*CreatePolicyRequest)(nil),          // 3: iam.v1.CreatePolicyRequest
-	(*AttachUserPolicyRequest)(nil),      // 4: iam.v1.AttachUserPolicyRequest
-	(*AttachUserPolicyResponse)(nil),     // 5: iam.v1.AttachUserPolicyResponse
-	(*Policy)(nil),                       // 6: iam.v1.Policy
-	(*CreateAccessKeyRequest)(nil),       // 7: iam.v1.CreateAccessKeyRequest
-	(*ListAccessKeysRequest)(nil),        // 8: iam.v1.ListAccessKeysRequest
-	(*UpdateAccessKeyStatusRequest)(nil), // 9: iam.v1.UpdateAccessKeyStatusRequest
-	(*AccessKey)(nil),                    // 10: iam.v1.AccessKey
-	(*ListAccessKeysResponse)(nil),       // 11: iam.v1.ListAccessKeysResponse
-	(*VerifyRequest)(nil),                // 12: iam.v1.VerifyRequest
-	(*VerifyResponse)(nil),               // 13: iam.v1.VerifyResponse
-	(*CheckPermissionRequest)(nil),       // 14: iam.v1.CheckPermissionRequest
-	(*CheckPermissionResponse)(nil),      // 15: iam.v1.CheckPermissionResponse
-	(*timestamppb.Timestamp)(nil),        // 16: google.protobuf.Timestamp
+	(*CreateUserRequest)(nil),                  // 0: iam.v1.CreateUserRequest
+	(*GetUserRequest)(nil),                     // 1: iam.v1.GetUserRequest
+	(*User)(nil),                               // 2: iam.v1.User
+	(*CreatePolicyRequest)(nil),                // 3: iam.v1.CreatePolicyRequest
+	(*AttachUserPolicyRequest)(nil),            // 4: iam.v1.AttachUserPolicyRequest
+	(*AttachUserPolicyResponse)(nil),           // 5: iam.v1.AttachUserPolicyResponse
+	(*Policy)(nil),                             // 6: iam.v1.Policy
+	(*SubmitDeveloperVerificationRequest)(nil), // 7: iam.v1.SubmitDeveloperVerificationRequest
+	(*GetDeveloperVerificationRequest)(nil),    // 8: iam.v1.GetDeveloperVerificationRequest
+	(*ListDeveloperVerificationsRequest)(nil),  // 9: iam.v1.ListDeveloperVerificationsRequest
+	(*ReviewDeveloperVerificationRequest)(nil), // 10: iam.v1.ReviewDeveloperVerificationRequest
+	(*DeveloperVerification)(nil),              // 11: iam.v1.DeveloperVerification
+	(*ListDeveloperVerificationsResponse)(nil), // 12: iam.v1.ListDeveloperVerificationsResponse
+	(*CreateApplicationRequest)(nil),           // 13: iam.v1.CreateApplicationRequest
+	(*GetApplicationRequest)(nil),              // 14: iam.v1.GetApplicationRequest
+	(*ListApplicationsRequest)(nil),            // 15: iam.v1.ListApplicationsRequest
+	(*UpdateApplicationRequest)(nil),           // 16: iam.v1.UpdateApplicationRequest
+	(*DeleteApplicationRequest)(nil),           // 17: iam.v1.DeleteApplicationRequest
+	(*DeleteApplicationResponse)(nil),          // 18: iam.v1.DeleteApplicationResponse
+	(*Application)(nil),                        // 19: iam.v1.Application
+	(*ListApplicationsResponse)(nil),           // 20: iam.v1.ListApplicationsResponse
+	(*CreateAccessKeyRequest)(nil),             // 21: iam.v1.CreateAccessKeyRequest
+	(*ListAccessKeysRequest)(nil),              // 22: iam.v1.ListAccessKeysRequest
+	(*UpdateAccessKeyStatusRequest)(nil),       // 23: iam.v1.UpdateAccessKeyStatusRequest
+	(*AccessKey)(nil),                          // 24: iam.v1.AccessKey
+	(*ListAccessKeysResponse)(nil),             // 25: iam.v1.ListAccessKeysResponse
+	(*VerifyRequest)(nil),                      // 26: iam.v1.VerifyRequest
+	(*VerifyResponse)(nil),                     // 27: iam.v1.VerifyResponse
+	(*CheckPermissionRequest)(nil),             // 28: iam.v1.CheckPermissionRequest
+	(*CheckPermissionResponse)(nil),            // 29: iam.v1.CheckPermissionResponse
+	(*timestamppb.Timestamp)(nil),              // 30: google.protobuf.Timestamp
 }
 var file_proto_iam_proto_depIdxs = []int32{
-	16, // 0: iam.v1.User.created_at:type_name -> google.protobuf.Timestamp
-	16, // 1: iam.v1.User.updated_at:type_name -> google.protobuf.Timestamp
-	16, // 2: iam.v1.Policy.created_at:type_name -> google.protobuf.Timestamp
-	16, // 3: iam.v1.Policy.updated_at:type_name -> google.protobuf.Timestamp
-	16, // 4: iam.v1.AccessKey.created_at:type_name -> google.protobuf.Timestamp
-	16, // 5: iam.v1.AccessKey.updated_at:type_name -> google.protobuf.Timestamp
-	10, // 6: iam.v1.ListAccessKeysResponse.access_keys:type_name -> iam.v1.AccessKey
-	0,  // 7: iam.v1.IAM.CreateUser:input_type -> iam.v1.CreateUserRequest
-	1,  // 8: iam.v1.IAM.GetUser:input_type -> iam.v1.GetUserRequest
-	3,  // 9: iam.v1.IAM.CreatePolicy:input_type -> iam.v1.CreatePolicyRequest
-	4,  // 10: iam.v1.IAM.AttachUserPolicy:input_type -> iam.v1.AttachUserPolicyRequest
-	7,  // 11: iam.v1.IAM.CreateAccessKey:input_type -> iam.v1.CreateAccessKeyRequest
-	8,  // 12: iam.v1.IAM.ListAccessKeys:input_type -> iam.v1.ListAccessKeysRequest
-	9,  // 13: iam.v1.IAM.UpdateAccessKeyStatus:input_type -> iam.v1.UpdateAccessKeyStatusRequest
-	12, // 14: iam.v1.IAM.VerifyAccessKey:input_type -> iam.v1.VerifyRequest
-	14, // 15: iam.v1.IAM.CheckPermission:input_type -> iam.v1.CheckPermissionRequest
-	2,  // 16: iam.v1.IAM.CreateUser:output_type -> iam.v1.User
-	2,  // 17: iam.v1.IAM.GetUser:output_type -> iam.v1.User
-	6,  // 18: iam.v1.IAM.CreatePolicy:output_type -> iam.v1.Policy
-	5,  // 19: iam.v1.IAM.AttachUserPolicy:output_type -> iam.v1.AttachUserPolicyResponse
-	10, // 20: iam.v1.IAM.CreateAccessKey:output_type -> iam.v1.AccessKey
-	11, // 21: iam.v1.IAM.ListAccessKeys:output_type -> iam.v1.ListAccessKeysResponse
-	10, // 22: iam.v1.IAM.UpdateAccessKeyStatus:output_type -> iam.v1.AccessKey
-	13, // 23: iam.v1.IAM.VerifyAccessKey:output_type -> iam.v1.VerifyResponse
-	15, // 24: iam.v1.IAM.CheckPermission:output_type -> iam.v1.CheckPermissionResponse
-	16, // [16:25] is the sub-list for method output_type
-	7,  // [7:16] is the sub-list for method input_type
-	7,  // [7:7] is the sub-list for extension type_name
-	7,  // [7:7] is the sub-list for extension extendee
-	0,  // [0:7] is the sub-list for field type_name
+	30, // 0: iam.v1.User.created_at:type_name -> google.protobuf.Timestamp
+	30, // 1: iam.v1.User.updated_at:type_name -> google.protobuf.Timestamp
+	30, // 2: iam.v1.Policy.created_at:type_name -> google.protobuf.Timestamp
+	30, // 3: iam.v1.Policy.updated_at:type_name -> google.protobuf.Timestamp
+	30, // 4: iam.v1.DeveloperVerification.reviewed_at:type_name -> google.protobuf.Timestamp
+	30, // 5: iam.v1.DeveloperVerification.created_at:type_name -> google.protobuf.Timestamp
+	30, // 6: iam.v1.DeveloperVerification.updated_at:type_name -> google.protobuf.Timestamp
+	11, // 7: iam.v1.ListDeveloperVerificationsResponse.verifications:type_name -> iam.v1.DeveloperVerification
+	30, // 8: iam.v1.Application.created_at:type_name -> google.protobuf.Timestamp
+	30, // 9: iam.v1.Application.updated_at:type_name -> google.protobuf.Timestamp
+	19, // 10: iam.v1.ListApplicationsResponse.applications:type_name -> iam.v1.Application
+	30, // 11: iam.v1.AccessKey.created_at:type_name -> google.protobuf.Timestamp
+	30, // 12: iam.v1.AccessKey.updated_at:type_name -> google.protobuf.Timestamp
+	24, // 13: iam.v1.ListAccessKeysResponse.access_keys:type_name -> iam.v1.AccessKey
+	0,  // 14: iam.v1.IAM.CreateUser:input_type -> iam.v1.CreateUserRequest
+	1,  // 15: iam.v1.IAM.GetUser:input_type -> iam.v1.GetUserRequest
+	3,  // 16: iam.v1.IAM.CreatePolicy:input_type -> iam.v1.CreatePolicyRequest
+	4,  // 17: iam.v1.IAM.AttachUserPolicy:input_type -> iam.v1.AttachUserPolicyRequest
+	7,  // 18: iam.v1.IAM.SubmitDeveloperVerification:input_type -> iam.v1.SubmitDeveloperVerificationRequest
+	8,  // 19: iam.v1.IAM.GetDeveloperVerification:input_type -> iam.v1.GetDeveloperVerificationRequest
+	9,  // 20: iam.v1.IAM.ListDeveloperVerifications:input_type -> iam.v1.ListDeveloperVerificationsRequest
+	10, // 21: iam.v1.IAM.ReviewDeveloperVerification:input_type -> iam.v1.ReviewDeveloperVerificationRequest
+	13, // 22: iam.v1.IAM.CreateApplication:input_type -> iam.v1.CreateApplicationRequest
+	14, // 23: iam.v1.IAM.GetApplication:input_type -> iam.v1.GetApplicationRequest
+	15, // 24: iam.v1.IAM.ListApplications:input_type -> iam.v1.ListApplicationsRequest
+	16, // 25: iam.v1.IAM.UpdateApplication:input_type -> iam.v1.UpdateApplicationRequest
+	17, // 26: iam.v1.IAM.DeleteApplication:input_type -> iam.v1.DeleteApplicationRequest
+	21, // 27: iam.v1.IAM.CreateAccessKey:input_type -> iam.v1.CreateAccessKeyRequest
+	22, // 28: iam.v1.IAM.ListAccessKeys:input_type -> iam.v1.ListAccessKeysRequest
+	23, // 29: iam.v1.IAM.UpdateAccessKeyStatus:input_type -> iam.v1.UpdateAccessKeyStatusRequest
+	26, // 30: iam.v1.IAM.VerifyAccessKey:input_type -> iam.v1.VerifyRequest
+	28, // 31: iam.v1.IAM.CheckPermission:input_type -> iam.v1.CheckPermissionRequest
+	2,  // 32: iam.v1.IAM.CreateUser:output_type -> iam.v1.User
+	2,  // 33: iam.v1.IAM.GetUser:output_type -> iam.v1.User
+	6,  // 34: iam.v1.IAM.CreatePolicy:output_type -> iam.v1.Policy
+	5,  // 35: iam.v1.IAM.AttachUserPolicy:output_type -> iam.v1.AttachUserPolicyResponse
+	11, // 36: iam.v1.IAM.SubmitDeveloperVerification:output_type -> iam.v1.DeveloperVerification
+	11, // 37: iam.v1.IAM.GetDeveloperVerification:output_type -> iam.v1.DeveloperVerification
+	12, // 38: iam.v1.IAM.ListDeveloperVerifications:output_type -> iam.v1.ListDeveloperVerificationsResponse
+	11, // 39: iam.v1.IAM.ReviewDeveloperVerification:output_type -> iam.v1.DeveloperVerification
+	19, // 40: iam.v1.IAM.CreateApplication:output_type -> iam.v1.Application
+	19, // 41: iam.v1.IAM.GetApplication:output_type -> iam.v1.Application
+	20, // 42: iam.v1.IAM.ListApplications:output_type -> iam.v1.ListApplicationsResponse
+	19, // 43: iam.v1.IAM.UpdateApplication:output_type -> iam.v1.Application
+	18, // 44: iam.v1.IAM.DeleteApplication:output_type -> iam.v1.DeleteApplicationResponse
+	24, // 45: iam.v1.IAM.CreateAccessKey:output_type -> iam.v1.AccessKey
+	25, // 46: iam.v1.IAM.ListAccessKeys:output_type -> iam.v1.ListAccessKeysResponse
+	24, // 47: iam.v1.IAM.UpdateAccessKeyStatus:output_type -> iam.v1.AccessKey
+	27, // 48: iam.v1.IAM.VerifyAccessKey:output_type -> iam.v1.VerifyResponse
+	29, // 49: iam.v1.IAM.CheckPermission:output_type -> iam.v1.CheckPermissionResponse
+	32, // [32:50] is the sub-list for method output_type
+	14, // [14:32] is the sub-list for method input_type
+	14, // [14:14] is the sub-list for extension type_name
+	14, // [14:14] is the sub-list for extension extendee
+	0,  // [0:14] is the sub-list for field type_name
 }
 
 func init() { file_proto_iam_proto_init() }
@@ -1070,7 +2422,7 @@ func file_proto_iam_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_iam_proto_rawDesc), len(file_proto_iam_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   16,
+			NumMessages:   30,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

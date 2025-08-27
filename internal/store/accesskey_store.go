@@ -43,20 +43,29 @@ func (s *accessKeyStore) Create(ak *model.AccessKey, masterKey string) error {
 		return err
 	}
 
-	_, err = s.session.InsertInto("access_keys").
+	insertBuilder := s.session.InsertInto("access_keys").
 		Columns(
 			"user_id",
 			"access_key_id",
 			"encrypted_secret_access_key",
 			"status",
+			"app_id",
+			"description",
+			"created_at",
+			"updated_at",
 		).
 		Values(
 			ak.UserID,
 			ak.AccessKeyID,
 			base64.StdEncoding.EncodeToString(encryptedSecret),
 			ak.Status,
-		).Exec()
+			ak.AppID,
+			ak.Description,
+			ak.CreatedAt,
+			ak.UpdatedAt,
+		)
 
+	_, err = insertBuilder.Exec()
 	return err
 }
 

@@ -12,6 +12,7 @@ import (
 	"github.com/vera-byte/vgo-iam/internal/bootstrap"
 	"github.com/vera-byte/vgo-iam/internal/version"
 	vgokit "github.com/vera-byte/vgo-kit"
+	"github.com/vera-byte/vgo-kit/ratelimit"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
@@ -53,9 +54,19 @@ func startServer() {
 
 	// 处理命令行请求
 
-	// 创建gRPC服务器并添加认证中间件
+	// 创建速率限制拦截器配置
+	rateLimitConfig := &ratelimit.InterceptorConfig{
+		RateLimiter: vgokit.RateLimiter,
+		KeyFunc:     ratelimit.DefaultKeyFunc,
+		SkipFunc:    ratelimit.HealthCheckSkipFunc,
+	}
+
+	// 创建gRPC服务器并添加拦截器链
 	server := grpc.NewServer(
-		grpc.UnaryInterceptor(auth.AccessKeyInterceptor(accessKeyStore)),
+		grpc.ChainUnaryInterceptor(
+			ratelimit.UnaryServerInterceptor(rateLimitConfig),
+			auth.AccessKeyInterceptor(accessKeyStore),
+		),
 	)
 	iamv1.RegisterIAMServer(server, iamServer)
 

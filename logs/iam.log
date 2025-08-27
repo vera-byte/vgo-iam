@@ -972,3 +972,195 @@ ion":"v1.0.0","commit":"unknown","build_time":"unknown"}
 {"level":"info","ts":1756205073.461247,"msg":"Starting gRPC server on port 50051"}
 {"level":"info","ts":1756205075.0678332,"msg":"Shutting down server..."}
 {"level":"info","ts":1756205075.068037,"msg":"Server exiting"}
+{"level":"info","ts":1756281411.796842,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1756281411.7972531,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1756281411.7972732,"msg":"Commit: unknown"}
+{"level":"info","ts":1756281411.797282,"msg":"Build Time: unknown"}
+{"level":"info","ts":1756281411.797426,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1756281411.7974458,"msg":"config loaded successfully"}
+{"level":"info","ts":1756281411.797455,"msg":"logger initialized successfully"}
+{"level":"info","ts":1756281411.7974741,"msg":"rate limiter initialized successfully"}
+{"level":"info","ts":1756281411.797482,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1756281411.797784,"msg":"Initializing services..."}
+{"level":"info","ts":1756281411.884386,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756281411.8845608,"msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":1756281411.884583,"msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":1756281411.884604,"msg":"Services initialized successfully"}
+{"level":"info","ts":1756281411.884676,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1756281411.8847911,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1756285011.8097181,"msg":"Key rotation check completed","rotated_count":0,"warning_count":0}
+{"level":"info","ts":1756288612.421021,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1756288612.421558,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1756288612.421578,"msg":"Commit: unknown"}
+{"level":"info","ts":1756288612.421586,"msg":"Build Time: unknown"}
+{"level":"info","ts":1756288612.4217339,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1756288612.421746,"msg":"config loaded successfully"}
+{"level":"info","ts":1756288612.4217532,"msg":"logger initialized successfully"}
+{"level":"info","ts":1756288612.421762,"msg":"rate limiter initialized successfully"}
+{"level":"info","ts":1756288612.421769,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1756288612.422057,"msg":"Initializing services..."}
+{"level":"info","ts":1756288612.4699578,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756288612.470287,"msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":1756288612.4703171,"msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":1756288612.4703438,"msg":"Services initialized successfully"}
+{"level":"info","ts":1756288612.4704251,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1756288612.470559,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1756288819.949213,"msg":"CreateUser request received","username":"testuser"}
+{"level":"error","ts":1756288819.953859,"msg":"Failed to create user","error":"[2002] User already exists: username already exists"}
+{"level":"info","ts":1756288859.957348,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1756288859.95759,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1756288859.9576051,"msg":"Commit: unknown"}
+{"level":"info","ts":1756288859.957613,"msg":"Build Time: unknown"}
+{"level":"info","ts":1756288859.957917,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1756288859.957939,"msg":"config loaded successfully"}
+{"level":"info","ts":1756288859.957948,"msg":"logger initialized successfully"}
+{"level":"info","ts":1756288859.957959,"msg":"rate limiter initialized successfully"}
+{"level":"info","ts":1756288859.957967,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1756288859.958276,"msg":"Initializing services..."}
+{"level":"info","ts":1756288860.005576,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756288860.00576,"msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":1756288860.005784,"msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":1756288860.005805,"msg":"Services initialized successfully"}
+{"level":"info","ts":1756288860.0058692,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1756288860.005941,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1756289013.4185169,"msg":"CreateUser request received","username":"testuser"}
+{"level":"error","ts":1756289013.423192,"msg":"Failed to create user","error":"[2002] User already exists: username already exists"}
+{"level":"info","ts":1756289053.687037,"msg":"CreateUser request received","username":"testuser"}
+{"level":"error","ts":1756289053.6939578,"msg":"Failed to create user","error":"[2002] User already exists: username already exists"}
+{"level":"info","ts":1756289126.925233,"msg":"CreateUser request received","username":"testuser"}
+{"level":"error","ts":1756289126.930454,"msg":"Failed to create user","error":"[2002] User already exists: username already exists"}
+{"level":"info","ts":1756289194.443788,"msg":"CreateUser request received","username":"testuser"}
+{"level":"error","ts":1756289194.447521,"msg":"Failed to create user","error":"[2002] User already exists: username already exists"}
+{"level":"info","ts":1756289241.016734,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1756289241.017148,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1756289241.017165,"msg":"Commit: unknown"}
+{"level":"info","ts":1756289241.017174,"msg":"Build Time: unknown"}
+{"level":"info","ts":1756289241.01732,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1756289241.017331,"msg":"config loaded successfully"}
+{"level":"info","ts":1756289241.01734,"msg":"logger initialized successfully"}
+{"level":"info","ts":1756289241.017358,"msg":"rate limiter initialized successfully"}
+{"level":"info","ts":1756289241.017366,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1756289241.017759,"msg":"Initializing services..."}
+{"level":"info","ts":1756289241.063581,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756289241.063732,"msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":1756289241.0637681,"msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":1756289241.06383,"msg":"Services initialized successfully"}
+{"level":"info","ts":1756289241.063894,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1756289241.06397,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1756289248.2788858,"msg":"CreateUser request received","username":"testuser"}
+{"level":"error","ts":1756289248.285891,"msg":"Failed to create user","error":"[2002] User already exists: username already exists"}
+{"level":"info","ts":1756289355.271054,"msg":"CreateUser request received","username":"testuser"}
+{"level":"error","ts":1756289355.2762182,"msg":"Failed to create user","error":"[2002] User already exists: username already exists"}
+{"level":"info","ts":1756289438.2045372,"msg":"CreateUser request received","username":"testuser"}
+{"level":"error","ts":1756289438.210413,"msg":"Failed to create user","error":"[2002] User already exists: username already exists"}
+{"level":"info","ts":1756289780.146982,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756289780.147233,"msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":1756289780.147254,"msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":1756289907.307746,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756289907.308233,"msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":1756289907.3082619,"msg":"访问密钥轮换调度器已初始化"}
+{"level":"error","ts":1756289907.3506691,"msg":"创建管理员用户失败","error":"[2002] User already exists: username already exists"}
+{"level":"info","ts":1756289942.890833,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756289942.89235,"msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":1756289942.892382,"msg":"访问密钥轮换调度器已初始化"}
+{"level":"error","ts":1756289942.96057,"msg":"创建管理员用户失败","error":"[1000] Internal server error: failed to create user"}
+{"level":"info","ts":1756290099.489017,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756290099.489312,"msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":1756290099.4893281,"msg":"访问密钥轮换调度器已初始化"}
+{"level":"error","ts":1756290099.526313,"msg":"获取admin访问密钥失败","error":"[2001] User not found: user not found"}
+{"level":"info","ts":1756290155.360519,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756290155.362102,"msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":1756290155.3621309,"msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":1756290261.8995159,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756290261.9014132,"msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":1756290261.901449,"msg":"访问密钥轮换调度器已初始化"}
+{"level":"error","ts":1756290261.951999,"msg":"创建管理员用户失败","error":"[2002] User already exists: username already exists"}
+{"level":"info","ts":1756290305.739191,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756290305.739713,"msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":1756290305.7397351,"msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":1756290314.857175,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756290314.857924,"msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":1756290314.85794,"msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":1756290382.994533,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756290382.9951239,"msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":1756290382.995187,"msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":1756290419.778201,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1756290419.77842,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1756290419.778434,"msg":"Commit: unknown"}
+{"level":"info","ts":1756290419.778443,"msg":"Build Time: unknown"}
+{"level":"info","ts":1756290419.778572,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1756290419.778584,"msg":"config loaded successfully"}
+{"level":"info","ts":1756290419.778591,"msg":"logger initialized successfully"}
+{"level":"info","ts":1756290419.778792,"msg":"metrics initialized successfully"}
+{"level":"info","ts":1756290419.7788212,"msg":"rate limiter initialized successfully"}
+{"level":"info","ts":1756290419.778832,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1756290419.779147,"msg":"Initializing services..."}
+{"level":"info","ts":1756290419.8287811,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756290419.829088,"msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":1756290419.829119,"msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":1756290419.8291788,"msg":"Services initialized successfully"}
+{"level":"info","ts":1756290419.8292868,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1756290419.829379,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1756290477.720333,"msg":"metrics initialized successfully"}
+{"level":"info","ts":1756290477.794763,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756290477.7950552,"msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":1756290477.7950988,"msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":1756290728.6278179,"msg":"metrics initialized successfully"}
+{"level":"info","ts":1756290728.62846,"msg":"cache initialized successfully"}
+{"level":"info","ts":1756290728.673252,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756290728.6735208,"msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":1756290728.673549,"msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":1756290728.738973,"msg":"管理员用户已存在，获取现有用户信息"}
+{"level":"info","ts":1756290728.7453399,"msg":"管理员用户创建成功","user_id":1}
+{"level":"info","ts":1756290728.745406,"msg":"正在设置管理员用户密码...","user_id":1}
+{"level":"error","ts":1756290728.752713,"msg":"设置管理员密码失败","error":"[1001] Invalid parameter: password does not meet strength requirements"}
+{"level":"info","ts":1756291056.03651,"msg":"metrics initialized successfully"}
+{"level":"info","ts":1756291056.038238,"msg":"cache initialized successfully"}
+{"level":"info","ts":1756291056.072591,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756291056.072691,"msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":1756291056.072706,"msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":1756291056.162852,"msg":"管理员用户已存在，获取现有用户信息"}
+{"level":"info","ts":1756291056.1687949,"msg":"管理员用户创建成功","user_id":1}
+{"level":"info","ts":1756291056.168873,"msg":"正在设置管理员用户密码...","user_id":1}
+{"level":"error","ts":1756291056.173655,"msg":"设置管理员密码失败","error":"[1001] Invalid parameter: password does not meet strength requirements"}
+{"level":"info","ts":1756291056.177291,"msg":"事务已回滚"}
+{"level":"info","ts":1756291102.7609951,"msg":"metrics initialized successfully"}
+{"level":"info","ts":1756291102.761228,"msg":"cache initialized successfully"}
+{"level":"info","ts":1756291102.800283,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756291102.800409,"msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":1756291102.800433,"msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":1756291102.878407,"msg":"管理员用户已存在，获取现有用户信息"}
+{"level":"info","ts":1756291102.883167,"msg":"管理员用户创建成功","user_id":1}
+{"level":"info","ts":1756291102.883198,"msg":"正在设置管理员用户密码...","user_id":1}
+{"level":"info","ts":1756291102.966849,"msg":"管理员用户密码设置成功"}
+{"level":"info","ts":1756291102.9744608,"msg":"Admin policy not found, creating..."}
+{"level":"info","ts":1756291102.985845,"msg":"Admin policy created successfully"}
+{"level":"info","ts":1756291103.018622,"msg":"No access keys found for admin, creating..."}
+{"level":"info","ts":1756291103.0309792,"msg":"Admin access key created","access_key_id":"clQEoeGlHr0Xkke9HmdM","secret_access_key":"Efz04B__Z-rj0R_6mr84GtZd6GJ62bs33rEcfObH"}
+{"level":"info","ts":1756291238.600605,"msg":"metrics initialized successfully"}
+{"level":"info","ts":1756291238.601296,"msg":"cache initialized successfully"}
+{"level":"info","ts":1756291238.634347,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756291238.634582,"msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":1756291238.634597,"msg":"访问密钥轮换调度器已初始化"}
+{"level":"error","ts":1756291238.691328,"msg":"获取admin访问密钥失败","error":"cipher: message authentication failed"}
+{"level":"info","ts":1756291325.600207,"msg":"CreateUser request received","username":"testuser"}
+{"level":"info","ts":1756291367.4387589,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1756291367.4390771,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1756291367.439092,"msg":"Commit: unknown"}
+{"level":"info","ts":1756291367.4390998,"msg":"Build Time: unknown"}
+{"level":"info","ts":1756291367.439231,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1756291367.439243,"msg":"config loaded successfully"}
+{"level":"info","ts":1756291367.439251,"msg":"logger initialized successfully"}
+{"level":"info","ts":1756291367.4394429,"msg":"metrics initialized successfully"}
+{"level":"info","ts":1756291367.439455,"msg":"rate limiter initialized successfully"}
+{"level":"info","ts":1756291367.439471,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1756291367.439764,"msg":"Initializing services..."}
+{"level":"info","ts":1756291367.43978,"msg":"cache initialized successfully"}
+{"level":"info","ts":1756291367.485559,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756291367.485766,"msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":1756291367.485791,"msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":1756291367.48586,"msg":"Services initialized successfully"}
+{"level":"info","ts":1756291367.486016,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1756291367.4861288,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1756291378.6876218,"msg":"CreateUser request received","username":"testuser"}
+{"level":"error","ts":1756291378.6948218,"msg":"Failed to create user","error":"[2002] User already exists: username already exists"}

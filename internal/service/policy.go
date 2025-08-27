@@ -2,8 +2,8 @@ package service
 
 import (
 	"context"
-	"errors"
 
+	"github.com/vera-byte/vgo-iam/internal/errors"
 	"github.com/vera-byte/vgo-iam/internal/model"
 	"github.com/vera-byte/vgo-iam/internal/store"
 	"github.com/vera-byte/vgo-iam/internal/util"
@@ -23,18 +23,18 @@ func NewPolicyService(policyStore store.PolicyStore) *PolicyService {
 func (s *PolicyService) CreatePolicy(ctx context.Context, name, description, policyDocument string) (*model.Policy, error) {
 	// 验证输入
 	if !util.ValidatePolicyDocument(policyDocument) {
-		return nil, errors.New("invalid policy document")
+		return nil, errors.NewBusinessError(errors.CodeInvalidPolicy, "invalid policy document")
 	}
 
 	// 检查策略是否已存在
 	if _, err := s.policyStore.GetByName(name); err == nil {
-		return nil, errors.New("policy already exists")
+		return nil, errors.NewBusinessError(errors.CodePolicyAlreadyExists, "policy already exists")
 	}
 
 	// 创建策略
 	policy := model.NewPolicy(name, description, policyDocument)
 	if err := s.policyStore.Create(policy); err != nil {
-		return nil, err
+		return nil, errors.NewBusinessError(errors.CodeInternalError, "failed to create policy")
 	}
 
 	return policy, nil
@@ -50,14 +50,14 @@ func (s *PolicyService) UpdatePolicy(ctx context.Context, name, description, pol
 	// 获取策略
 	policy, err := s.policyStore.GetByName(name)
 	if err != nil {
-		return nil, errors.New("policy not found")
+		return nil, errors.NewBusinessError(errors.CodePolicyNotFound, "policy not found")
 	}
 
 	// 更新策略
 	policy.Description = description
 	policy.PolicyDocument = policyDocument
 	if err := s.policyStore.Update(policy); err != nil {
-		return nil, err
+		return nil, errors.NewBusinessError(errors.CodeInternalError, "failed to update policy")
 	}
 
 	return policy, nil

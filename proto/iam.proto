@@ -16,6 +16,19 @@ service IAM {
   rpc AttachUserPolicy(AttachUserPolicyRequest)
       returns (AttachUserPolicyResponse) {}
 
+  // 开发者认证管理
+  rpc SubmitDeveloperVerification(SubmitDeveloperVerificationRequest) returns (DeveloperVerification) {}
+  rpc GetDeveloperVerification(GetDeveloperVerificationRequest) returns (DeveloperVerification) {}
+  rpc ListDeveloperVerifications(ListDeveloperVerificationsRequest) returns (ListDeveloperVerificationsResponse) {}
+  rpc ReviewDeveloperVerification(ReviewDeveloperVerificationRequest) returns (DeveloperVerification) {}
+
+  // 应用管理
+  rpc CreateApplication(CreateApplicationRequest) returns (Application) {}
+  rpc GetApplication(GetApplicationRequest) returns (Application) {}
+  rpc ListApplications(ListApplicationsRequest) returns (ListApplicationsResponse) {}
+  rpc UpdateApplication(UpdateApplicationRequest) returns (Application) {}
+  rpc DeleteApplication(DeleteApplicationRequest) returns (DeleteApplicationResponse) {}
+
   // 访问密钥管理
   rpc CreateAccessKey(CreateAccessKeyRequest) returns (AccessKey) {}
   rpc ListAccessKeys(ListAccessKeysRequest) returns (ListAccessKeysResponse) {}
@@ -68,10 +81,151 @@ message Policy {
   google.protobuf.Timestamp updated_at = 6;
 }
 
-// 访问密钥相关消息
-message CreateAccessKeyRequest { string user_name = 1; }
+// 开发者认证相关消息
+message SubmitDeveloperVerificationRequest {
+  string developer_type = 1; // individual/enterprise
+  
+  // 个人开发者信息
+  string real_name = 2;
+  string id_card_number = 3;
+  string id_card_front_url = 4;
+  string id_card_back_url = 5;
+  
+  // 企业开发者信息
+  string company_name = 6;
+  string business_license_number = 7;
+  string business_license_url = 8;
+  string legal_representative = 9;
+  string company_address = 10;
+}
 
-message ListAccessKeysRequest { string user_name = 1; }
+message GetDeveloperVerificationRequest {
+  string user_name = 1;
+  string developer_type = 2;
+}
+
+message ListDeveloperVerificationsRequest {
+  string status = 1; // pending/approved/rejected
+  int32 page = 2;
+  int32 page_size = 3;
+}
+
+message ReviewDeveloperVerificationRequest {
+  int64 verification_id = 1;
+  string status = 2; // approved/rejected
+  string review_comment = 3;
+}
+
+message DeveloperVerification {
+  int64 id = 1;
+  string user_name = 2;
+  string developer_type = 3;
+  string status = 4;
+  
+  // 个人开发者信息
+  string real_name = 5;
+  string id_card_number = 6;
+  string id_card_front_url = 7;
+  string id_card_back_url = 8;
+  
+  // 企业开发者信息
+  string company_name = 9;
+  string business_license_number = 10;
+  string business_license_url = 11;
+  string legal_representative = 12;
+  string company_address = 13;
+  
+  // 审核信息
+  string reviewer_name = 14;
+  string review_comment = 15;
+  google.protobuf.Timestamp reviewed_at = 16;
+  
+  google.protobuf.Timestamp created_at = 17;
+  google.protobuf.Timestamp updated_at = 18;
+}
+
+message ListDeveloperVerificationsResponse {
+  repeated DeveloperVerification verifications = 1;
+  int32 total = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+// 应用管理相关消息
+message CreateApplicationRequest {
+  string app_name = 1;
+  string app_description = 2;
+  string app_type = 3; // web/mobile/desktop/api
+  string app_icon_url = 4;
+  string app_website = 5;
+  repeated string callback_urls = 6;
+  repeated string allowed_origins = 7;
+}
+
+message GetApplicationRequest {
+  int64 app_id = 1;
+}
+
+message ListApplicationsRequest {
+  string user_name = 1;
+  string status = 2; // active/inactive/suspended
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+message UpdateApplicationRequest {
+  int64 app_id = 1;
+  string app_name = 2;
+  string app_description = 3;
+  string app_type = 4;
+  string app_icon_url = 5;
+  string app_website = 6;
+  repeated string callback_urls = 7;
+  repeated string allowed_origins = 8;
+  string status = 9;
+}
+
+message DeleteApplicationRequest {
+  int64 app_id = 1;
+}
+
+message DeleteApplicationResponse {
+  bool success = 1;
+}
+
+message Application {
+  int64 id = 1;
+  string user_name = 2;
+  string app_name = 3;
+  string app_description = 4;
+  string app_type = 5;
+  string app_icon_url = 6;
+  string app_website = 7;
+  repeated string callback_urls = 8;
+  repeated string allowed_origins = 9;
+  string status = 10;
+  google.protobuf.Timestamp created_at = 11;
+  google.protobuf.Timestamp updated_at = 12;
+}
+
+message ListApplicationsResponse {
+  repeated Application applications = 1;
+  int32 total = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+// 访问密钥相关消息
+message CreateAccessKeyRequest {
+  string user_name = 1;
+  int64 app_id = 2; // 关联的应用ID
+  string description = 3;
+}
+
+message ListAccessKeysRequest {
+  string user_name = 1;
+  int64 app_id = 2; // 可选，筛选特定应用的密钥
+}
 
 message UpdateAccessKeyStatusRequest {
   string access_key_id = 1;
@@ -83,8 +237,11 @@ message AccessKey {
   string secret_access_key = 2; // 仅在创建时返回
   string status = 3;
   string user_name = 4;
-  google.protobuf.Timestamp created_at = 5;
-  google.protobuf.Timestamp updated_at = 6;
+  int64 app_id = 5;
+  string app_name = 6;
+  string description = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
 }
 
 message ListAccessKeysResponse { repeated AccessKey access_keys = 1; }

@@ -21,11 +21,13 @@ import (
 
 type IAMServer struct {
 	iamv1.UnimplementedIAMServer
-	userService      *service.UserService
-	policyService    *service.PolicyService
-	accessKeyService *service.AccessKeyService
-	policyEngine     *policy.PolicyEngine
-	masterKey        []byte
+	userService                 *service.UserService
+	policyService               *service.PolicyService
+	accessKeyService            *service.AccessKeyService
+	developerVerificationService service.DeveloperVerificationService
+	applicationService          service.ApplicationService
+	policyEngine                *policy.PolicyEngine
+	masterKey                   []byte
 }
 
 // AccessKeyService 返回accessKeyService
@@ -47,15 +49,19 @@ func NewIAMServer(
 	userService *service.UserService,
 	policyService *service.PolicyService,
 	accessKeyService *service.AccessKeyService,
+	developerVerificationService service.DeveloperVerificationService,
+	applicationService service.ApplicationService,
 	policyEngine *policy.PolicyEngine,
 	masterKey []byte,
 ) *IAMServer {
 	return &IAMServer{
-		userService:      userService,
-		policyService:    policyService,
-		accessKeyService: accessKeyService,
-		policyEngine:     policyEngine,
-		masterKey:        masterKey,
+		userService:                 userService,
+		policyService:               policyService,
+		accessKeyService:            accessKeyService,
+		developerVerificationService: developerVerificationService,
+		applicationService:          applicationService,
+		policyEngine:                policyEngine,
+		masterKey:                   masterKey,
 	}
 }
 
@@ -107,18 +113,35 @@ func (s *IAMServer) CreateAccessKey(ctx context.Context, req *iamv1.CreateAccess
 		return nil, status.Errorf(codes.NotFound, "用户不存在: %v", err)
 	}
 
-	ak, err := s.accessKeyService.CreateAccessKey(ctx, user.Name)
+	var ak *model.AccessKey
+	
+	// 如果指定了应用ID，创建应用专用访问密钥
+	if req.AppId > 0 {
+		ak, err = s.accessKeyService.CreateAccessKeyForApp(ctx, user.Name, req.AppId, req.Description)
+	} else {
+		// 否则创建通用访问密钥（已废弃，但保持向后兼容）
+		ak, err = s.accessKeyService.CreateAccessKey(ctx, user.Name)
+	}
+	
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "创建访问密钥失败: %v", err)
 	}
 
-	return &iamv1.AccessKey{
+	response := &iamv1.AccessKey{
 		AccessKeyId:     ak.AccessKeyID,
 		SecretAccessKey: ak.SecretAccessKey,
 		Status:          ak.Status,
 		UserName:        user.Name,
+		Description:     ak.Description,
 		CreatedAt:       convertTimeToTimestamp(ak.CreatedAt),
-	}, nil
+	}
+	
+	// 如果有应用ID，添加到响应中
+	if ak.AppID != nil {
+		response.AppId = *ak.AppID
+	}
+	
+	return response, nil
 }
 
 func (s *IAMServer) ListAccessKeys(ctx context.Context, req *iamv1.ListAccessKeysRequest) (*iamv1.ListAccessKeysResponse, error) {
@@ -134,13 +157,28 @@ func (s *IAMServer) ListAccessKeys(ctx context.Context, req *iamv1.ListAccessKey
 
 	resp := &iamv1.ListAccessKeysResponse{}
 	for _, key := range keys {
-		resp.AccessKeys = append(resp.AccessKeys, &iamv1.AccessKey{
+		// 如果请求中指定了应用ID，只返回该应用的访问密钥
+		if req.AppId > 0 {
+			if key.AppID == nil || *key.AppID != req.AppId {
+				continue
+			}
+		}
+		
+		accessKey := &iamv1.AccessKey{
 			AccessKeyId: key.AccessKeyID,
 			Status:      key.Status,
 			UserName:    user.Name,
+			Description: key.Description,
 			CreatedAt:   convertTimeToTimestamp(key.CreatedAt),
 			UpdatedAt:   convertTimeToTimestamp(key.UpdatedAt),
-		})
+		}
+		
+		// 如果有应用ID，添加到响应中
+		if key.AppID != nil {
+			accessKey.AppId = *key.AppID
+		}
+		
+		resp.AccessKeys = append(resp.AccessKeys, accessKey)
 	}
 	return resp, nil
 }
@@ -255,5 +293,369 @@ func convertPolicyToProto(policy *model.Policy) *iamv1.Policy {
 		PolicyDocument: policy.PolicyDocument,
 		CreatedAt:      convertTimeToTimestamp(policy.CreatedAt),
 		UpdatedAt:      convertTimeToTimestamp(policy.UpdatedAt),
+	}
+}
+
+// SubmitDeveloperVerification 提交开发者认证
+func (s *IAMServer) SubmitDeveloperVerification(ctx context.Context, req *iamv1.SubmitDeveloperVerificationRequest) (*iamv1.DeveloperVerification, error) {
+	// 从context中获取用户信息（假设已通过认证中间件设置）
+	// 这里暂时使用固定用户ID，实际应该从认证上下文获取
+	userID := int64(1) // TODO: 从认证上下文获取用户ID
+
+	// 转换开发者类型
+	developerType, err := convertDeveloperType(req.DeveloperType)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid developer type: %v", err)
+	}
+
+	// 构建服务层请求
+	serviceReq := &service.SubmitVerificationRequest{
+		UserID:        userID,
+		DeveloperType: developerType,
+	}
+
+	// 根据开发者类型设置相应字段
+	if developerType == model.DeveloperTypeIndividual {
+		serviceReq.RealName = &req.RealName
+		serviceReq.IDCardNumber = &req.IdCardNumber
+		serviceReq.IDCardFrontURL = &req.IdCardFrontUrl
+		serviceReq.IDCardBackURL = &req.IdCardBackUrl
+	} else if developerType == model.DeveloperTypeEnterprise {
+		serviceReq.CompanyName = &req.CompanyName
+		serviceReq.BusinessLicenseNumber = &req.BusinessLicenseNumber
+		serviceReq.BusinessLicenseURL = &req.BusinessLicenseUrl
+		serviceReq.LegalRepresentative = &req.LegalRepresentative
+		serviceReq.CompanyAddress = &req.CompanyAddress
+	}
+
+	// 调用服务层
+	verification, err := s.developerVerificationService.SubmitVerification(ctx, serviceReq)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to submit verification: %v", err)
+	}
+
+	// 转换为proto消息
+	return convertVerificationToProto(verification, "user"), nil
+}
+
+// GetDeveloperVerification 获取开发者认证信息
+func (s *IAMServer) GetDeveloperVerification(ctx context.Context, req *iamv1.GetDeveloperVerificationRequest) (*iamv1.DeveloperVerification, error) {
+	// 根据用户名获取用户信息
+	user, err := s.userService.GetUser(ctx, req.UserName)
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "user not found: %v", err)
+	}
+
+	// 转换开发者类型
+	developerType, err := convertDeveloperType(req.DeveloperType)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid developer type: %v", err)
+	}
+
+	// 调用服务层
+	verification, err := s.developerVerificationService.GetVerification(ctx, user.ID, developerType)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get verification: %v", err)
+	}
+
+	if verification == nil {
+		return nil, status.Errorf(codes.NotFound, "verification not found")
+	}
+
+	// 转换为proto消息
+	return convertVerificationToProto(verification, user.Name), nil
+}
+
+// ListDeveloperVerifications 获取开发者认证列表
+func (s *IAMServer) ListDeveloperVerifications(ctx context.Context, req *iamv1.ListDeveloperVerificationsRequest) (*iamv1.ListDeveloperVerificationsResponse, error) {
+	// 转换状态
+	verificationStatus, err := convertVerificationStatus(req.Status)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid status: %v", err)
+	}
+
+	// 调用服务层
+	verifications, total, err := s.developerVerificationService.ListVerifications(ctx, verificationStatus, int(req.Page), int(req.PageSize))
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to list verifications: %v", err)
+	}
+
+	// 转换为proto消息
+	protoVerifications := make([]*iamv1.DeveloperVerification, len(verifications))
+	for i, v := range verifications {
+		protoVerifications[i] = convertVerificationToProto(v, "user")
+	}
+
+	return &iamv1.ListDeveloperVerificationsResponse{
+		Verifications: protoVerifications,
+		Total:         int32(total),
+		Page:          req.Page,
+		PageSize:      req.PageSize,
+	}, nil
+}
+
+// ReviewDeveloperVerification 审核开发者认证
+func (s *IAMServer) ReviewDeveloperVerification(ctx context.Context, req *iamv1.ReviewDeveloperVerificationRequest) (*iamv1.DeveloperVerification, error) {
+	// 转换状态
+	verificationStatus, err := convertVerificationStatus(req.Status)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid status: %v", err)
+	}
+
+	// 构建服务层请求
+	serviceReq := &service.ReviewVerificationRequest{
+		VerificationID: req.VerificationId,
+		ReviewerID:     1, // TODO: 从认证上下文获取审核员ID
+		Status:         verificationStatus,
+		Comment:        req.ReviewComment,
+	}
+
+	// 调用服务层
+	err = s.developerVerificationService.ReviewVerification(ctx, serviceReq)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to review verification: %v", err)
+	}
+
+	// 获取更新后的认证信息 - 需要先实现GetVerificationByID方法
+	// verification, err := s.developerVerificationService.GetVerificationByID(ctx, req.VerificationId)
+	// if err != nil {
+	//	return nil, status.Errorf(codes.Internal, "failed to get updated verification: %v", err)
+	// }
+
+	// 暂时返回空的认证信息
+	return &iamv1.DeveloperVerification{}, nil
+}
+
+// CreateApplication 创建应用
+func (s *IAMServer) CreateApplication(ctx context.Context, req *iamv1.CreateApplicationRequest) (*iamv1.Application, error) {
+	// 从context中获取用户信息
+	userID := int64(1) // TODO: 从认证上下文获取用户ID
+
+	// 构建服务层请求
+	serviceReq := &service.CreateApplicationRequest{
+		UserID:         userID,
+		AppName:        req.AppName,
+		AppDescription: req.AppDescription,
+		AppType:        req.AppType,
+		CallbackURLs:   req.CallbackUrls,
+		AllowedOrigins: req.AllowedOrigins,
+	}
+
+	// 调用服务层
+	app, err := s.applicationService.CreateApplication(ctx, serviceReq)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to create application: %v", err)
+	}
+
+	// 转换为proto消息
+	return convertApplicationToProto(app, "user"), nil
+}
+
+// GetApplication 获取应用信息
+func (s *IAMServer) GetApplication(ctx context.Context, req *iamv1.GetApplicationRequest) (*iamv1.Application, error) {
+	// 调用服务层
+	app, err := s.applicationService.GetApplication(ctx, req.AppId)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get application: %v", err)
+	}
+
+	if app == nil {
+		return nil, status.Errorf(codes.NotFound, "application not found")
+	}
+
+	// 转换为proto消息
+	return convertApplicationToProto(app, "user"), nil
+}
+
+// ListApplications 获取应用列表
+func (s *IAMServer) ListApplications(ctx context.Context, req *iamv1.ListApplicationsRequest) (*iamv1.ListApplicationsResponse, error) {
+	// 根据用户名获取用户信息
+	user, err := s.userService.GetUser(ctx, req.UserName)
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "user not found: %v", err)
+	}
+
+	// 转换状态
+	appStatus, err := convertAppStatus(req.Status)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid status: %v", err)
+	}
+
+	// 调用服务层
+	apps, total, err := s.applicationService.ListApplications(ctx, user.ID, appStatus, int(req.Page), int(req.PageSize))
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to list applications: %v", err)
+	}
+
+	// 转换为proto消息
+	protoApps := make([]*iamv1.Application, len(apps))
+	for i, app := range apps {
+		protoApps[i] = convertApplicationToProto(app, user.Name)
+	}
+
+	return &iamv1.ListApplicationsResponse{
+		Applications: protoApps,
+		Total:        int32(total),
+		Page:         req.Page,
+		PageSize:     req.PageSize,
+	}, nil
+}
+
+// UpdateApplication 更新应用信息
+func (s *IAMServer) UpdateApplication(ctx context.Context, req *iamv1.UpdateApplicationRequest) (*iamv1.Application, error) {
+	// 从context中获取用户信息
+	userID := int64(1) // TODO: 从认证上下文获取用户ID
+
+	// 构建服务层请求
+	serviceReq := &service.UpdateApplicationRequest{
+		ID:             req.AppId,
+		UserID:         userID,
+		AppName:        req.AppName,
+		AppDescription: req.AppDescription,
+		AppType:        req.AppType,
+		CallbackURLs:   req.CallbackUrls,
+		AllowedOrigins: req.AllowedOrigins,
+	}
+
+	// 调用服务层
+	err := s.applicationService.UpdateApplication(ctx, serviceReq)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to update application: %v", err)
+	}
+
+	// 获取更新后的应用信息
+	app, err := s.applicationService.GetApplication(ctx, req.AppId)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get updated application: %v", err)
+	}
+
+	// 转换为proto消息
+	return convertApplicationToProto(app, "user"), nil
+}
+
+// DeleteApplication 删除应用
+func (s *IAMServer) DeleteApplication(ctx context.Context, req *iamv1.DeleteApplicationRequest) (*iamv1.DeleteApplicationResponse, error) {
+	// 从context中获取用户信息
+	userID := int64(1) // TODO: 从认证上下文获取用户ID
+
+	// 调用服务层
+	err := s.applicationService.DeleteApplication(ctx, req.AppId, userID)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to delete application: %v", err)
+	}
+
+	return &iamv1.DeleteApplicationResponse{
+		Success: true,
+	}, nil
+}
+
+// 辅助函数：转换开发者类型
+func convertDeveloperType(protoType string) (model.DeveloperType, error) {
+	switch protoType {
+	case "individual":
+		return model.DeveloperTypeIndividual, nil
+	case "enterprise":
+		return model.DeveloperTypeEnterprise, nil
+	default:
+		return "", status.Errorf(codes.InvalidArgument, "invalid developer type: %s", protoType)
+	}
+}
+
+// 辅助函数：转换认证状态
+func convertVerificationStatus(protoStatus string) (model.VerificationStatus, error) {
+	switch protoStatus {
+	case "pending":
+		return model.VerificationStatusPending, nil
+	case "approved":
+		return model.VerificationStatusApproved, nil
+	case "rejected":
+		return model.VerificationStatusRejected, nil
+	default:
+		return "", status.Errorf(codes.InvalidArgument, "invalid verification status: %s", protoStatus)
+	}
+}
+
+// 辅助函数：转换应用状态
+func convertAppStatus(protoStatus string) (model.AppStatus, error) {
+	switch protoStatus {
+	case "active":
+		return model.AppStatusActive, nil
+	case "inactive":
+		return model.AppStatusInactive, nil
+	case "suspended":
+		return model.AppStatusSuspended, nil
+	default:
+		return "", status.Errorf(codes.InvalidArgument, "invalid app status: %s", protoStatus)
+	}
+}
+
+// 辅助函数：转换认证信息为proto消息
+func convertVerificationToProto(v *model.DeveloperVerification, userName string) *iamv1.DeveloperVerification {
+	proto := &iamv1.DeveloperVerification{
+		Id:            v.ID,
+		UserName:      userName,
+		DeveloperType: string(v.DeveloperType),
+		Status:        string(v.Status),
+		CreatedAt:     convertTimeToTimestamp(v.CreatedAt),
+		UpdatedAt:     convertTimeToTimestamp(v.UpdatedAt),
+	}
+
+	// 设置个人开发者信息
+	if v.RealName != nil {
+		proto.RealName = *v.RealName
+	}
+	if v.IDCardNumber != nil {
+		proto.IdCardNumber = *v.IDCardNumber
+	}
+	if v.IDCardFrontURL != nil {
+		proto.IdCardFrontUrl = *v.IDCardFrontURL
+	}
+	if v.IDCardBackURL != nil {
+		proto.IdCardBackUrl = *v.IDCardBackURL
+	}
+
+	// 设置企业开发者信息
+	if v.CompanyName != nil {
+		proto.CompanyName = *v.CompanyName
+	}
+	if v.BusinessLicenseNumber != nil {
+		proto.BusinessLicenseNumber = *v.BusinessLicenseNumber
+	}
+	if v.BusinessLicenseURL != nil {
+		proto.BusinessLicenseUrl = *v.BusinessLicenseURL
+	}
+	if v.LegalRepresentative != nil {
+		proto.LegalRepresentative = *v.LegalRepresentative
+	}
+	if v.CompanyAddress != nil {
+		proto.CompanyAddress = *v.CompanyAddress
+	}
+
+	// 设置审核信息
+	if v.ReviewComment != nil {
+		proto.ReviewComment = *v.ReviewComment
+	}
+	if v.ReviewedAt != nil {
+		proto.ReviewedAt = convertTimeToTimestamp(*v.ReviewedAt)
+	}
+
+	return proto
+}
+
+// 辅助函数：转换应用信息为proto消息
+func convertApplicationToProto(app *model.Application, userName string) *iamv1.Application {
+	return &iamv1.Application{
+		Id:             app.ID,
+		UserName:       userName,
+		AppName:        app.AppName,
+		AppDescription: app.AppDescription,
+		AppType:        string(app.AppType),
+		AppIconUrl:     app.AppIconURL,
+		AppWebsite:     app.AppWebsite,
+		CallbackUrls:   []string(app.CallbackURLs),
+		AllowedOrigins: []string(app.AllowedOrigins),
+		Status:         string(app.Status),
+		CreatedAt:      convertTimeToTimestamp(app.CreatedAt),
+		UpdatedAt:      convertTimeToTimestamp(app.UpdatedAt),
 	}
 }

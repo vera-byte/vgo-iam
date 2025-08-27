@@ -3,6 +3,7 @@ package bootstrap
 import (
 	"fmt"
 	"net"
+	"time"
 
 	"github.com/gocraft/dbr/v2"
 	"github.com/vera-byte/vgo-iam/internal/api"
@@ -12,9 +13,15 @@ import (
 	"github.com/vera-byte/vgo-iam/internal/store"
 	"github.com/vera-byte/vgo-iam/internal/version"
 	vgokit "github.com/vera-byte/vgo-kit"
+	"github.com/vera-byte/vgo-kit/cache"
 	"github.com/vera-byte/vgo-kit/db"
+	"github.com/vera-byte/vgo-kit/metrics"
+	"github.com/vera-byte/vgo-kit/ratelimit"
 	"go.uber.org/zap"
 )
+
+// 全局轮换调度器
+var rotationScheduler *service.RotationScheduler
 
 func Banner() {
 	art := `
@@ -31,6 +38,18 @@ func Banner() {
 // InitServices 初始化服务层和API层
 // 返回IAMServer实例，用于gRPC服务和命令行操作
 func InitServices(cfg *config.AppConfig) (*api.IAMServer, *dbr.Session) {
+	// 初始化指标收集器
+	if vgokit.Metrics == nil {
+		vgokit.Metrics = metrics.NewMetrics("vgo_iam")
+		vgokit.Log.Info("metrics initialized successfully")
+	}
+
+	// 初始化缓存
+	if vgokit.Cache == nil {
+		vgokit.Cache = cache.NewNoOpCache()
+		vgokit.Log.Info("cache initialized successfully")
+	}
+
 	// 初始化数据库连接
 	sess, err := db.NewPostgresStore(cfg.Database.DSN)
 	if err != nil {
@@ -53,11 +72,26 @@ func InitServices(cfg *config.AppConfig) (*api.IAMServer, *dbr.Session) {
 	accessKeyService := service.NewAccessKeyService(accessKeyStore, userStore, cfg.Middleware.MasterKey)
 	policyEngine := policy.NewPolicyEngine(userService)
 
+	// 初始化开发者认证和应用服务
+	developerVerificationStore := store.NewDeveloperVerificationStore(sess.DB)
+	applicationStore := store.NewApplicationStore(sess.DB)
+	developerVerificationService := service.NewDeveloperVerificationService(developerVerificationStore, userStore)
+	applicationService := service.NewApplicationService(applicationStore, userStore, developerVerificationService)
+
+	// 设置访问密钥服务的依赖
+	accessKeyService.SetDeveloperVerificationService(developerVerificationService)
+	accessKeyService.SetApplicationService(applicationService)
+
+	// 初始化轮换调度器
+	initRotationScheduler(accessKeyService)
+
 	// 初始化API层
 	server := api.NewIAMServer(
 		userService,
 		policyService,
 		accessKeyService,
+		developerVerificationService,
+		applicationService,
 		policyEngine,
 		[]byte(cfg.Middleware.MasterKey),
 	)
@@ -80,6 +114,17 @@ func Start() (*config.AppConfig, net.Listener) {
 	vgokit.Log.Info("config loaded successfully")
 	vgokit.Log.Info("logger initialized successfully")
 
+	// 初始化指标收集器
+	vgokit.Metrics = metrics.NewMetrics("vgo_iam")
+	vgokit.Log.Info("metrics initialized successfully")
+
+	// 初始化速率限制器
+	if err := initRateLimiter(&cfg.RateLimit); err != nil {
+		vgokit.Log.Error("failed to initialize rate limiter", zap.Error(err))
+		panic(err)
+	}
+	vgokit.Log.Info("rate limiter initialized successfully")
+
 	listenAddr := ":" + cfg.GRPC.Port
 	vgokit.Log.Info("gRPC server will listen on", zap.String("address", listenAddr))
 	lis, err := net.Listen("tcp", listenAddr)
@@ -89,4 +134,51 @@ func Start() (*config.AppConfig, net.Listener) {
 	}
 
 	return cfg, lis
+}
+
+// initRateLimiter 初始化速率限制器
+func initRateLimiter(cfg *config.RateLimitConfig) error {
+	rlConfig := &ratelimit.RateLimitConfig{
+		Enabled:   cfg.Enabled,
+		Type:      cfg.Type,
+		Limit:     cfg.Limit,
+		Window:    cfg.Window,
+		Prefix:    cfg.Prefix,
+		RedisAddr: cfg.RedisAddr,
+		RedisDB:   cfg.RedisDB,
+		RedisPass: cfg.RedisPass,
+	}
+
+	var err error
+	vgokit.RateLimiter, err = ratelimit.NewRateLimiter(rlConfig)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// initRotationScheduler 初始化轮换调度器
+func initRotationScheduler(accessKeyService *service.AccessKeyService) {
+	// 设置默认轮换策略
+	defaultPolicy := service.DefaultRotationPolicy()
+	accessKeyService.SetRotationPolicy(defaultPolicy)
+
+	// 创建并启动轮换调度器（每小时检查一次）
+	rotationScheduler = service.NewRotationScheduler(accessKeyService, time.Hour)
+	rotationScheduler.Start()
+
+	vgokit.Log.Info("访问密钥轮换调度器已初始化")
+}
+
+// GetRotationScheduler 获取轮换调度器
+func GetRotationScheduler() *service.RotationScheduler {
+	return rotationScheduler
+}
+
+// StopRotationScheduler 停止轮换调度器
+func StopRotationScheduler() {
+	if rotationScheduler != nil {
+		rotationScheduler.Stop()
+	}
 }

@@ -19,15 +19,24 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	IAM_CreateUser_FullMethodName            = "/iam.v1.IAM/CreateUser"
-	IAM_GetUser_FullMethodName               = "/iam.v1.IAM/GetUser"
-	IAM_CreatePolicy_FullMethodName          = "/iam.v1.IAM/CreatePolicy"
-	IAM_AttachUserPolicy_FullMethodName      = "/iam.v1.IAM/AttachUserPolicy"
-	IAM_CreateAccessKey_FullMethodName       = "/iam.v1.IAM/CreateAccessKey"
-	IAM_ListAccessKeys_FullMethodName        = "/iam.v1.IAM/ListAccessKeys"
-	IAM_UpdateAccessKeyStatus_FullMethodName = "/iam.v1.IAM/UpdateAccessKeyStatus"
-	IAM_VerifyAccessKey_FullMethodName       = "/iam.v1.IAM/VerifyAccessKey"
-	IAM_CheckPermission_FullMethodName       = "/iam.v1.IAM/CheckPermission"
+	IAM_CreateUser_FullMethodName                  = "/iam.v1.IAM/CreateUser"
+	IAM_GetUser_FullMethodName                     = "/iam.v1.IAM/GetUser"
+	IAM_CreatePolicy_FullMethodName                = "/iam.v1.IAM/CreatePolicy"
+	IAM_AttachUserPolicy_FullMethodName            = "/iam.v1.IAM/AttachUserPolicy"
+	IAM_SubmitDeveloperVerification_FullMethodName = "/iam.v1.IAM/SubmitDeveloperVerification"
+	IAM_GetDeveloperVerification_FullMethodName    = "/iam.v1.IAM/GetDeveloperVerification"
+	IAM_ListDeveloperVerifications_FullMethodName  = "/iam.v1.IAM/ListDeveloperVerifications"
+	IAM_ReviewDeveloperVerification_FullMethodName = "/iam.v1.IAM/ReviewDeveloperVerification"
+	IAM_CreateApplication_FullMethodName           = "/iam.v1.IAM/CreateApplication"
+	IAM_GetApplication_FullMethodName              = "/iam.v1.IAM/GetApplication"
+	IAM_ListApplications_FullMethodName            = "/iam.v1.IAM/ListApplications"
+	IAM_UpdateApplication_FullMethodName           = "/iam.v1.IAM/UpdateApplication"
+	IAM_DeleteApplication_FullMethodName           = "/iam.v1.IAM/DeleteApplication"
+	IAM_CreateAccessKey_FullMethodName             = "/iam.v1.IAM/CreateAccessKey"
+	IAM_ListAccessKeys_FullMethodName              = "/iam.v1.IAM/ListAccessKeys"
+	IAM_UpdateAccessKeyStatus_FullMethodName       = "/iam.v1.IAM/UpdateAccessKeyStatus"
+	IAM_VerifyAccessKey_FullMethodName             = "/iam.v1.IAM/VerifyAccessKey"
+	IAM_CheckPermission_FullMethodName             = "/iam.v1.IAM/CheckPermission"
 )
 
 // IAMClient is the client API for IAM service.
@@ -40,6 +49,17 @@ type IAMClient interface {
 	// 策略管理
 	CreatePolicy(ctx context.Context, in *CreatePolicyRequest, opts ...grpc.CallOption) (*Policy, error)
 	AttachUserPolicy(ctx context.Context, in *AttachUserPolicyRequest, opts ...grpc.CallOption) (*AttachUserPolicyResponse, error)
+	// 开发者认证管理
+	SubmitDeveloperVerification(ctx context.Context, in *SubmitDeveloperVerificationRequest, opts ...grpc.CallOption) (*DeveloperVerification, error)
+	GetDeveloperVerification(ctx context.Context, in *GetDeveloperVerificationRequest, opts ...grpc.CallOption) (*DeveloperVerification, error)
+	ListDeveloperVerifications(ctx context.Context, in *ListDeveloperVerificationsRequest, opts ...grpc.CallOption) (*ListDeveloperVerificationsResponse, error)
+	ReviewDeveloperVerification(ctx context.Context, in *ReviewDeveloperVerificationRequest, opts ...grpc.CallOption) (*DeveloperVerification, error)
+	// 应用管理
+	CreateApplication(ctx context.Context, in *CreateApplicationRequest, opts ...grpc.CallOption) (*Application, error)
+	GetApplication(ctx context.Context, in *GetApplicationRequest, opts ...grpc.CallOption) (*Application, error)
+	ListApplications(ctx context.Context, in *ListApplicationsRequest, opts ...grpc.CallOption) (*ListApplicationsResponse, error)
+	UpdateApplication(ctx context.Context, in *UpdateApplicationRequest, opts ...grpc.CallOption) (*Application, error)
+	DeleteApplication(ctx context.Context, in *DeleteApplicationRequest, opts ...grpc.CallOption) (*DeleteApplicationResponse, error)
 	// 访问密钥管理
 	CreateAccessKey(ctx context.Context, in *CreateAccessKeyRequest, opts ...grpc.CallOption) (*AccessKey, error)
 	ListAccessKeys(ctx context.Context, in *ListAccessKeysRequest, opts ...grpc.CallOption) (*ListAccessKeysResponse, error)
@@ -91,6 +111,96 @@ func (c *iAMClient) AttachUserPolicy(ctx context.Context, in *AttachUserPolicyRe
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(AttachUserPolicyResponse)
 	err := c.cc.Invoke(ctx, IAM_AttachUserPolicy_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *iAMClient) SubmitDeveloperVerification(ctx context.Context, in *SubmitDeveloperVerificationRequest, opts ...grpc.CallOption) (*DeveloperVerification, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeveloperVerification)
+	err := c.cc.Invoke(ctx, IAM_SubmitDeveloperVerification_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *iAMClient) GetDeveloperVerification(ctx context.Context, in *GetDeveloperVerificationRequest, opts ...grpc.CallOption) (*DeveloperVerification, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeveloperVerification)
+	err := c.cc.Invoke(ctx, IAM_GetDeveloperVerification_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *iAMClient) ListDeveloperVerifications(ctx context.Context, in *ListDeveloperVerificationsRequest, opts ...grpc.CallOption) (*ListDeveloperVerificationsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListDeveloperVerificationsResponse)
+	err := c.cc.Invoke(ctx, IAM_ListDeveloperVerifications_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *iAMClient) ReviewDeveloperVerification(ctx context.Context, in *ReviewDeveloperVerificationRequest, opts ...grpc.CallOption) (*DeveloperVerification, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeveloperVerification)
+	err := c.cc.Invoke(ctx, IAM_ReviewDeveloperVerification_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *iAMClient) CreateApplication(ctx context.Context, in *CreateApplicationRequest, opts ...grpc.CallOption) (*Application, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Application)
+	err := c.cc.Invoke(ctx, IAM_CreateApplication_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *iAMClient) GetApplication(ctx context.Context, in *GetApplicationRequest, opts ...grpc.CallOption) (*Application, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Application)
+	err := c.cc.Invoke(ctx, IAM_GetApplication_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *iAMClient) ListApplications(ctx context.Context, in *ListApplicationsRequest, opts ...grpc.CallOption) (*ListApplicationsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListApplicationsResponse)
+	err := c.cc.Invoke(ctx, IAM_ListApplications_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *iAMClient) UpdateApplication(ctx context.Context, in *UpdateApplicationRequest, opts ...grpc.CallOption) (*Application, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Application)
+	err := c.cc.Invoke(ctx, IAM_UpdateApplication_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *iAMClient) DeleteApplication(ctx context.Context, in *DeleteApplicationRequest, opts ...grpc.CallOption) (*DeleteApplicationResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteApplicationResponse)
+	err := c.cc.Invoke(ctx, IAM_DeleteApplication_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -157,6 +267,17 @@ type IAMServer interface {
 	// 策略管理
 	CreatePolicy(context.Context, *CreatePolicyRequest) (*Policy, error)
 	AttachUserPolicy(context.Context, *AttachUserPolicyRequest) (*AttachUserPolicyResponse, error)
+	// 开发者认证管理
+	SubmitDeveloperVerification(context.Context, *SubmitDeveloperVerificationRequest) (*DeveloperVerification, error)
+	GetDeveloperVerification(context.Context, *GetDeveloperVerificationRequest) (*DeveloperVerification, error)
+	ListDeveloperVerifications(context.Context, *ListDeveloperVerificationsRequest) (*ListDeveloperVerificationsResponse, error)
+	ReviewDeveloperVerification(context.Context, *ReviewDeveloperVerificationRequest) (*DeveloperVerification, error)
+	// 应用管理
+	CreateApplication(context.Context, *CreateApplicationRequest) (*Application, error)
+	GetApplication(context.Context, *GetApplicationRequest) (*Application, error)
+	ListApplications(context.Context, *ListApplicationsRequest) (*ListApplicationsResponse, error)
+	UpdateApplication(context.Context, *UpdateApplicationRequest) (*Application, error)
+	DeleteApplication(context.Context, *DeleteApplicationRequest) (*DeleteApplicationResponse, error)
 	// 访问密钥管理
 	CreateAccessKey(context.Context, *CreateAccessKeyRequest) (*AccessKey, error)
 	ListAccessKeys(context.Context, *ListAccessKeysRequest) (*ListAccessKeysResponse, error)
@@ -184,6 +305,33 @@ func (UnimplementedIAMServer) CreatePolicy(context.Context, *CreatePolicyRequest
 }
 func (UnimplementedIAMServer) AttachUserPolicy(context.Context, *AttachUserPolicyRequest) (*AttachUserPolicyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AttachUserPolicy not implemented")
+}
+func (UnimplementedIAMServer) SubmitDeveloperVerification(context.Context, *SubmitDeveloperVerificationRequest) (*DeveloperVerification, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SubmitDeveloperVerification not implemented")
+}
+func (UnimplementedIAMServer) GetDeveloperVerification(context.Context, *GetDeveloperVerificationRequest) (*DeveloperVerification, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDeveloperVerification not implemented")
+}
+func (UnimplementedIAMServer) ListDeveloperVerifications(context.Context, *ListDeveloperVerificationsRequest) (*ListDeveloperVerificationsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListDeveloperVerifications not implemented")
+}
+func (UnimplementedIAMServer) ReviewDeveloperVerification(context.Context, *ReviewDeveloperVerificationRequest) (*DeveloperVerification, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReviewDeveloperVerification not implemented")
+}
+func (UnimplementedIAMServer) CreateApplication(context.Context, *CreateApplicationRequest) (*Application, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateApplication not implemented")
+}
+func (UnimplementedIAMServer) GetApplication(context.Context, *GetApplicationRequest) (*Application, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetApplication not implemented")
+}
+func (UnimplementedIAMServer) ListApplications(context.Context, *ListApplicationsRequest) (*ListApplicationsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListApplications not implemented")
+}
+func (UnimplementedIAMServer) UpdateApplication(context.Context, *UpdateApplicationRequest) (*Application, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateApplication not implemented")
+}
+func (UnimplementedIAMServer) DeleteApplication(context.Context, *DeleteApplicationRequest) (*DeleteApplicationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteApplication not implemented")
 }
 func (UnimplementedIAMServer) CreateAccessKey(context.Context, *CreateAccessKeyRequest) (*AccessKey, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateAccessKey not implemented")
@@ -288,6 +436,168 @@ func _IAM_AttachUserPolicy_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(IAMServer).AttachUserPolicy(ctx, req.(*AttachUserPolicyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IAM_SubmitDeveloperVerification_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SubmitDeveloperVerificationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IAMServer).SubmitDeveloperVerification(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IAM_SubmitDeveloperVerification_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IAMServer).SubmitDeveloperVerification(ctx, req.(*SubmitDeveloperVerificationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IAM_GetDeveloperVerification_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetDeveloperVerificationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IAMServer).GetDeveloperVerification(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IAM_GetDeveloperVerification_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IAMServer).GetDeveloperVerification(ctx, req.(*GetDeveloperVerificationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IAM_ListDeveloperVerifications_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListDeveloperVerificationsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IAMServer).ListDeveloperVerifications(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IAM_ListDeveloperVerifications_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IAMServer).ListDeveloperVerifications(ctx, req.(*ListDeveloperVerificationsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IAM_ReviewDeveloperVerification_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReviewDeveloperVerificationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IAMServer).ReviewDeveloperVerification(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IAM_ReviewDeveloperVerification_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IAMServer).ReviewDeveloperVerification(ctx, req.(*ReviewDeveloperVerificationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IAM_CreateApplication_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateApplicationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IAMServer).CreateApplication(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IAM_CreateApplication_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IAMServer).CreateApplication(ctx, req.(*CreateApplicationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IAM_GetApplication_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetApplicationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IAMServer).GetApplication(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IAM_GetApplication_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IAMServer).GetApplication(ctx, req.(*GetApplicationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IAM_ListApplications_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListApplicationsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IAMServer).ListApplications(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IAM_ListApplications_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IAMServer).ListApplications(ctx, req.(*ListApplicationsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IAM_UpdateApplication_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateApplicationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IAMServer).UpdateApplication(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IAM_UpdateApplication_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IAMServer).UpdateApplication(ctx, req.(*UpdateApplicationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IAM_DeleteApplication_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteApplicationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IAMServer).DeleteApplication(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IAM_DeleteApplication_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IAMServer).DeleteApplication(ctx, req.(*DeleteApplicationRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -404,6 +714,42 @@ var IAM_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AttachUserPolicy",
 			Handler:    _IAM_AttachUserPolicy_Handler,
+		},
+		{
+			MethodName: "SubmitDeveloperVerification",
+			Handler:    _IAM_SubmitDeveloperVerification_Handler,
+		},
+		{
+			MethodName: "GetDeveloperVerification",
+			Handler:    _IAM_GetDeveloperVerification_Handler,
+		},
+		{
+			MethodName: "ListDeveloperVerifications",
+			Handler:    _IAM_ListDeveloperVerifications_Handler,
+		},
+		{
+			MethodName: "ReviewDeveloperVerification",
+			Handler:    _IAM_ReviewDeveloperVerification_Handler,
+		},
+		{
+			MethodName: "CreateApplication",
+			Handler:    _IAM_CreateApplication_Handler,
+		},
+		{
+			MethodName: "GetApplication",
+			Handler:    _IAM_GetApplication_Handler,
+		},
+		{
+			MethodName: "ListApplications",
+			Handler:    _IAM_ListApplications_Handler,
+		},
+		{
+			MethodName: "UpdateApplication",
+			Handler:    _IAM_UpdateApplication_Handler,
+		},
+		{
+			MethodName: "DeleteApplication",
+			Handler:    _IAM_DeleteApplication_Handler,
 		},
 		{
 			MethodName: "CreateAccessKey",

@@ -89,6 +89,8 @@ docker-compose exec postgres pg_dump -U iam_user -d iam_db > backup.sql
 
 使用 CHECK 约束限制状态字段值
 
+**事务支持**：init admin 命令现已支持数据库事务，确保管理员用户初始化过程中的数据一致性。如果在创建用户、设置密码、创建策略或生成访问密钥的任何步骤中发生错误，系统将自动回滚所有已执行的操作，保证数据库状态的完整性
+
 性能优化：
 
 为所有查询条件创建索引

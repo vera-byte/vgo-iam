@@ -2,12 +2,14 @@ package service
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	"time"
 
+	"github.com/vera-byte/vgo-iam/internal/errors"
 	"github.com/vera-byte/vgo-iam/internal/model"
 	"github.com/vera-byte/vgo-iam/internal/store"
 	"github.com/vera-byte/vgo-iam/internal/util"
+	vgokit "github.com/vera-byte/vgo-kit"
 )
 
 // UserService 用户服务
@@ -27,18 +29,21 @@ func NewUserService(userStore store.UserStore, policyStore store.PolicyStore) *U
 func (s *UserService) CreateUser(ctx context.Context, name, displayName, email string) (*model.User, error) {
 	// 验证输入
 	if !util.ValidateUserName(name) {
-		return nil, errors.New("invalid username format")
+		return nil, errors.NewBusinessError(errors.CodeInvalidUserName, "invalid username format")
 	}
 	if !util.ValidateEmail(email) {
-		return nil, errors.New("invalid email format")
+		return nil, errors.NewBusinessError(errors.CodeInvalidEmail, "invalid email format")
+	}
+	if displayName == "" {
+		return nil, errors.NewBusinessError(errors.CodeInvalidParameter, "display name cannot be empty")
 	}
 
 	// 检查用户是否已存在
 	if _, err := s.userStore.GetByName(name); err == nil {
-		return nil, errors.New("username already exists")
+		return nil, errors.NewBusinessError(errors.CodeUserAlreadyExists, "username already exists")
 	}
 	if _, err := s.userStore.GetByEmail(email); err == nil {
-		return nil, errors.New("email already exists")
+		return nil, errors.NewBusinessError(errors.CodeUserAlreadyExists, "email already exists")
 	}
 
 	// 创建用户（不再需要密码）
@@ -51,10 +56,17 @@ func (s *UserService) CreateUser(ctx context.Context, name, displayName, email s
 	}
 
 	if userId, err := s.userStore.Create(user); err != nil {
-		return nil, err
+		return nil, errors.NewBusinessError(errors.CodeInternalError, "failed to create user")
 	} else {
 		user.ID = userId
 	}
+
+	// 记录业务指标
+	vgokit.Metrics.RecordBusinessMetric("user_created")
+
+	// 缓存用户信息
+	cacheKey := fmt.Sprintf("user:name:%s", name)
+	vgokit.Cache.Set(ctx, cacheKey, user, 5*time.Minute)
 
 	return user, nil
 }
@@ -71,13 +83,13 @@ func (s *UserService) AttachPolicy(ctx context.Context, userName, policyName str
 	// 获取用户
 	user, err := s.userStore.GetByName(userName)
 	if err != nil {
-		return errors.New("user not found")
+		return errors.NewBusinessError(errors.CodeUserNotFound, "user not found")
 	}
 
 	// 获取策略
 	policy, err := s.policyStore.GetByName(policyName)
 	if err != nil {
-		return errors.New("policy not found")
+		return errors.NewBusinessError(errors.CodePolicyNotFound, "policy not found")
 	}
 
 	// 附加策略
@@ -88,7 +100,7 @@ func (s *UserService) AttachPolicy(ctx context.Context, userName, policyName str
 func (s *UserService) ListUserPolicies(ctx context.Context, userName string) ([]*model.Policy, error) {
 	user, err := s.userStore.GetByName(userName)
 	if err != nil {
-		return nil, errors.New("user not found")
+		return nil, errors.NewBusinessError(errors.CodeUserNotFound, "user not found")
 	}
 	return s.userStore.ListPolicies(user.ID)
 }
@@ -98,13 +110,18 @@ func (s *UserService) UpdateUserPassword(ctx context.Context, userID int64, pass
 	// 获取用户
 	user, err := s.userStore.GetByID(userID)
 	if err != nil {
-		return errors.New("user not found")
+		return errors.NewBusinessError(errors.CodeUserNotFound, "user not found")
+	}
+
+	// 验证密码强度
+	if !util.ValidatePasswordStrength(password) {
+		return errors.NewBusinessError(errors.CodeInvalidParameter, "password does not meet strength requirements")
 	}
 
 	// 生成密码哈希
 	passwordHash, err := util.HashPassword(password)
 	if err != nil {
-		return err
+		return errors.NewBusinessError(errors.CodeInternalError, "failed to hash password")
 	}
 
 	// 更新用户密码

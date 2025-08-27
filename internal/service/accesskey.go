@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/hex"
 	"fmt"
 	"sync"
@@ -67,6 +68,11 @@ func NewAccessKeyService(accessKeyStore store.AccessKeyStore, userStore store.Us
 // SetDeveloperVerificationService 设置开发者认证服务
 func (s *AccessKeyService) SetDeveloperVerificationService(service DeveloperVerificationService) {
 	s.developerVerifyService = service
+}
+
+// GetDeveloperVerificationService 获取开发者认证服务
+func (s *AccessKeyService) GetDeveloperVerificationService() DeveloperVerificationService {
+	return s.developerVerifyService
 }
 
 // SetApplicationService 设置应用服务
@@ -187,7 +193,13 @@ func (s *AccessKeyService) ListAccessKeys(ctx context.Context, userName string) 
 			if err != nil {
 				return nil, err
 			}
-			decryptedSecret, err := crypto.DecryptKey([]byte(ak.EncryptedSecretAccessKey), key)
+			// 先进行base64解码
+			ciphertext, err := base64.StdEncoding.DecodeString(ak.EncryptedSecretAccessKey)
+			if err != nil {
+				return nil, err
+			}
+			// 然后解密
+			decryptedSecret, err := crypto.DecryptKey(ciphertext, key)
 			if err != nil {
 				return nil, err
 			}

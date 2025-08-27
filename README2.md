@@ -38,9 +38,11 @@ vgo_micro_service/
 - **用户管理**: 创建、查询用户信息
 - **策略管理**: 创建策略、关联用户策略
 - **访问密钥管理**: 创建、列出、更新访问密钥状态
+- **应用管理**: 创建、查询、更新、删除OAuth2应用
 - **权限验证**: 验证访问密钥、检查用户权限
 - **gRPC API**: 提供高性能的 gRPC 接口
 - **认证中间件**: 基于访问密钥的请求认证
+- **调试界面**: 提供Web界面进行管理操作
 
 ### VGO-Kit 工具包
 
@@ -177,6 +179,63 @@ grpcurl -plaintext -d '{
 }' localhost:50051 iam.v1.IAM/CheckPermission
 ```
 
+### 应用管理
+
+#### 创建应用
+```bash
+grpcurl -plaintext -d '{
+  "app_name":"MyTestApp",
+  "app_description":"我的测试应用",
+  "app_type":"web",
+  "app_website":"https://example.com",
+  "callback_urls":["https://example.com/callback"],
+  "allowed_origins":["https://example.com"]
+}' localhost:50051 iam.v1.IAM/CreateApplication
+```
+
+#### 查询应用
+```bash
+grpcurl -plaintext -d '{
+  "app_id":1
+}' localhost:50051 iam.v1.IAM/GetApplication
+```
+
+#### 获取应用列表
+```bash
+grpcurl -plaintext -d '{
+  "user_name":"testuser",
+  "status":"active",
+  "page":1,
+  "page_size":10
+}' localhost:50051 iam.v1.IAM/ListApplications
+```
+
+#### 更新应用
+```bash
+grpcurl -plaintext -d '{
+  "app_id":1,
+  "app_name":"UpdatedApp",
+  "app_description":"更新后的应用描述",
+  "app_type":"spa"
+}' localhost:50051 iam.v1.IAM/UpdateApplication
+```
+
+#### 删除应用
+```bash
+grpcurl -plaintext -d '{
+  "app_id":1
+}' localhost:50051 iam.v1.IAM/DeleteApplication
+```
+
+### 使用调试界面
+```bash
+# 启动调试GUI
+./bin/iam-service debug-gui
+
+# 访问Web界面: http://localhost:8080
+# 提供用户管理、访问密钥管理、权限检查和应用管理的Web界面
+```
+
 ## 数据库结构
 
 ### 用户表 (users)
@@ -204,6 +263,19 @@ grpcurl -plaintext -d '{
 ### 用户策略关联表 (user_policies)
 - user_id: 用户ID（外键）
 - policy_id: 策略ID（外键）
+
+### 应用表 (applications)
+- id: 主键
+- user_id: 用户ID（外键）
+- app_name: 应用名称
+- app_description: 应用描述
+- app_type: 应用类型（web/mobile/api/spa）
+- app_icon_url: 应用图标URL
+- app_website: 应用网站URL
+- status: 应用状态（active/inactive/suspended）
+- callback_urls: 回调URL列表（JSON数组）
+- allowed_origins: 允许的来源列表（JSON数组）
+- created_at/updated_at: 时间戳
 
 ## 开发指南
 
@@ -297,6 +369,19 @@ docker run -d -p 50051:50051 \
 - 问题反馈: 请使用 GitHub Issues
 
 ## 更新日志
+
+### v1.2.0
+- **新增功能**: 应用管理模块
+  - 支持创建、查询、更新、删除OAuth2应用
+  - 提供完整的应用生命周期管理
+  - 支持多种应用类型（web、mobile、api、spa）
+  - 支持回调URL和CORS配置管理
+- **Web界面增强**: 调试GUI新增应用管理界面
+  - 提供友好的Web界面进行应用管理操作
+  - 完整的输入验证和错误处理
+  - 支持分页查询和状态筛选
+- **API扩展**: 新增5个应用管理相关的gRPC接口
+- **数据库**: 新增applications表支持应用数据存储
 
 ### v1.1.0
 - **新增功能**: init admin 命令支持数据库事务

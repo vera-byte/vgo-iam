@@ -1164,3 +1164,94 @@ ion":"v1.0.0","commit":"unknown","build_time":"unknown"}
 {"level":"info","ts":1756291367.4861288,"msg":"Starting gRPC server on port 50051"}
 {"level":"info","ts":1756291378.6876218,"msg":"CreateUser request received","username":"testuser"}
 {"level":"error","ts":1756291378.6948218,"msg":"Failed to create user","error":"[2002] User already exists: username already exists"}
+{"level":"info","ts":1756292277.542735,"msg":"metrics initialized successfully"}
+{"level":"info","ts":1756292277.543107,"msg":"cache initialized successfully"}
+{"level":"info","ts":1756292277.578323,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756292277.578581,"msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":1756292277.578603,"msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":1756292277.578719,"msg":"Debug GUI server starting","port":8080}
+{"level":"info","ts":1756292374.643936,"msg":"metrics initialized successfully"}
+{"level":"info","ts":1756292374.644224,"msg":"cache initialized successfully"}
+{"level":"info","ts":1756292374.678526,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756292374.678625,"msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":1756292374.678637,"msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":1756292374.678704,"msg":"Debug GUI server starting","port":8080}
+{"level":"error","ts":1756292374.6788049,"msg":"Failed to start debug server","error":"listen tcp :8080: bind: address already in use"}
+{"level":"info","ts":1756292430.0433679,"msg":"metrics initialized successfully"}
+{"level":"info","ts":1756292430.043676,"msg":"cache initialized successfully"}
+{"level":"info","ts":1756292430.0835578,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756292430.083693,"msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":1756292430.0837052,"msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":1756292430.083829,"msg":"Debug GUI server starting","port":8080}
+{"level":"info","ts":1756292489.6119292,"msg":"metrics initialized successfully"}
+{"level":"info","ts":1756292489.612802,"msg":"cache initialized successfully"}
+{"level":"info","ts":1756292489.711021,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756292489.711359,"msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":1756292489.711391,"msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":1756292489.711529,"msg":"Debug GUI server starting","port":8080}
+{"level":"info","ts":1756292640.544128,"msg":"metrics initialized successfully"}
+{"level":"info","ts":1756292640.54434,"msg":"cache initialized successfully"}
+{"level":"info","ts":1756292640.578807,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756292640.5789042,"msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":1756292640.578917,"msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":1756292640.5789921,"msg":"Debug GUI server starting","port":8080}
+{"level":"info","ts":1756292849.90406,"msg":"metrics initialized successfully"}
+{"level":"info","ts":1756292849.904323,"msg":"cache initialized successfully"}
+{"level":"info","ts":1756292849.9430048,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756292849.94324,"msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":1756292849.9432802,"msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":1756292849.9434361,"msg":"Debug GUI server starting","port":8080}
+{"level":"info","ts":1756293061.0697112,"msg":"metrics initialized successfully"}
+{"level":"info","ts":1756293061.069967,"msg":"cache initialized successfully"}
+{"level":"info","ts":1756293061.115832,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756293061.116123,"msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":1756293061.1161458,"msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":1756293061.116315,"msg":"Debug GUI server starting","port":8080}
+{"level":"info","ts":1756293101.1663501,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1756293101.166749,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1756293101.166765,"msg":"Commit: unknown"}
+{"level":"info","ts":1756293101.166774,"msg":"Build Time: unknown"}
+{"level":"info","ts":1756293101.16692,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1756293101.166931,"msg":"config loaded successfully"}
+{"level":"info","ts":1756293101.166938,"msg":"logger initialized successfully"}
+{"level":"info","ts":1756293101.16714,"msg":"metrics initialized successfully"}
+{"level":"info","ts":1756293101.167161,"msg":"rate limiter initialized successfully"}
+{"level":"info","ts":1756293101.1671748,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1756293101.167493,"msg":"Initializing services..."}
+{"level":"info","ts":1756293101.1675131,"msg":"cache initialized successfully"}
+{"level":"info","ts":1756293101.209961,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756293101.210143,"msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":1756293101.2102132,"msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":1756293101.2102451,"msg":"Services initialized successfully"}
+{"level":"info","ts":1756293101.2104268,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1756293101.210761,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1756293372.921691,"msg":"metrics initialized successfully"}
+{"level":"info","ts":1756293372.9221041,"msg":"cache initialized successfully"}
+{"level":"info","ts":1756293372.963608,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756293372.964041,"msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":1756293372.9640572,"msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":1756293372.9645271,"msg":"Debug GUI server starting","port":8080}
+{"level":"info","ts":1756293383.7543411,"msg":"Starting VGO-IAM service"}
+{"level":"info","ts":1756293383.7545128,"msg":"Version: v1.0.0"}
+{"level":"info","ts":1756293383.754527,"msg":"Commit: unknown"}
+{"level":"info","ts":1756293383.754536,"msg":"Build Time: unknown"}
+{"level":"info","ts":1756293383.754674,"msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":1756293383.754684,"msg":"config loaded successfully"}
+{"level":"info","ts":1756293383.754692,"msg":"logger initialized successfully"}
+{"level":"info","ts":1756293383.754884,"msg":"metrics initialized successfully"}
+{"level":"info","ts":1756293383.754894,"msg":"rate limiter initialized successfully"}
+{"level":"info","ts":1756293383.754901,"msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":1756293383.7551491,"msg":"Initializing services..."}
+{"level":"info","ts":1756293383.755166,"msg":"cache initialized successfully"}
+{"level":"info","ts":1756293383.80218,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756293383.8023949,"msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":1756293383.8024461,"msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":1756293383.8025768,"msg":"Services initialized successfully"}
+{"level":"info","ts":1756293383.8027031,"msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":1756293383.8028421,"msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":1756293755.2150168,"msg":"metrics initialized successfully"}
+{"level":"info","ts":1756293755.2155688,"msg":"cache initialized successfully"}
+{"level":"info","ts":1756293755.2604191,"msg":"database connected successfully","dsn":"postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":1756293755.26066,"msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":1756293755.260683,"msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":1756293755.260843,"msg":"Debug GUI server starting","port":8080}

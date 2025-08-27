@@ -45,6 +45,11 @@ func (s *IAMServer) PolicyService() *service.PolicyService {
 	return s.policyService
 }
 
+// ApplicationService 返回applicationService
+func (s *IAMServer) ApplicationService() service.ApplicationService {
+	return s.applicationService
+}
+
 func NewIAMServer(
 	userService *service.UserService,
 	policyService *service.PolicyService,

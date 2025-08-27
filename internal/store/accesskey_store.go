@@ -65,8 +65,19 @@ func (s *accessKeyStore) Create(ak *model.AccessKey, masterKey string) error {
 			ak.UpdatedAt,
 		)
 
-	_, err = insertBuilder.Exec()
-	return err
+	result, err := insertBuilder.Exec()
+	if err != nil {
+		return err
+	}
+
+	// 获取插入后的ID
+	id, err := result.LastInsertId()
+	if err != nil {
+		return err
+	}
+	ak.ID = id
+
+	return nil
 }
 
 func (s *accessKeyStore) GetByID(id int64) (*model.AccessKey, error) {

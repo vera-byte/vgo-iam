@@ -27,6 +27,7 @@ type IAMServer struct {
 	accessKeyService            *service.AccessKeyService
 	developerVerificationService service.DeveloperVerificationService
 	applicationService          service.ApplicationService
+	stsService                  *service.STSService
 	policyEngine                *policy.PolicyEngine
 	masterKey                   []byte
 	translator                  i18n.Translator
@@ -52,12 +53,18 @@ func (s *IAMServer) ApplicationService() service.ApplicationService {
 	return s.applicationService
 }
 
+// STSService 返回stsService
+func (s *IAMServer) STSService() *service.STSService {
+	return s.stsService
+}
+
 func NewIAMServer(
 	userService *service.UserService,
 	policyService *service.PolicyService,
 	accessKeyService *service.AccessKeyService,
 	developerVerificationService service.DeveloperVerificationService,
 	applicationService service.ApplicationService,
+	stsService *service.STSService,
 	policyEngine *policy.PolicyEngine,
 	masterKey []byte,
 	translator i18n.Translator,
@@ -68,6 +75,7 @@ func NewIAMServer(
 		accessKeyService:            accessKeyService,
 		developerVerificationService: developerVerificationService,
 		applicationService:          applicationService,
+		stsService:                  stsService,
 		policyEngine:                policyEngine,
 		masterKey:                   masterKey,
 		translator:                  translator,
@@ -698,4 +706,82 @@ func (s *IAMServer) translateMessage(ctx context.Context, key string, args ...in
 	// 设置翻译器的语言（从上下文获取）
 	s.translator.SetLanguage(i18n.GetLanguageFromContext(ctx))
 	return s.translator.Translate(key, args...)
+}
+
+// STS相关的RPC方法实现
+
+// GetSessionToken 获取会话令牌
+// ctx: 上下文
+// req: 获取会话令牌请求
+// 返回: 获取会话令牌响应和错误信息
+func (s *IAMServer) GetSessionToken(ctx context.Context, req *iamv1.GetSessionTokenRequest) (*iamv1.GetSessionTokenResponse, error) {
+	vgokit.Log.Info("GetSessionToken request received", zap.Int32("duration_seconds", req.DurationSeconds))
+
+	// 调用STS服务
+	resp, err := s.stsService.GetSessionToken(ctx, req)
+	if err != nil {
+		vgokit.Log.Error("Failed to get session token", zap.Error(err))
+		return nil, s.translateError(ctx, codes.Internal, "error.sts.get_session_token_failed", err)
+	}
+
+	vgokit.Log.Info("Session token created successfully", zap.String("access_key_id", resp.Credentials.AccessKeyId))
+	return resp, nil
+}
+
+// AssumeRole 扮演角色
+// ctx: 上下文
+// req: 扮演角色请求
+// 返回: 扮演角色响应和错误信息
+func (s *IAMServer) AssumeRole(ctx context.Context, req *iamv1.AssumeRoleRequest) (*iamv1.AssumeRoleResponse, error) {
+	vgokit.Log.Info("AssumeRole request received", 
+		zap.String("role_arn", req.RoleArn),
+		zap.String("role_session_name", req.RoleSessionName))
+
+	// 调用STS服务
+	resp, err := s.stsService.AssumeRole(ctx, req)
+	if err != nil {
+		vgokit.Log.Error("Failed to assume role", zap.Error(err))
+		return nil, s.translateError(ctx, codes.Internal, "error.sts.assume_role_failed", err)
+	}
+
+	vgokit.Log.Info("Role assumed successfully", 
+		zap.String("access_key_id", resp.Credentials.AccessKeyId),
+		zap.String("assumed_role_id", resp.AssumedRoleUser.AssumedRoleId))
+	return resp, nil
+}
+
+// RefreshToken 刷新令牌
+// ctx: 上下文
+// req: 刷新令牌请求
+// 返回: 刷新令牌响应和错误信息
+func (s *IAMServer) RefreshToken(ctx context.Context, req *iamv1.RefreshTokenRequest) (*iamv1.RefreshTokenResponse, error) {
+	vgokit.Log.Info("RefreshToken request received", zap.String("session_token", req.SessionToken))
+
+	// 调用STS服务
+	resp, err := s.stsService.RefreshToken(ctx, req)
+	if err != nil {
+		vgokit.Log.Error("Failed to refresh token", zap.Error(err))
+		return nil, s.translateError(ctx, codes.Internal, "error.sts.refresh_token_failed", err)
+	}
+
+	vgokit.Log.Info("Token refreshed successfully", zap.String("access_key_id", resp.Credentials.AccessKeyId))
+	return resp, nil
+}
+
+// RevokeToken 撤销令牌
+// ctx: 上下文
+// req: 撤销令牌请求
+// 返回: 撤销令牌响应和错误信息
+func (s *IAMServer) RevokeToken(ctx context.Context, req *iamv1.RevokeTokenRequest) (*iamv1.RevokeTokenResponse, error) {
+	vgokit.Log.Info("RevokeToken request received", zap.String("session_token", req.SessionToken))
+
+	// 调用STS服务
+	resp, err := s.stsService.RevokeToken(ctx, req)
+	if err != nil {
+		vgokit.Log.Error("Failed to revoke token", zap.Error(err))
+		return nil, s.translateError(ctx, codes.Internal, "error.sts.revoke_token_failed", err)
+	}
+
+	vgokit.Log.Info("Token revoked successfully")
+	return resp, nil
 }

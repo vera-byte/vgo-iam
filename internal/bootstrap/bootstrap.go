@@ -1,6 +1,7 @@
 package bootstrap
 
 import (
+	"context"
 	"fmt"
 	"net"
 	"path/filepath"
@@ -27,6 +28,9 @@ var rotationScheduler *service.RotationScheduler
 
 // 全局翻译器
 var globalTranslator i18n.Translator
+
+// 全局清理服务
+var cleanupService *service.CleanupService
 
 func Banner() {
 	art := `
@@ -77,11 +81,13 @@ func InitServices(cfg *config.AppConfig) (*api.IAMServer, *dbr.Session) {
 	userStore := store.NewUserStore(sess.Session)
 	policyStore := store.NewPolicyStore(sess.Session)
 	accessKeyStore := store.NewAccessKeyStore(sess.Session)
+	temporaryCredentialStore := store.NewTemporaryCredentialStore(sess.Session)
 
 	// 初始化服务层
 	userService := service.NewUserService(userStore, policyStore)
 	policyService := service.NewPolicyService(policyStore)
 	accessKeyService := service.NewAccessKeyService(accessKeyStore, userStore, cfg.Middleware.MasterKey)
+	stsService := service.NewSTSService(temporaryCredentialStore, userStore, policyStore, cfg.Middleware.MasterKey)
 	policyEngine := policy.NewPolicyEngine(userService)
 
 	// 初始化开发者认证和应用服务
@@ -97,6 +103,9 @@ func InitServices(cfg *config.AppConfig) (*api.IAMServer, *dbr.Session) {
 	// 初始化轮换调度器
 	initRotationScheduler(accessKeyService)
 
+	// 初始化清理服务
+	initCleanupService(stsService)
+
 	// 初始化API层
 	server := api.NewIAMServer(
 		userService,
@@ -104,6 +113,7 @@ func InitServices(cfg *config.AppConfig) (*api.IAMServer, *dbr.Session) {
 		accessKeyService,
 		developerVerificationService,
 		applicationService,
+		stsService,
 		policyEngine,
 		[]byte(cfg.Middleware.MasterKey),
 		globalTranslator,
@@ -206,6 +216,27 @@ func GetRotationScheduler() *service.RotationScheduler {
 func StopRotationScheduler() {
 	if rotationScheduler != nil {
 		rotationScheduler.Stop()
+	}
+}
+
+// initCleanupService 初始化清理服务
+func initCleanupService(stsService *service.STSService) {
+	// 创建并启动清理服务（每小时清理一次过期凭证）
+	cleanupService = service.NewCleanupService(stsService, time.Hour)
+	cleanupService.Start(context.Background())
+
+	vgokit.Log.Info("临时凭证清理服务已初始化")
+}
+
+// GetCleanupService 获取清理服务
+func GetCleanupService() *service.CleanupService {
+	return cleanupService
+}
+
+// StopCleanupService 停止清理服务
+func StopCleanupService() {
+	if cleanupService != nil {
+		cleanupService.Stop()
 	}
 }
 

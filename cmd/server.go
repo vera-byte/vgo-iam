@@ -53,6 +53,8 @@ func startServer() {
 	// 获取服务实例
 	accessKeyService := iamServer.AccessKeyService()
 	accessKeyStore := accessKeyService.GetStore()
+	stsService := iamServer.STSService()
+	temporaryCredentialStore := stsService.GetStore()
 
 	// 处理命令行请求
 
@@ -76,7 +78,7 @@ func startServer() {
 			middleware.LoggingUnaryInterceptor(),
 			i18n.UnaryServerInterceptor(i18nConfig),
 			ratelimit.UnaryServerInterceptor(rateLimitConfig),
-			auth.AccessKeyInterceptor(accessKeyStore),
+			auth.CombinedAuthInterceptor(accessKeyStore, temporaryCredentialStore),
 		),
 		grpc.ChainStreamInterceptor(
 			middleware.LoggingStreamInterceptor(),

@@ -47,3 +47,16 @@
 {"level":"info","ts":"2025-08-28:16:29:24:000","msg":"gRPC server will listen on","address":":50051"}
 {"level":"info","ts":"2025-08-28:16:29:24:000","msg":"Initializing services..."}
 {"level":"error","ts":"2025-08-28:16:29:24:000","msg":"failed to connect to redis","error":"failed to connect to Redis: dial tcp: lookup redis: no such host"}
+{"level":"info","ts":"2025-08-28:17:49:59:000","msg":"Starting VGO-IAM service"}
+{"level":"info","ts":"2025-08-28:17:49:59:000","msg":"Version: v1.0.0"}
+{"level":"info","ts":"2025-08-28:17:49:59:000","msg":"Commit: unknown"}
+{"level":"info","ts":"2025-08-28:17:49:59:000","msg":"Build Time: unknown"}
+{"level":"info","ts":"2025-08-28:17:49:59:000","msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":"2025-08-28:17:49:59:000","msg":"config loaded and validated successfully"}
+{"level":"info","ts":"2025-08-28:17:49:59:000","msg":"logger initialized successfully"}
+{"level":"info","ts":"2025-08-28:17:49:59:000","msg":"metrics initialized successfully"}
+{"level":"info","ts":"2025-08-28:17:49:59:000","msg":"i18n initialized successfully"}
+{"level":"info","ts":"2025-08-28:17:49:59:000","msg":"rate limiter initialized successfully"}
+{"level":"info","ts":"2025-08-28:17:49:59:000","msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":"2025-08-28:17:49:59:000","msg":"Initializing services..."}
+{"level":"error","ts":"2025-08-28:17:50:00:000","msg":"failed to connect to redis","error":"failed to connect to Redis: dial tcp: lookup redis: no such host"}

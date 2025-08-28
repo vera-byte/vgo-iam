@@ -10,12 +10,16 @@ middleware:
   ignore:
     - "/iam.v1.IAM/VerifyAccessKey"
 
+# Sentry和日志配置
 log:
   level: info
-  format: console
   directory: logs
   filename: iam.log
   stdout: true
+  max_size: 100
+  max_backups: 3
+  max_age: 28
+  compress: true
 
 sentry:
   enabled: false

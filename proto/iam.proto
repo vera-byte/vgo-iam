@@ -38,6 +38,12 @@ service IAM {
   rpc VerifyAccessKey(VerifyRequest) returns (VerifyResponse) {}
   rpc CheckPermission(CheckPermissionRequest)
       returns (CheckPermissionResponse) {}
+
+  // STS临时授权服务
+  rpc AssumeRole(AssumeRoleRequest) returns (AssumeRoleResponse) {}
+  rpc GetSessionToken(GetSessionTokenRequest) returns (GetSessionTokenResponse) {}
+  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {}
+  rpc RevokeToken(RevokeTokenRequest) returns (RevokeTokenResponse) {}
 }
 
 // 用户相关消息
@@ -266,3 +272,59 @@ message CheckPermissionRequest {
 }
 
 message CheckPermissionResponse { bool allowed = 1; }
+
+// STS临时授权相关消息
+message AssumeRoleRequest {
+  string role_arn = 1;                    // 角色ARN
+  string role_session_name = 2;           // 会话名称
+  int32 duration_seconds = 3;             // 有效期（秒），默认3600，最大43200
+  string external_id = 4;                 // 外部ID（可选）
+  string policy = 5;                      // 会话策略（可选，JSON格式）
+  map<string, string> tags = 6;           // 会话标签（可选）
+}
+
+message AssumeRoleResponse {
+  TemporaryCredentials credentials = 1;    // 临时凭证
+  AssumedRoleUser assumed_role_user = 2;   // 假设角色用户信息
+  int32 packed_policy_size = 3;           // 打包策略大小
+}
+
+message GetSessionTokenRequest {
+  int32 duration_seconds = 1;             // 有效期（秒），默认3600，最大129600
+  string serial_number = 2;               // MFA设备序列号（可选）
+  string token_code = 3;                  // MFA令牌代码（可选）
+}
+
+message GetSessionTokenResponse {
+  TemporaryCredentials credentials = 1;    // 临时凭证
+}
+
+message RefreshTokenRequest {
+  string session_token = 1;               // 当前会话令牌
+  int32 duration_seconds = 2;             // 新的有效期（秒）
+}
+
+message RefreshTokenResponse {
+  TemporaryCredentials credentials = 1;    // 新的临时凭证
+}
+
+message RevokeTokenRequest {
+  string session_token = 1;               // 要撤销的会话令牌
+}
+
+message RevokeTokenResponse {
+  bool success = 1;                       // 撤销是否成功
+  string message = 2;                     // 响应消息
+}
+
+message TemporaryCredentials {
+  string access_key_id = 1;               // 临时访问密钥ID
+  string secret_access_key = 2;           // 临时密钥
+  string session_token = 3;               // 会话令牌
+  google.protobuf.Timestamp expiration = 4; // 过期时间
+}
+
+message AssumedRoleUser {
+  string arn = 1;                         // 假设角色用户ARN
+  string assumed_role_id = 2;             // 假设角色ID
+}

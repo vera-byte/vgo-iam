@@ -1,0 +1,74 @@
+{
+  "success": {
+    "user_created": "User created successfully",
+    "policy_created": "Policy created successfully",
+    "policy_attached": "Policy attached successfully",
+    "access_key_created": "Access key created successfully",
+    "access_key_updated": "Access key status updated successfully",
+    "verification_submitted": "Developer verification submitted successfully",
+    "verification_reviewed": "Developer verification reviewed successfully",
+    "application_created": "Application created successfully",
+    "application_updated": "Application updated successfully",
+    "application_deleted": "Application deleted successfully"
+  },
+  "error.internal": "Internal server error",
+  "error.invalid_parameter": "Invalid parameter",
+  "error.unauthorized": "Unauthorized",
+  "error.forbidden": "Forbidden",
+  "error.not_found": "Resource not found",
+  "error.already_exists": "Resource already exists",
+  "error.too_many_requests": "Too many requests",
+  
+  "error.user.not_found": "User not found",
+  "error.user.already_exists": "User already exists",
+  "error.user.invalid_name": "Invalid user name",
+  "error.user.invalid_email": "Invalid email address",
+  
+  "error.policy.not_found": "Policy not found",
+  "error.policy.already_exists": "Policy already exists",
+  "error.policy.invalid": "Invalid policy document",
+  "error.policy.attach_failed": "Failed to attach policy to user",
+  
+  "error.access_key.not_found": "Access key not found",
+  "error.access_key.invalid": "Invalid access key",
+  "error.access_key.expired": "Access key expired",
+  "error.access_key.inactive": "Access key inactive",
+  "error.access_key.too_many": "Too many access keys for user",
+  "error.access_key.create_failed": "Failed to create access key",
+  
+  "error.permission.denied": "Permission denied",
+  "error.permission.invalid_action": "Invalid action",
+  "error.permission.invalid_resource": "Invalid resource",
+  
+  "message.user.created": "User created successfully",
+  "message.user.updated": "User updated successfully",
+  "message.user.deleted": "User deleted successfully",
+  
+  "message.policy.created": "Policy created successfully",
+  "message.policy.updated": "Policy updated successfully",
+  "message.policy.deleted": "Policy deleted successfully",
+  "message.policy.attached": "Policy attached to user successfully",
+  "message.policy.detached": "Policy detached from user successfully",
+  
+  "message.access_key.created": "Access key created successfully",
+  "message.access_key.updated": "Access key updated successfully",
+  "message.access_key.deleted": "Access key deleted successfully",
+  "message.access_key.activated": "Access key activated successfully",
+  "message.access_key.deactivated": "Access key deactivated successfully",
+  
+  "validation.required": "This field is required",
+  "validation.invalid_format": "Invalid format",
+  "validation.min_length": "Minimum length is %d characters",
+  "validation.max_length": "Maximum length is %d characters",
+  "validation.invalid_email": "Invalid email format",
+  "validation.invalid_username": "Username can only contain letters, numbers, and underscores",
+  
+  "auth.invalid_credentials": "Invalid credentials",
+  "auth.token_expired": "Token has expired",
+  "auth.token_invalid": "Invalid token",
+  "auth.access_denied": "Access denied",
+  
+  "system.maintenance": "System is under maintenance",
+  "system.service_unavailable": "Service temporarily unavailable",
+  "system.rate_limit_exceeded": "Rate limit exceeded, please try again later"
+}

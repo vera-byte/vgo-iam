@@ -1,6 +1,7 @@
 package errors
 
 import (
+	"context"
 	"fmt"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -46,7 +47,45 @@ const (
 	CodeInvalidResource  ErrorCode = 5003
 )
 
-// ErrorMessage 错误码对应的消息
+// ErrorMessageKey 错误码对应的国际化键
+var ErrorMessageKey = map[ErrorCode]string{
+	// 通用错误
+	CodeOK:                "success",
+	CodeInternalError:     "error.internal",
+	CodeInvalidParameter:  "error.invalid_parameter",
+	CodeUnauthorized:      "error.unauthorized",
+	CodeForbidden:         "error.forbidden",
+	CodeNotFound:          "error.not_found",
+	CodeAlreadyExists:     "error.already_exists",
+	CodeTooManyRequests:   "error.too_many_requests",
+
+	// 用户相关错误
+	CodeUserNotFound:      "error.user.not_found",
+	CodeUserAlreadyExists: "error.user.already_exists",
+	CodeInvalidUserName:   "error.user.invalid_name",
+	CodeInvalidEmail:      "error.user.invalid_email",
+
+	// 策略相关错误
+	CodePolicyNotFound:      "error.policy.not_found",
+	CodePolicyAlreadyExists: "error.policy.already_exists",
+	CodeInvalidPolicy:       "error.policy.invalid",
+	CodePolicyAttachFailed:  "error.policy.attach_failed",
+
+	// 访问密钥相关错误
+	CodeAccessKeyNotFound:     "error.access_key.not_found",
+	CodeAccessKeyInvalid:      "error.access_key.invalid",
+	CodeAccessKeyExpired:      "error.access_key.expired",
+	CodeAccessKeyInactive:     "error.access_key.inactive",
+	CodeTooManyAccessKeys:     "error.access_key.too_many",
+	CodeAccessKeyCreateFailed: "error.access_key.create_failed",
+
+	// 权限相关错误
+	CodePermissionDenied: "error.permission.denied",
+	CodeInvalidAction:    "error.permission.invalid_action",
+	CodeInvalidResource:  "error.permission.invalid_resource",
+}
+
+// ErrorMessage 错误码对应的默认消息（向后兼容）
 var ErrorMessage = map[ErrorCode]string{
 	// 通用错误
 	CodeOK:                "Success",
@@ -132,7 +171,17 @@ func (e *BusinessError) Error() string {
 	return fmt.Sprintf("[%d] %s", e.Code, e.Message)
 }
 
+// Translator 翻译器接口（临时定义，避免循环依赖）
+type Translator interface {
+	Translate(key string, args ...interface{}) string
+}
+
 // NewBusinessError 创建业务错误
+// 参数:
+//   - code: 错误码
+//   - details: 错误详情
+// 返回值:
+//   - *BusinessError: 业务错误实例
 func NewBusinessError(code ErrorCode, details ...string) *BusinessError {
 	message, exists := ErrorMessage[code]
 	if !exists {
@@ -149,6 +198,77 @@ func NewBusinessError(code ErrorCode, details ...string) *BusinessError {
 	}
 
 	return err
+}
+
+// NewBusinessErrorWithTranslator 使用翻译器创建业务错误
+// 参数:
+//   - ctx: 上下文
+//   - translator: 翻译器实例
+//   - code: 错误码
+//   - details: 错误详情
+// 返回值:
+//   - *BusinessError: 业务错误实例
+func NewBusinessErrorWithTranslator(ctx context.Context, translator Translator, code ErrorCode, details ...string) *BusinessError {
+	var message string
+	
+	// 尝试使用翻译器获取本地化消息
+	if translator != nil {
+		if key, exists := ErrorMessageKey[code]; exists {
+			message = translator.Translate(key)
+			// 如果翻译结果和键相同，说明没有找到翻译，使用默认消息
+			if message == key {
+				if defaultMsg, ok := ErrorMessage[code]; ok {
+					message = defaultMsg
+				} else {
+					message = "Unknown error"
+				}
+			}
+		} else {
+			message = "Unknown error"
+		}
+	} else {
+		// 回退到默认消息
+		if defaultMsg, exists := ErrorMessage[code]; exists {
+			message = defaultMsg
+		} else {
+			message = "Unknown error"
+		}
+	}
+
+	err := &BusinessError{
+		Code:    code,
+		Message: message,
+	}
+
+	if len(details) > 0 {
+		err.Details = details[0]
+	}
+
+	return err
+}
+
+// GetLocalizedMessage 获取本地化错误消息
+// 参数:
+//   - translator: 翻译器实例
+//   - code: 错误码
+// 返回值:
+//   - string: 本地化消息
+func GetLocalizedMessage(translator Translator, code ErrorCode) string {
+	if translator != nil {
+		if key, exists := ErrorMessageKey[code]; exists {
+			message := translator.Translate(key)
+			// 如果翻译结果和键相同，说明没有找到翻译，使用默认消息
+			if message != key {
+				return message
+			}
+		}
+	}
+	
+	// 回退到默认消息
+	if defaultMsg, exists := ErrorMessage[code]; exists {
+		return defaultMsg
+	}
+	return "Unknown error"
 }
 
 // ToGRPCError 将业务错误转换为gRPC错误

@@ -17,6 +17,7 @@ import (
 	"github.com/vera-byte/vgo-iam/internal/util"
 	iamv1 "github.com/vera-byte/vgo-iam/pkg/proto"
 	vgokit "github.com/vera-byte/vgo-kit"
+	"github.com/vera-byte/vgo-kit/i18n"
 )
 
 type IAMServer struct {
@@ -28,6 +29,7 @@ type IAMServer struct {
 	applicationService          service.ApplicationService
 	policyEngine                *policy.PolicyEngine
 	masterKey                   []byte
+	translator                  i18n.Translator
 }
 
 // AccessKeyService 返回accessKeyService
@@ -58,6 +60,7 @@ func NewIAMServer(
 	applicationService service.ApplicationService,
 	policyEngine *policy.PolicyEngine,
 	masterKey []byte,
+	translator i18n.Translator,
 ) *IAMServer {
 	return &IAMServer{
 		userService:                 userService,
@@ -67,6 +70,7 @@ func NewIAMServer(
 		applicationService:          applicationService,
 		policyEngine:                policyEngine,
 		masterKey:                   masterKey,
+		translator:                  translator,
 	}
 }
 
@@ -74,10 +78,16 @@ func (s *IAMServer) CreateUser(ctx context.Context, req *iamv1.CreateUserRequest
 
 	vgokit.Log.Info("CreateUser request received", zap.String("username", req.Name))
 
+	// 检查用户是否已存在
+	existingUser, err := s.userService.GetUser(ctx, req.Name)
+	if err == nil && existingUser != nil {
+		return nil, s.translateError(ctx, codes.AlreadyExists, "error.user.already_exists", req.Name)
+	}
+
 	user, err := s.userService.CreateUser(ctx, req.Name, req.DisplayName, req.Email)
 	if err != nil {
 		vgokit.Log.Error("Failed to create user", zap.Error(err))
-		return nil, status.Errorf(codes.Internal, "failed to create user: %v", err)
+		return nil, s.translateError(ctx, codes.Internal, "error.user.create_failed", err)
 	}
 
 	vgokit.Log.Info("User created successfully", zap.String("username", user.Name), zap.Int64("user_id", user.ID))
@@ -87,8 +97,9 @@ func (s *IAMServer) CreateUser(ctx context.Context, req *iamv1.CreateUserRequest
 func (s *IAMServer) GetUser(ctx context.Context, req *iamv1.GetUserRequest) (*iamv1.User, error) {
 	user, err := s.userService.GetUser(ctx, req.Name)
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "user not found: %v", err)
+		return nil, s.translateError(ctx, codes.NotFound, "error.user.not_found", req.Name)
 	}
+
 	return convertUserToProto(user), nil
 }
 
@@ -100,14 +111,14 @@ func (s *IAMServer) CreatePolicy(ctx context.Context, req *iamv1.CreatePolicyReq
 
 	policy, err := s.policyService.CreatePolicy(ctx, req.Name, req.Description, req.PolicyDocument)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to create policy: %v", err)
+		return nil, s.translateError(ctx, codes.Internal, "error.policy.create_failed", err)
 	}
 	return convertPolicyToProto(policy), nil
 }
 
 func (s *IAMServer) AttachUserPolicy(ctx context.Context, req *iamv1.AttachUserPolicyRequest) (*iamv1.AttachUserPolicyResponse, error) {
 	if err := s.userService.AttachPolicy(ctx, req.UserName, req.PolicyName); err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to attach policy: %v", err)
+		return nil, s.translateError(ctx, codes.Internal, "error.policy.attach_failed", err)
 	}
 	return &iamv1.AttachUserPolicyResponse{Success: true}, nil
 }
@@ -115,7 +126,7 @@ func (s *IAMServer) AttachUserPolicy(ctx context.Context, req *iamv1.AttachUserP
 func (s *IAMServer) CreateAccessKey(ctx context.Context, req *iamv1.CreateAccessKeyRequest) (*iamv1.AccessKey, error) {
 	user, err := s.userService.GetUser(ctx, req.UserName)
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "用户不存在: %v", err)
+		return nil, s.translateError(ctx, codes.NotFound, "error.user.not_found", req.UserName)
 	}
 
 	var ak *model.AccessKey
@@ -129,7 +140,7 @@ func (s *IAMServer) CreateAccessKey(ctx context.Context, req *iamv1.CreateAccess
 	}
 	
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "创建访问密钥失败: %v", err)
+		return nil, s.translateError(ctx, codes.Internal, "error.access_key.create_failed", err)
 	}
 
 	response := &iamv1.AccessKey{
@@ -152,12 +163,12 @@ func (s *IAMServer) CreateAccessKey(ctx context.Context, req *iamv1.CreateAccess
 func (s *IAMServer) ListAccessKeys(ctx context.Context, req *iamv1.ListAccessKeysRequest) (*iamv1.ListAccessKeysResponse, error) {
 	user, err := s.userService.GetUser(ctx, req.UserName)
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "user not found: %v", err)
+		return nil, s.translateError(ctx, codes.NotFound, "error.user.not_found", req.UserName)
 	}
 
 	keys, err := s.accessKeyService.ListAccessKeys(ctx, user.Name)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to list access keys: %v", err)
+		return nil, s.translateError(ctx, codes.Internal, "error.access_key.list_failed", err)
 	}
 
 	resp := &iamv1.ListAccessKeysResponse{}
@@ -197,19 +208,19 @@ func (s *IAMServer) UpdateAccessKeyStatus(ctx context.Context, req *iamv1.Update
 	// 先获取访问密钥信息
 	ak, err := s.accessKeyService.GetAccessKey(ctx, req.AccessKeyId)
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "access key not found: %v", err)
+		return nil, s.translateError(ctx, codes.NotFound, "error.access_key.not_found", req.AccessKeyId)
 	}
 
 	// 调用服务层更新状态
 	updatedKey, err := s.accessKeyService.UpdateStatus(ctx, req.AccessKeyId, req.Status)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to update access key status: %v", err)
+		return nil, s.translateError(ctx, codes.Internal, "error.access_key.update_failed", err)
 	}
 
 	// 获取关联用户信息
 	user, err := s.userService.GetUser(ctx, ak.UserName)
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "associated user not found: %v", err)
+		return nil, s.translateError(ctx, codes.NotFound, "error.user.not_found", ak.UserName)
 	}
 
 	// 构造返回响应
@@ -231,24 +242,24 @@ func (s *IAMServer) VerifyAccessKey(ctx context.Context, req *iamv1.VerifyReques
 	// 1. 获取访问密钥
 	ak, err := s.accessKeyService.GetAccessKey(ctx, AccessKeyId)
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "无效的访问密钥")
+		return nil, s.translateError(ctx, codes.NotFound, "error.access_key.invalid")
 	}
 
 	// 2. 验证密钥状态
 	if ak.Status != "active" {
-		return nil, status.Errorf(codes.InvalidArgument, "密钥已失效")
+		return nil, s.translateError(ctx, codes.InvalidArgument, "error.access_key.inactive")
 	}
 
 	// 3. 验证签名
 	valid, err := signature.VerifySignV4(sign, requestData, timestamp, ak.SecretAccessKey)
 	if err != nil || !valid {
-		return nil, status.Errorf(codes.Unauthenticated, "签名验证失败")
+		return nil, s.translateError(ctx, codes.Unauthenticated, "error.auth.signature_verification_failed")
 	}
 
 	// 4. 获取用户名
 	user, err := s.userService.GetUser(ctx, ak.UserName)
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "访问密钥关联用户不存在: %v", err)
+		return nil, s.translateError(ctx, codes.NotFound, "error.user.not_found", ak.UserName)
 	}
 
 	return &iamv1.VerifyResponse{
@@ -260,12 +271,12 @@ func (s *IAMServer) VerifyAccessKey(ctx context.Context, req *iamv1.VerifyReques
 func (s *IAMServer) CheckPermission(ctx context.Context, req *iamv1.CheckPermissionRequest) (*iamv1.CheckPermissionResponse, error) {
 	user, err := s.userService.GetUser(ctx, req.UserName)
 	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "用户不存在")
+		return nil, s.translateError(ctx, codes.NotFound, "error.user.not_found", req.UserName)
 	}
 
 	allowed, err := s.policyEngine.Evaluate(user, req.Action, req.Resource)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "权限检查失败: %v", err)
+		return nil, s.translateError(ctx, codes.Internal, "error.permission.check_failed", err)
 	}
 
 	return &iamv1.CheckPermissionResponse{Allowed: allowed}, nil
@@ -663,4 +674,28 @@ func convertApplicationToProto(app *model.Application, userName string) *iamv1.A
 		CreatedAt:      convertTimeToTimestamp(app.CreatedAt),
 		UpdatedAt:      convertTimeToTimestamp(app.UpdatedAt),
 	}
+}
+
+// 辅助函数：处理国际化错误
+// ctx: 上下文，用于获取语言信息
+// code: gRPC状态码
+// key: 翻译键
+// args: 翻译参数
+// 返回: gRPC错误
+func (s *IAMServer) translateError(ctx context.Context, code codes.Code, key string, args ...interface{}) error {
+	// 设置翻译器的语言（从上下文获取）
+	s.translator.SetLanguage(i18n.GetLanguageFromContext(ctx))
+	message := s.translator.Translate(key, args...)
+	return status.Error(code, message)
+}
+
+// 辅助函数：获取国际化消息
+// ctx: 上下文，用于获取语言信息
+// key: 翻译键
+// args: 翻译参数
+// 返回: 翻译后的消息
+func (s *IAMServer) translateMessage(ctx context.Context, key string, args ...interface{}) string {
+	// 设置翻译器的语言（从上下文获取）
+	s.translator.SetLanguage(i18n.GetLanguageFromContext(ctx))
+	return s.translator.Translate(key, args...)
 }

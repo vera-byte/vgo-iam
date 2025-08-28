@@ -1,0 +1,63 @@
+{
+  "success": "成功",
+  "error.internal": "内部サーバーエラー",
+  "error.invalid_parameter": "無効なパラメータ",
+  "error.unauthorized": "認証されていません",
+  "error.forbidden": "アクセス禁止",
+  "error.not_found": "リソースが見つかりません",
+  "error.already_exists": "リソースは既に存在します",
+  "error.too_many_requests": "リクエストが多すぎます",
+  
+  "error.user.not_found": "ユーザーが見つかりません",
+  "error.user.already_exists": "ユーザーは既に存在します",
+  "error.user.invalid_name": "無効なユーザー名",
+  "error.user.invalid_email": "無効なメールアドレス",
+  
+  "error.policy.not_found": "ポリシーが見つかりません",
+  "error.policy.already_exists": "ポリシーは既に存在します",
+  "error.policy.invalid": "無効なポリシードキュメント",
+  "error.policy.attach_failed": "ユーザーへのポリシー添付に失敗しました",
+  
+  "error.access_key.not_found": "アクセスキーが見つかりません",
+  "error.access_key.invalid": "無効なアクセスキー",
+  "error.access_key.expired": "アクセスキーの有効期限が切れています",
+  "error.access_key.inactive": "アクセスキーが無効です",
+  "error.access_key.too_many": "ユーザーのアクセスキーが多すぎます",
+  "error.access_key.create_failed": "アクセスキーの作成に失敗しました",
+  
+  "error.permission.denied": "権限が拒否されました",
+  "error.permission.invalid_action": "無効なアクション",
+  "error.permission.invalid_resource": "無効なリソース",
+  
+  "message.user.created": "ユーザーが正常に作成されました",
+  "message.user.updated": "ユーザーが正常に更新されました",
+  "message.user.deleted": "ユーザーが正常に削除されました",
+  
+  "message.policy.created": "ポリシーが正常に作成されました",
+  "message.policy.updated": "ポリシーが正常に更新されました",
+  "message.policy.deleted": "ポリシーが正常に削除されました",
+  "message.policy.attached": "ポリシーがユーザーに正常に添付されました",
+  "message.policy.detached": "ポリシーがユーザーから正常に削除されました",
+  
+  "message.access_key.created": "アクセスキーが正常に作成されました",
+  "message.access_key.updated": "アクセスキーが正常に更新されました",
+  "message.access_key.deleted": "アクセスキーが正常に削除されました",
+  "message.access_key.activated": "アクセスキーが正常に有効化されました",
+  "message.access_key.deactivated": "アクセスキーが正常に無効化されました",
+  
+  "validation.required": "このフィールドは必須です",
+  "validation.invalid_format": "無効な形式",
+  "validation.min_length": "最小長は %d 文字です",
+  "validation.max_length": "最大長は %d 文字です",
+  "validation.invalid_email": "無効なメール形式",
+  "validation.invalid_username": "ユーザー名には文字、数字、アンダースコアのみ使用できます",
+  
+  "auth.invalid_credentials": "無効な認証情報",
+  "auth.token_expired": "トークンの有効期限が切れています",
+  "auth.token_invalid": "無効なトークン",
+  "auth.access_denied": "アクセスが拒否されました",
+  
+  "system.maintenance": "システムはメンテナンス中です",
+  "system.service_unavailable": "サービスは一時的に利用できません",
+  "system.rate_limit_exceeded": "レート制限を超えました。しばらくしてから再試行してください"
+}

@@ -4,6 +4,7 @@ import (
 	"time"
 
 	vgokit "github.com/vera-byte/vgo-kit"
+	"github.com/vera-byte/vgo-kit/cache"
 	"go.uber.org/zap"
 )
 
@@ -15,13 +16,14 @@ type AppConfig struct {
 	Database struct {
 		DSN string `mapstructure:"dsn"`
 	} `mapstructure:"database"`
-	Log        LogConfig        `mapstructure:"log"`
-	Sentry     SentryConfig     `mapstructure:"sentry"`
-	RateLimit  RateLimitConfig  `mapstructure:"ratelimit"`
+	Log        LogConfig       `mapstructure:"log"`
+	Sentry     SentryConfig    `mapstructure:"sentry"`
+	RateLimit  RateLimitConfig `mapstructure:"ratelimit"`
 	Middleware struct {
 		Ignore    []string `mapstructure:"ignore"`
 		MasterKey string   `mapstructure:"master_key"`
 	} `mapstructure:"middleware"`
+	Cache *cache.CacheConfig `mapstructure:"cache"`
 }
 type LogConfig struct {
 	Level     string `mapstructure:"level"`     // 日志级别: debug/info/warn/error

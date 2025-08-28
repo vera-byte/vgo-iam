@@ -24,11 +24,21 @@ sentry:
   debug: true
 
 ratelimit:
-  enabled: false
-  type: "memory" # "redis" or "memory"
-  limit: 100 # 每分钟最大请求数
+  enabled: true
+  type: "redis" # "redis" or "memory"
+  limit: 1 # 每分钟最大请求数
   window: "1m" # 时间窗口
   prefix: "iam_ratelimit"
-  redis_addr: "localhost:6379"
+  redis_addr: "10.0.0.200:6379"
   redis_db: 0
-  redis_pass: ""
+  redis_pass: "maile@321"
+
+cache:
+  addr: "10.0.0.200:6379"
+  password: "maile@321"
+  db: 0
+  pool_size: 100
+  min_idle_conns: 10
+  dial_timeout: 10s
+  read_timeout: 10s
+  write_timeout: 10s

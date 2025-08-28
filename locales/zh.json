@@ -1,0 +1,74 @@
+{
+  "success": {
+    "user_created": "用户创建成功",
+    "policy_created": "策略创建成功",
+    "policy_attached": "策略绑定成功",
+    "access_key_created": "访问密钥创建成功",
+    "access_key_updated": "访问密钥状态更新成功",
+    "verification_submitted": "开发者认证提交成功",
+    "verification_reviewed": "开发者认证审核成功",
+    "application_created": "应用创建成功",
+    "application_updated": "应用更新成功",
+    "application_deleted": "应用删除成功"
+  },
+  "error.internal": "内部服务器错误",
+  "error.invalid_parameter": "参数无效",
+  "error.unauthorized": "未授权",
+  "error.forbidden": "禁止访问",
+  "error.not_found": "资源未找到",
+  "error.already_exists": "资源已存在",
+  "error.too_many_requests": "请求过多",
+  
+  "error.user.not_found": "用户不存在",
+  "error.user.already_exists": "用户已存在",
+  "error.user.invalid_name": "用户名无效",
+  "error.user.invalid_email": "邮箱地址无效",
+  
+  "error.policy.not_found": "策略不存在",
+  "error.policy.already_exists": "策略已存在",
+  "error.policy.invalid": "策略文档无效",
+  "error.policy.attach_failed": "策略绑定用户失败",
+  
+  "error.access_key.not_found": "访问密钥不存在",
+  "error.access_key.invalid": "访问密钥无效",
+  "error.access_key.expired": "访问密钥已过期",
+  "error.access_key.inactive": "访问密钥未激活",
+  "error.access_key.too_many": "用户访问密钥数量过多",
+  "error.access_key.create_failed": "创建访问密钥失败",
+  
+  "error.permission.denied": "权限被拒绝",
+  "error.permission.invalid_action": "操作无效",
+  "error.permission.invalid_resource": "资源无效",
+  
+  "message.user.created": "用户创建成功",
+  "message.user.updated": "用户更新成功",
+  "message.user.deleted": "用户删除成功",
+  
+  "message.policy.created": "策略创建成功",
+  "message.policy.updated": "策略更新成功",
+  "message.policy.deleted": "策略删除成功",
+  "message.policy.attached": "策略绑定用户成功",
+  "message.policy.detached": "策略解绑用户成功",
+  
+  "message.access_key.created": "访问密钥创建成功",
+  "message.access_key.updated": "访问密钥更新成功",
+  "message.access_key.deleted": "访问密钥删除成功",
+  "message.access_key.activated": "访问密钥激活成功",
+  "message.access_key.deactivated": "访问密钥停用成功",
+  
+  "validation.required": "此字段为必填项",
+  "validation.invalid_format": "格式无效",
+  "validation.min_length": "最小长度为 %d 个字符",
+  "validation.max_length": "最大长度为 %d 个字符",
+  "validation.invalid_email": "邮箱格式无效",
+  "validation.invalid_username": "用户名只能包含字母、数字和下划线",
+  
+  "auth.invalid_credentials": "凭据无效",
+  "auth.token_expired": "令牌已过期",
+  "auth.token_invalid": "令牌无效",
+  "auth.access_denied": "访问被拒绝",
+  
+  "system.maintenance": "系统正在维护中",
+  "system.service_unavailable": "服务暂时不可用",
+  "system.rate_limit_exceeded": "请求频率超限，请稍后重试"
+}

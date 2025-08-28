@@ -1,0 +1,63 @@
+{
+  "success": "성공",
+  "error.internal": "내부 서버 오류",
+  "error.invalid_parameter": "잘못된 매개변수",
+  "error.unauthorized": "인증되지 않음",
+  "error.forbidden": "접근 금지",
+  "error.not_found": "리소스를 찾을 수 없음",
+  "error.already_exists": "리소스가 이미 존재함",
+  "error.too_many_requests": "요청이 너무 많음",
+  
+  "error.user.not_found": "사용자를 찾을 수 없습니다",
+  "error.user.already_exists": "사용자가 이미 존재함",
+  "error.user.invalid_name": "잘못된 사용자 이름",
+  "error.user.invalid_email": "잘못된 이메일 주소",
+  
+  "error.policy.not_found": "정책을 찾을 수 없음",
+  "error.policy.already_exists": "정책이 이미 존재함",
+  "error.policy.invalid": "잘못된 정책 문서",
+  "error.policy.attach_failed": "사용자에게 정책 연결 실패",
+  
+  "error.access_key.not_found": "액세스 키를 찾을 수 없음",
+  "error.access_key.invalid": "잘못된 액세스 키",
+  "error.access_key.expired": "액세스 키가 만료됨",
+  "error.access_key.inactive": "액세스 키가 비활성화됨",
+  "error.access_key.too_many": "사용자의 액세스 키가 너무 많음",
+  "error.access_key.create_failed": "액세스 키 생성 실패",
+  
+  "error.permission.denied": "권한이 거부됨",
+  "error.permission.invalid_action": "잘못된 작업",
+  "error.permission.invalid_resource": "잘못된 리소스",
+  
+  "message.user.created": "사용자가 성공적으로 생성됨",
+  "message.user.updated": "사용자가 성공적으로 업데이트됨",
+  "message.user.deleted": "사용자가 성공적으로 삭제됨",
+  
+  "message.policy.created": "정책이 성공적으로 생성됨",
+  "message.policy.updated": "정책이 성공적으로 업데이트됨",
+  "message.policy.deleted": "정책이 성공적으로 삭제됨",
+  "message.policy.attached": "정책이 사용자에게 성공적으로 연결됨",
+  "message.policy.detached": "정책이 사용자에게서 성공적으로 분리됨",
+  
+  "message.access_key.created": "액세스 키가 성공적으로 생성됨",
+  "message.access_key.updated": "액세스 키가 성공적으로 업데이트됨",
+  "message.access_key.deleted": "액세스 키가 성공적으로 삭제됨",
+  "message.access_key.activated": "액세스 키가 성공적으로 활성화됨",
+  "message.access_key.deactivated": "액세스 키가 성공적으로 비활성화됨",
+  
+  "validation.required": "이 필드는 필수입니다",
+  "validation.invalid_format": "잘못된 형식",
+  "validation.min_length": "최소 길이는 %d자입니다",
+  "validation.max_length": "최대 길이는 %d자입니다",
+  "validation.invalid_email": "잘못된 이메일 형식",
+  "validation.invalid_username": "사용자 이름은 문자, 숫자, 밑줄만 포함할 수 있습니다",
+  
+  "auth.invalid_credentials": "잘못된 자격 증명",
+  "auth.token_expired": "토큰이 만료됨",
+  "auth.token_invalid": "잘못된 토큰",
+  "auth.access_denied": "액세스가 거부됨",
+  
+  "system.maintenance": "시스템이 유지보수 중입니다",
+  "system.service_unavailable": "서비스를 일시적으로 사용할 수 없습니다",
+  "system.rate_limit_exceeded": "요청 한도를 초과했습니다. 나중에 다시 시도해주세요"
+}

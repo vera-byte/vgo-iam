@@ -12,6 +12,7 @@ import (
 	"github.com/vera-byte/vgo-iam/internal/bootstrap"
 	"github.com/vera-byte/vgo-iam/internal/version"
 	vgokit "github.com/vera-byte/vgo-kit"
+	"github.com/vera-byte/vgo-kit/i18n"
 	"github.com/vera-byte/vgo-kit/ratelimit"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -61,11 +62,22 @@ func startServer() {
 		SkipFunc:    ratelimit.HealthCheckSkipFunc,
 	}
 
+	// 创建国际化拦截器配置
+	i18nConfig := &i18n.InterceptorConfig{
+		Translator:      bootstrap.GetTranslator(),
+		DefaultLanguage: i18n.DefaultLanguage,
+		LanguageHeader:  "accept-language",
+	}
+
 	// 创建gRPC服务器并添加拦截器链
 	server := grpc.NewServer(
 		grpc.ChainUnaryInterceptor(
+			i18n.UnaryServerInterceptor(i18nConfig),
 			ratelimit.UnaryServerInterceptor(rateLimitConfig),
 			auth.AccessKeyInterceptor(accessKeyStore),
+		),
+		grpc.ChainStreamInterceptor(
+			i18n.StreamServerInterceptor(i18nConfig),
 		),
 	)
 	iamv1.RegisterIAMServer(server, iamServer)

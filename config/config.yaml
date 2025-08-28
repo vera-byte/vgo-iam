@@ -2,7 +2,7 @@ grpc:
   port: "50051"
 
 database:
-  dsn: "postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable"
+  dsn: "postgres://vgo_user:vgo_password@postgres:5432/vgo_iam?sslmode=disable"
 
 middleware:
   master_key: "0b9caecb31b882aa86cfeb68cd41c9ff28c21a02e8d507f442e805ea88925ec3" # 实际使用时替换为安全密钥
@@ -29,13 +29,13 @@ ratelimit:
   limit: 1 # 每分钟最大请求数
   window: "1m" # 时间窗口
   prefix: "iam_ratelimit"
-  redis_addr: "10.0.0.200:6379"
+  redis_addr: "redis:6379"
   redis_db: 0
-  redis_pass: "maile@321"
+  redis_pass: ""
 
 cache:
-  addr: "10.0.0.200:6379"
-  password: "maile@321"
+  addr: "redis:6379"
+  password: ""
   db: 0
   pool_size: 100
   min_idle_conns: 10

@@ -56,7 +56,7 @@ go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@lat
 2. 执行迁移：
 
 ```bash
-migrate -path /Users/mac/workspace/vgo_micro_service/vgo-iam/migrations/ -database "postgres://vgo_iam:KESdCZeYYXBZcebH@10.0.0.200:5432/vgo_iam?sslmode=disable" up
+migrate -path /Users/mac/workspace/vgo_micro_service/vgo-iam/migrations/ -database "postgres://vgo_user:vgo_password@postgres:5432/vgo_iam?sslmode=disable" up
 ```
 3. 回滚迁移：
 

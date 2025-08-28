@@ -10,6 +10,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/vera-byte/vgo-iam/internal/auth"
 	"github.com/vera-byte/vgo-iam/internal/bootstrap"
+	"github.com/vera-byte/vgo-iam/internal/middleware"
 	"github.com/vera-byte/vgo-iam/internal/version"
 	vgokit "github.com/vera-byte/vgo-kit"
 	"github.com/vera-byte/vgo-kit/i18n"
@@ -72,11 +73,13 @@ func startServer() {
 	// 创建gRPC服务器并添加拦截器链
 	server := grpc.NewServer(
 		grpc.ChainUnaryInterceptor(
+			middleware.LoggingUnaryInterceptor(),
 			i18n.UnaryServerInterceptor(i18nConfig),
 			ratelimit.UnaryServerInterceptor(rateLimitConfig),
 			auth.AccessKeyInterceptor(accessKeyStore),
 		),
 		grpc.ChainStreamInterceptor(
+			middleware.LoggingStreamInterceptor(),
 			i18n.StreamServerInterceptor(i18nConfig),
 		),
 	)

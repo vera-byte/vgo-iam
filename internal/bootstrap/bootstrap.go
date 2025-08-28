@@ -116,6 +116,12 @@ func Start() (*config.AppConfig, net.Listener) {
 
 	cfg := config.LodIAMConfig()
 
+	// 验证配置
+	if err := config.ValidateConfig(cfg); err != nil {
+		vgokit.Log.Error("配置验证失败", zap.Error(err))
+		panic(fmt.Sprintf("配置验证失败: %v", err))
+	}
+
 	Banner()
 
 	vgokit.Log.Info("VGO-IAM 服务启动",
@@ -124,7 +130,7 @@ func Start() (*config.AppConfig, net.Listener) {
 		zap.String("build_time", version.BuildTime),
 	)
 
-	vgokit.Log.Info("config loaded successfully")
+	vgokit.Log.Info("config loaded and validated successfully")
 	vgokit.Log.Info("logger initialized successfully")
 
 	// 初始化指标收集器

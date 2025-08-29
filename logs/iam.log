@@ -113,3 +113,120 @@
 {"level":"error","ts":"2025-08-29:06:27:03:000","msg":"清理过期临时凭证失败","error":"pq: relation \"temporary_credentials\" does not exist"}
 {"level":"info","ts":"2025-08-29:06:27:03:000","msg":"Key rotation check completed","rotated_count":0,"warning_count":0}
 {"level":"info","ts":"2025-08-29:10:11:29:000","msg":"Key rotation check completed","rotated_count":0,"warning_count":0}
+{"level":"info","ts":"2025-08-29:10:25:11:000","msg":"Starting VGO-IAM service"}
+{"level":"info","ts":"2025-08-29:10:25:11:000","msg":"Version: v1.0.0"}
+{"level":"info","ts":"2025-08-29:10:25:11:000","msg":"Commit: unknown"}
+{"level":"info","ts":"2025-08-29:10:25:11:000","msg":"Build Time: unknown"}
+{"level":"info","ts":"2025-08-29:10:25:11:000","msg":"VGO-IAM 服务启动","version":"v1.0.0","commit":"unknown","build_time":"unknown"}
+{"level":"info","ts":"2025-08-29:10:25:11:000","msg":"config loaded and validated successfully"}
+{"level":"info","ts":"2025-08-29:10:25:11:000","msg":"logger initialized successfully"}
+{"level":"info","ts":"2025-08-29:10:25:11:000","msg":"metrics initialized successfully"}
+{"level":"info","ts":"2025-08-29:10:25:11:000","msg":"i18n initialized successfully"}
+{"level":"info","ts":"2025-08-29:10:25:11:000","msg":"rate limiter initialized successfully"}
+{"level":"info","ts":"2025-08-29:10:25:11:000","msg":"gRPC server will listen on","address":":50051"}
+{"level":"info","ts":"2025-08-29:10:25:11:000","msg":"Initializing services..."}
+{"level":"info","ts":"2025-08-29:10:25:11:000","msg":"database connected successfully","dsn":"postgres://vgo_user:vgo_password@localhost:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":"2025-08-29:10:25:11:000","msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":"2025-08-29:10:25:11:000","msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":"2025-08-29:10:25:11:000","msg":"启动临时凭证清理服务","interval":3600}
+{"level":"info","ts":"2025-08-29:10:25:11:000","msg":"临时凭证清理服务已初始化"}
+{"level":"info","ts":"2025-08-29:10:25:11:000","msg":"Services initialized successfully"}
+{"level":"info","ts":"2025-08-29:10:25:11:000","msg":"Using listener from bootstrap.Start()"}
+{"level":"info","ts":"2025-08-29:10:25:11:000","msg":"Starting gRPC server on port 50051"}
+{"level":"info","ts":"2025-08-29:11:25:11:000","msg":"Key rotation check completed","rotated_count":0,"warning_count":0}
+{"level":"info","ts":"2025-08-29:12:25:15:000","msg":"Key rotation check completed","rotated_count":0,"warning_count":0}
+{"level":"info","ts":"2025-08-29:13:25:15:000","msg":"Key rotation check completed","rotated_count":0,"warning_count":0}
+{"level":"info","ts":"2025-08-29:14:25:15:000","msg":"Key rotation check completed","rotated_count":0,"warning_count":0}
+{"level":"info","ts":"2025-08-29:14:43:08:000","msg":"gRPC请求开始","request_id":"1756449788060444000","method":"/iam.v1.IAM/VerifyAccessKey","client_ip":"[::1]:63561","user_agent":"grpc-go/1.74.0-dev","request":{}}
+{"level":"error","ts":"2025-08-29:14:43:08:000","msg":"gRPC请求执行失败","request_id":"1756449788060444000","method":"/iam.v1.IAM/VerifyAccessKey","client_ip":"[::1]:63561","user_agent":"grpc-go/1.74.0-dev","request":{},"duration":0.034353417,"error_code":"NotFound","error_message":"Invalid access key"}
+{"level":"info","ts":"2025-08-29:14:43:08:000","msg":"gRPC请求开始","request_id":"1756449788098012000","method":"/iam.v1.IAM/CreateAccessKey","client_ip":"[::1]:63563","user_agent":"grpc-go/1.74.0-dev","request":{"app_id":1,"description":"Test User Access Key","user_name":"testuser"}}
+{"level":"error","ts":"2025-08-29:14:43:08:000","msg":"gRPC请求执行失败","request_id":"1756449788098012000","method":"/iam.v1.IAM/CreateAccessKey","client_ip":"[::1]:63563","user_agent":"grpc-go/1.74.0-dev","request":{"app_id":1,"description":"Test User Access Key","user_name":"testuser"},"duration":0.00149,"error_code":"ResourceExhausted","error_message":"rate limit exceeded for key:***"}
+{"level":"info","ts":"2025-08-29:14:43:08:000","msg":"gRPC请求开始","request_id":"1756449788101300000","method":"/iam.v1.IAM/CreateUser","client_ip":"[::1]:63564","user_agent":"grpc-go/1.74.0-dev","request":{"display_name":"Test User","email":"test@example.com","name":"testuser"}}
+{"level":"error","ts":"2025-08-29:14:43:08:000","msg":"gRPC请求执行失败","request_id":"1756449788101300000","method":"/iam.v1.IAM/CreateUser","client_ip":"[::1]:63564","user_agent":"grpc-go/1.74.0-dev","request":{"display_name":"Test User","email":"test@example.com","name":"testuser"},"duration":0.001712208,"error_code":"ResourceExhausted","error_message":"rate limit exceeded for key:***"}
+{"level":"info","ts":"2025-08-29:14:43:08:000","msg":"gRPC请求开始","request_id":"1756449788105151000","method":"/iam.v1.IAM/SubmitDeveloperVerification","client_ip":"[::1]:63565","user_agent":"grpc-go/1.74.0-dev","request":{"developer_type":"individual","id_card_back_url":"https://example.com/id_back.jpg","id_card_front_url":"https://example.com/id_front.jpg","id_card_number":"110101199001011234","real_name":"John Doe"}}
+{"level":"error","ts":"2025-08-29:14:43:08:000","msg":"gRPC请求执行失败","request_id":"1756449788105151000","method":"/iam.v1.IAM/SubmitDeveloperVerification","client_ip":"[::1]:63565","user_agent":"grpc-go/1.74.0-dev","request":{"developer_type":"individual","id_card_back_url":"https://example.com/id_back.jpg","id_card_front_url":"https://example.com/id_front.jpg","id_card_number":"110101199001011234","real_name":"John Doe"},"duration":0.000562875,"error_code":"ResourceExhausted","error_message":"rate limit exceeded for key:***"}
+{"level":"info","ts":"2025-08-29:14:43:08:000","msg":"gRPC请求开始","request_id":"1756449788106864000","method":"/iam.v1.IAM/SubmitDeveloperVerification","client_ip":"[::1]:63566","user_agent":"grpc-go/1.74.0-dev","request":{"business_license_number":"91110000123456789X","business_license_url":"https://example.com/license.jpg","company_address":"123 Test Street Beijing","company_name":"Test Technology Co Ltd","developer_type":"enterprise","legal_representative":"Jane Smith"}}
+{"level":"error","ts":"2025-08-29:14:43:08:000","msg":"gRPC请求执行失败","request_id":"1756449788106864000","method":"/iam.v1.IAM/SubmitDeveloperVerification","client_ip":"[::1]:63566","user_agent":"grpc-go/1.74.0-dev","request":{"business_license_number":"91110000123456789X","business_license_url":"https://example.com/license.jpg","company_address":"123 Test Street Beijing","company_name":"Test Technology Co Ltd","developer_type":"enterprise","legal_representative":"Jane Smith"},"duration":0.000495959,"error_code":"ResourceExhausted","error_message":"rate limit exceeded for key:***"}
+{"level":"info","ts":"2025-08-29:14:43:08:000","msg":"gRPC请求开始","request_id":"1756449788108099000","method":"/iam.v1.IAM/GetDeveloperVerification","client_ip":"[::1]:63567","user_agent":"grpc-go/1.74.0-dev","request":{"developer_type":"individual","user_name":"testuser"}}
+{"level":"error","ts":"2025-08-29:14:43:08:000","msg":"gRPC请求执行失败","request_id":"1756449788108099000","method":"/iam.v1.IAM/GetDeveloperVerification","client_ip":"[::1]:63567","user_agent":"grpc-go/1.74.0-dev","request":{"developer_type":"individual","user_name":"testuser"},"duration":0.000343834,"error_code":"ResourceExhausted","error_message":"rate limit exceeded for key:***"}
+{"level":"info","ts":"2025-08-29:14:43:08:000","msg":"gRPC请求开始","request_id":"1756449788109200000","method":"/iam.v1.IAM/CreateApplication","client_ip":"[::1]:63568","user_agent":"grpc-go/1.74.0-dev","request":{"allowed_origins":["https://example.com"],"app_description":"This is a test application","app_icon_url":"https://example.com/icon.png","app_name":"Test Application","app_type":"web","app_website":"https://example.com","callback_urls":["https://example.com/callback"]}}
+{"level":"error","ts":"2025-08-29:14:43:08:000","msg":"gRPC请求执行失败","request_id":"1756449788109200000","method":"/iam.v1.IAM/CreateApplication","client_ip":"[::1]:63568","user_agent":"grpc-go/1.74.0-dev","request":{"allowed_origins":["https://example.com"],"app_description":"This is a test application","app_icon_url":"https://example.com/icon.png","app_name":"Test Application","app_type":"web","app_website":"https://example.com","callback_urls":["https://example.com/callback"]},"duration":0.000469208,"error_code":"ResourceExhausted","error_message":"rate limit exceeded for key:***"}
+{"level":"info","ts":"2025-08-29:14:43:08:000","msg":"gRPC请求开始","request_id":"1756449788110784000","method":"/iam.v1.IAM/GetApplication","client_ip":"[::1]:63569","user_agent":"grpc-go/1.74.0-dev","request":{"app_id":1}}
+{"level":"error","ts":"2025-08-29:14:43:08:000","msg":"gRPC请求执行失败","request_id":"1756449788110784000","method":"/iam.v1.IAM/GetApplication","client_ip":"[::1]:63569","user_agent":"grpc-go/1.74.0-dev","request":{"app_id":1},"duration":0.000243667,"error_code":"ResourceExhausted","error_message":"rate limit exceeded for key:***"}
+{"level":"info","ts":"2025-08-29:14:43:08:000","msg":"gRPC请求开始","request_id":"1756449788112248000","method":"/iam.v1.IAM/ListApplications","client_ip":"[::1]:63570","user_agent":"grpc-go/1.74.0-dev","request":{"page":1,"page_size":10,"status":"active","user_name":"testuser"}}
+{"level":"error","ts":"2025-08-29:14:43:08:000","msg":"gRPC请求执行失败","request_id":"1756449788112248000","method":"/iam.v1.IAM/ListApplications","client_ip":"[::1]:63570","user_agent":"grpc-go/1.74.0-dev","request":{"page":1,"page_size":10,"status":"active","user_name":"testuser"},"duration":0.000539542,"error_code":"ResourceExhausted","error_message":"rate limit exceeded for key:***"}
+{"level":"info","ts":"2025-08-29:14:43:08:000","msg":"gRPC请求开始","request_id":"1756449788113770000","method":"/iam.v1.IAM/UpdateApplication","client_ip":"[::1]:63571","user_agent":"grpc-go/1.74.0-dev","request":{"allowed_origins":["https://newexample.com"],"app_description":"This is an updated test application","app_icon_url":"https://example.com/new_icon.png","app_id":1,"app_name":"Updated Test Application","app_type":"mobile","app_website":"https://newexample.com","callback_urls":["https://newexample.com/callback"],"status":"active"}}
+{"level":"error","ts":"2025-08-29:14:43:08:000","msg":"gRPC请求执行失败","request_id":"1756449788113770000","method":"/iam.v1.IAM/UpdateApplication","client_ip":"[::1]:63571","user_agent":"grpc-go/1.74.0-dev","request":{"allowed_origins":["https://newexample.com"],"app_description":"This is an updated test application","app_icon_url":"https://example.com/new_icon.png","app_id":1,"app_name":"Updated Test Application","app_type":"mobile","app_website":"https://newexample.com","callback_urls":["https://newexample.com/callback"],"status":"active"},"duration":0.000605708,"error_code":"ResourceExhausted","error_message":"rate limit exceeded for key:***"}
+{"level":"info","ts":"2025-08-29:14:43:08:000","msg":"gRPC请求开始","request_id":"1756449788115278000","method":"/iam.v1.IAM/DeleteApplication","client_ip":"[::1]:63572","user_agent":"grpc-go/1.74.0-dev","request":{"app_id":1}}
+{"level":"error","ts":"2025-08-29:14:43:08:000","msg":"gRPC请求执行失败","request_id":"1756449788115278000","method":"/iam.v1.IAM/DeleteApplication","client_ip":"[::1]:63572","user_agent":"grpc-go/1.74.0-dev","request":{"app_id":1},"duration":0.000274167,"error_code":"ResourceExhausted","error_message":"rate limit exceeded for key:***"}
+{"level":"info","ts":"2025-08-29:14:43:08:000","msg":"gRPC请求开始","request_id":"1756449788116360000","method":"/iam.v1.IAM/CreateAccessKey","client_ip":"[::1]:63573","user_agent":"grpc-go/1.74.0-dev","request":{"app_id":1,"description":"Second Test App Access Key","user_name":"testuser"}}
+{"level":"error","ts":"2025-08-29:14:43:08:000","msg":"gRPC请求执行失败","request_id":"1756449788116360000","method":"/iam.v1.IAM/CreateAccessKey","client_ip":"[::1]:63573","user_agent":"grpc-go/1.74.0-dev","request":{"app_id":1,"description":"Second Test App Access Key","user_name":"testuser"},"duration":0.00048325,"error_code":"ResourceExhausted","error_message":"rate limit exceeded for key:***"}
+{"level":"info","ts":"2025-08-29:15:25:15:000","msg":"Key rotation check completed","rotated_count":0,"warning_count":0}
+{"level":"info","ts":"2025-08-29:15:43:23:000","msg":"metrics initialized successfully"}
+{"level":"info","ts":"2025-08-29:15:43:23:000","msg":"database connected successfully","dsn":"postgres://vgo_user:vgo_password@localhost:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":"2025-08-29:15:43:23:000","msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":"2025-08-29:15:43:23:000","msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":"2025-08-29:15:43:23:000","msg":"启动临时凭证清理服务","interval":3600}
+{"level":"info","ts":"2025-08-29:15:43:23:000","msg":"临时凭证清理服务已初始化","interval":3600}
+{"level":"info","ts":"2025-08-29:15:43:23:000","msg":"Debug GUI server starting","port":8080}
+{"level":"info","ts":"2025-08-29:15:45:37:000","msg":"metrics initialized successfully"}
+{"level":"info","ts":"2025-08-29:15:45:37:000","msg":"database connected successfully","dsn":"postgres://vgo_user:vgo_password@localhost:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":"2025-08-29:15:45:37:000","msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":"2025-08-29:15:45:37:000","msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":"2025-08-29:15:45:37:000","msg":"启动临时凭证清理服务","interval":3600}
+{"level":"info","ts":"2025-08-29:15:45:37:000","msg":"临时凭证清理服务已初始化","interval":3600}
+{"level":"info","ts":"2025-08-29:15:45:37:000","msg":"管理员用户创建成功","user_id":163}
+{"level":"info","ts":"2025-08-29:15:45:37:000","msg":"正在设置管理员用户密码...","user_id":163}
+{"level":"error","ts":"2025-08-29:15:45:37:000","msg":"设置管理员密码失败","error":"[1001] Invalid parameter: password does not meet strength requirements"}
+{"level":"info","ts":"2025-08-29:15:45:37:000","msg":"事务已回滚"}
+{"level":"info","ts":"2025-08-29:15:46:04:000","msg":"metrics initialized successfully"}
+{"level":"info","ts":"2025-08-29:15:46:04:000","msg":"database connected successfully","dsn":"postgres://vgo_user:vgo_password@localhost:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":"2025-08-29:15:46:04:000","msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":"2025-08-29:15:46:04:000","msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":"2025-08-29:15:46:04:000","msg":"启动临时凭证清理服务","interval":3600}
+{"level":"info","ts":"2025-08-29:15:46:04:000","msg":"临时凭证清理服务已初始化","interval":3600}
+{"level":"info","ts":"2025-08-29:15:46:04:000","msg":"管理员用户已存在，获取现有用户信息"}
+{"level":"info","ts":"2025-08-29:15:46:04:000","msg":"管理员用户创建成功","user_id":163}
+{"level":"info","ts":"2025-08-29:15:46:04:000","msg":"正在设置管理员用户密码...","user_id":163}
+{"level":"error","ts":"2025-08-29:15:46:04:000","msg":"设置管理员密码失败","error":"[1001] Invalid parameter: password does not meet strength requirements"}
+{"level":"info","ts":"2025-08-29:15:46:04:000","msg":"事务已回滚"}
+{"level":"info","ts":"2025-08-29:15:46:25:000","msg":"metrics initialized successfully"}
+{"level":"info","ts":"2025-08-29:15:46:25:000","msg":"database connected successfully","dsn":"postgres://vgo_user:vgo_password@localhost:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":"2025-08-29:15:46:25:000","msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":"2025-08-29:15:46:25:000","msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":"2025-08-29:15:46:25:000","msg":"启动临时凭证清理服务","interval":3600}
+{"level":"info","ts":"2025-08-29:15:46:25:000","msg":"临时凭证清理服务已初始化","interval":3600}
+{"level":"info","ts":"2025-08-29:15:46:25:000","msg":"管理员用户已存在，获取现有用户信息"}
+{"level":"info","ts":"2025-08-29:15:46:25:000","msg":"管理员用户创建成功","user_id":163}
+{"level":"info","ts":"2025-08-29:15:46:25:000","msg":"正在设置管理员用户密码...","user_id":163}
+{"level":"info","ts":"2025-08-29:15:46:25:000","msg":"管理员用户密码设置成功"}
+{"level":"info","ts":"2025-08-29:15:46:25:000","msg":"Admin policy not found, creating..."}
+{"level":"info","ts":"2025-08-29:15:46:25:000","msg":"Admin policy created successfully"}
+{"level":"info","ts":"2025-08-29:15:46:25:000","msg":"No access keys found for admin, creating..."}
+{"level":"error","ts":"2025-08-29:15:46:25:000","msg":"Failed to create admin access key","error":"[4006] Failed to create access key: failed to create access key"}
+{"level":"info","ts":"2025-08-29:15:46:25:000","msg":"事务已回滚"}
+{"level":"info","ts":"2025-08-29:15:47:28:000","msg":"metrics initialized successfully"}
+{"level":"info","ts":"2025-08-29:15:47:28:000","msg":"database connected successfully","dsn":"postgres://vgo_user:vgo_password@localhost:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":"2025-08-29:15:47:28:000","msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":"2025-08-29:15:47:28:000","msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":"2025-08-29:15:47:28:000","msg":"启动临时凭证清理服务","interval":3600}
+{"level":"info","ts":"2025-08-29:15:47:28:000","msg":"临时凭证清理服务已初始化","interval":3600}
+{"level":"info","ts":"2025-08-29:15:47:28:000","msg":"管理员用户创建成功","user_id":1}
+{"level":"info","ts":"2025-08-29:15:47:28:000","msg":"正在设置管理员用户密码...","user_id":1}
+{"level":"error","ts":"2025-08-29:15:47:28:000","msg":"设置管理员密码失败","error":"[1001] Invalid parameter: password does not meet strength requirements"}
+{"level":"info","ts":"2025-08-29:15:47:28:000","msg":"事务已回滚"}
+{"level":"info","ts":"2025-08-29:15:53:39:000","msg":"metrics initialized successfully"}
+{"level":"info","ts":"2025-08-29:15:53:39:000","msg":"database connected successfully","dsn":"postgres://vgo_user:vgo_password@localhost:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":"2025-08-29:15:53:39:000","msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":"2025-08-29:15:53:39:000","msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":"2025-08-29:15:53:39:000","msg":"启动临时凭证清理服务","interval":3600}
+{"level":"info","ts":"2025-08-29:15:53:39:000","msg":"临时凭证清理服务已初始化","interval":3600}
+{"level":"info","ts":"2025-08-29:15:53:39:000","msg":"Debug GUI server starting","port":8080}
+{"level":"info","ts":"2025-08-29:15:58:08:000","msg":"metrics initialized successfully"}
+{"level":"info","ts":"2025-08-29:15:58:08:000","msg":"database connected successfully","dsn":"postgres://vgo_user:vgo_password@localhost:5432/vgo_iam?sslmode=disable"}
+{"level":"info","ts":"2025-08-29:15:58:08:000","msg":"访问密钥轮换调度器已启动"}
+{"level":"info","ts":"2025-08-29:15:58:08:000","msg":"访问密钥轮换调度器已初始化"}
+{"level":"info","ts":"2025-08-29:15:58:08:000","msg":"启动临时凭证清理服务","interval":3600}
+{"level":"info","ts":"2025-08-29:15:58:08:000","msg":"临时凭证清理服务已初始化","interval":3600}
+{"level":"info","ts":"2025-08-29:15:58:08:000","msg":"Debug GUI server starting","port":8080}
+{"level":"info","ts":"2025-08-29:15:58:55:000","msg":"配置更新请求","key":"ratelimit.limit","value":"20"}

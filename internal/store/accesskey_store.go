@@ -20,6 +20,7 @@ type AccessKeyStore interface {
 	ListAll() ([]*model.AccessKey, error)
 	UpdateStatus(accessKeyID, status string) error
 	RotateKey(accessKeyID string, masterKey string) (*model.AccessKey, error)
+	Delete(accessKeyID string) error
 }
 
 // accessKeyStore 访问密钥存储实现
@@ -201,6 +202,18 @@ func (s *accessKeyStore) ListAll() ([]*model.AccessKey, error) {
 	).From("access_keys").
 		Load(&aks)
 	return aks, err
+}
+
+// Delete 删除访问密钥
+// 参数:
+//   - accessKeyID: 访问密钥ID
+// 返回值:
+//   - error: 删除过程中的错误
+func (s *accessKeyStore) Delete(accessKeyID string) error {
+	_, err := s.session.DeleteFrom("access_keys").
+		Where("access_key_id = ?", accessKeyID).
+		Exec()
+	return err
 }
 
 // generateRandomSecret 生成随机密钥

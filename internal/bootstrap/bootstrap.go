@@ -87,7 +87,7 @@ func InitServices(cfg *config.AppConfig) (*api.IAMServer, *dbr.Session) {
 	userService := service.NewUserService(userStore, policyStore)
 	policyService := service.NewPolicyService(policyStore)
 	accessKeyService := service.NewAccessKeyService(accessKeyStore, userStore, cfg.Middleware.MasterKey)
-	stsService := service.NewSTSService(temporaryCredentialStore, userStore, policyStore, cfg.Middleware.MasterKey)
+	stsService := service.NewSTSService(temporaryCredentialStore, userStore, policyStore, cfg.Middleware.MasterKey, &cfg.STS)
 	policyEngine := policy.NewPolicyEngine(userService)
 
 	// 初始化开发者认证和应用服务
@@ -104,7 +104,7 @@ func InitServices(cfg *config.AppConfig) (*api.IAMServer, *dbr.Session) {
 	initRotationScheduler(accessKeyService)
 
 	// 初始化清理服务
-	initCleanupService(stsService)
+	initCleanupService(stsService, &cfg.STS)
 
 	// 初始化API层
 	server := api.NewIAMServer(
@@ -220,12 +220,19 @@ func StopRotationScheduler() {
 }
 
 // initCleanupService 初始化清理服务
-func initCleanupService(stsService *service.STSService) {
-	// 创建并启动清理服务（每小时清理一次过期凭证）
-	cleanupService = service.NewCleanupService(stsService, time.Hour)
-	cleanupService.Start(context.Background())
-
-	vgokit.Log.Info("临时凭证清理服务已初始化")
+func initCleanupService(stsService *service.STSService, stsConfig *config.STSConfig) {
+	// 如果启用自动清理，则创建并启动清理服务
+	if stsConfig.AutoCleanup {
+		cleanupInterval := stsConfig.CleanupInterval
+		if cleanupInterval <= 0 {
+			cleanupInterval = time.Hour // 默认每小时清理一次
+		}
+		cleanupService = service.NewCleanupService(stsService, cleanupInterval)
+		cleanupService.Start(context.Background())
+		vgokit.Log.Info("临时凭证清理服务已初始化", zap.Duration("interval", cleanupInterval))
+	} else {
+		vgokit.Log.Info("临时凭证自动清理已禁用")
+	}
 }
 
 // GetCleanupService 获取清理服务

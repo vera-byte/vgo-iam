@@ -62,3 +62,37 @@ func (s *PolicyService) UpdatePolicy(ctx context.Context, name, description, pol
 
 	return policy, nil
 }
+
+// GetPolicy 根据策略名称获取策略
+func (s *PolicyService) GetPolicy(ctx context.Context, name string) (*model.Policy, error) {
+	policy, err := s.policyStore.GetByName(name)
+	if err != nil {
+		return nil, errors.NewBusinessError(errors.CodePolicyNotFound, "policy not found")
+	}
+	return policy, nil
+}
+
+// DeletePolicy 删除策略
+func (s *PolicyService) DeletePolicy(ctx context.Context, name string) error {
+	// 检查策略是否存在
+	policy, err := s.policyStore.GetByName(name)
+	if err != nil {
+		return errors.NewBusinessError(errors.CodePolicyNotFound, "policy not found")
+	}
+
+	// 删除策略
+	if err := s.policyStore.Delete(policy.ID); err != nil {
+		return errors.NewBusinessError(errors.CodeInternalError, "failed to delete policy")
+	}
+
+	return nil
+}
+
+// ListPolicies 获取策略列表
+func (s *PolicyService) ListPolicies(ctx context.Context) ([]*model.Policy, error) {
+	policies, err := s.policyStore.List()
+	if err != nil {
+		return nil, errors.NewBusinessError(errors.CodeInternalError, "failed to list policies")
+	}
+	return policies, nil
+}

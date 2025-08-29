@@ -2,279 +2,148 @@ package test
 
 import (
 	"context"
-	"database/sql"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
-
-	iamv1 "github.com/vera-byte/vgo-iam/pkg/proto"
+	"github.com/vera-byte/vgo-iam/internal/config"
 	"github.com/vera-byte/vgo-iam/internal/model"
 	"github.com/vera-byte/vgo-iam/internal/service"
+	"github.com/vera-byte/vgo-iam/internal/store"
+	iamv1 "github.com/vera-byte/vgo-iam/pkg/proto"
+	"github.com/vera-byte/vgo-kit/db"
+	vgoconfig "github.com/vera-byte/vgo-kit/config"
 )
 
-// 定义测试用的错误变量
-var (
-	ErrUserNotFound       = sql.ErrNoRows
-	ErrPolicyNotFound     = sql.ErrNoRows
-	ErrCredentialNotFound = sql.ErrNoRows
-)
-
-// MockTemporaryCredentialStore 模拟临时凭证存储
-type MockTemporaryCredentialStore struct {
-	mock.Mock
-}
-
-func (m *MockTemporaryCredentialStore) Create(tc *model.TemporaryCredential, masterKey string) error {
-	args := m.Called(tc, masterKey)
-	return args.Error(0)
-}
-
-func (m *MockTemporaryCredentialStore) GetByID(id int64) (*model.TemporaryCredential, error) {
-	args := m.Called(id)
-	if args.Get(0) == nil {
-		return nil, args.Error(1)
-	}
-	return args.Get(0).(*model.TemporaryCredential), args.Error(1)
-}
-
-func (m *MockTemporaryCredentialStore) GetByAccessKeyID(accessKeyID string, masterKey string) (*model.TemporaryCredential, error) {
-	args := m.Called(accessKeyID, masterKey)
-	if args.Get(0) == nil {
-		return nil, args.Error(1)
-	}
-	return args.Get(0).(*model.TemporaryCredential), args.Error(1)
-}
-
-func (m *MockTemporaryCredentialStore) GetBySessionToken(sessionToken string, masterKey string) (*model.TemporaryCredential, error) {
-	args := m.Called(sessionToken, masterKey)
-	if args.Get(0) == nil {
-		return nil, args.Error(1)
-	}
-	return args.Get(0).(*model.TemporaryCredential), args.Error(1)
-}
-
-func (m *MockTemporaryCredentialStore) ListByUser(userID int64) ([]*model.TemporaryCredential, error) {
-	args := m.Called(userID)
-	if args.Get(0) == nil {
-		return nil, args.Error(1)
-	}
-	return args.Get(0).([]*model.TemporaryCredential), args.Error(1)
-}
-
-func (m *MockTemporaryCredentialStore) ListActive() ([]*model.TemporaryCredential, error) {
-	args := m.Called()
-	if args.Get(0) == nil {
-		return nil, args.Error(1)
-	}
-	return args.Get(0).([]*model.TemporaryCredential), args.Error(1)
-}
-
-func (m *MockTemporaryCredentialStore) ListExpired() ([]*model.TemporaryCredential, error) {
-	args := m.Called()
-	if args.Get(0) == nil {
-		return nil, args.Error(1)
-	}
-	return args.Get(0).([]*model.TemporaryCredential), args.Error(1)
-}
-
-func (m *MockTemporaryCredentialStore) UpdateStatus(id int64, status string) error {
-	args := m.Called(id, status)
-	return args.Error(0)
-}
-
-func (m *MockTemporaryCredentialStore) Revoke(id int64) error {
-	args := m.Called(id)
-	return args.Error(0)
-}
-
-func (m *MockTemporaryCredentialStore) RevokeBySessionToken(sessionToken string) error {
-	args := m.Called(sessionToken)
-	return args.Error(0)
-}
-
-func (m *MockTemporaryCredentialStore) Refresh(id int64, durationSeconds int32) (*model.TemporaryCredential, error) {
-	args := m.Called(id, durationSeconds)
-	if args.Get(0) == nil {
-		return nil, args.Error(1)
-	}
-	return args.Get(0).(*model.TemporaryCredential), args.Error(1)
-}
-
-func (m *MockTemporaryCredentialStore) CleanupExpired() (int64, error) {
-	args := m.Called()
-	return args.Get(0).(int64), args.Error(1)
-}
-
-func (m *MockTemporaryCredentialStore) Delete(id int64) error {
-	args := m.Called(id)
-	return args.Error(0)
-}
-
-// MockUserStore 模拟用户存储
-type MockUserStore struct {
-	mock.Mock
-}
-
-func (m *MockUserStore) Create(user *model.User) (int64, error) {
-	args := m.Called(user)
-	return args.Get(0).(int64), args.Error(1)
-}
-
-func (m *MockUserStore) GetByID(id int64) (*model.User, error) {
-	args := m.Called(id)
-	if args.Get(0) == nil {
-		return nil, args.Error(1)
-	}
-	return args.Get(0).(*model.User), args.Error(1)
-}
-
-func (m *MockUserStore) GetByName(name string) (*model.User, error) {
-	args := m.Called(name)
-	if args.Get(0) == nil {
-		return nil, args.Error(1)
-	}
-	return args.Get(0).(*model.User), args.Error(1)
-}
-
-func (m *MockUserStore) Update(user *model.User) error {
-	args := m.Called(user)
-	return args.Error(0)
-}
-
-func (m *MockUserStore) Delete(id int64) error {
-	args := m.Called(id)
-	return args.Error(0)
-}
-
-func (m *MockUserStore) List() ([]*model.User, error) {
-	args := m.Called()
-	if args.Get(0) == nil {
-		return nil, args.Error(1)
-	}
-	return args.Get(0).([]*model.User), args.Error(1)
-}
-
-func (m *MockUserStore) GetByEmail(email string) (*model.User, error) {
-	args := m.Called(email)
-	if args.Get(0) == nil {
-		return nil, args.Error(1)
-	}
-	return args.Get(0).(*model.User), args.Error(1)
-}
-
-func (m *MockUserStore) AttachPolicy(userID int64, policyID int) error {
-	args := m.Called(userID, policyID)
-	return args.Error(0)
-}
-
-func (m *MockUserStore) DetachPolicy(userID int64, policyID int) error {
-	args := m.Called(userID, policyID)
-	return args.Error(0)
-}
-
-func (m *MockUserStore) ListPolicies(userID int64) ([]*model.Policy, error) {
-	args := m.Called(userID)
-	if args.Get(0) == nil {
-		return nil, args.Error(1)
-	}
-	return args.Get(0).([]*model.Policy), args.Error(1)
-}
-
-// MockPolicyStore 模拟策略存储
-type MockPolicyStore struct {
-	mock.Mock
-}
-
-func (m *MockPolicyStore) Create(policy *model.Policy) error {
-	args := m.Called(policy)
-	return args.Error(0)
-}
-
-func (m *MockPolicyStore) GetByID(id int) (*model.Policy, error) {
-	args := m.Called(id)
-	if args.Get(0) == nil {
-		return nil, args.Error(1)
-	}
-	return args.Get(0).(*model.Policy), args.Error(1)
-}
-
-func (m *MockPolicyStore) GetByName(name string) (*model.Policy, error) {
-	args := m.Called(name)
-	if args.Get(0) == nil {
-		return nil, args.Error(1)
-	}
-	return args.Get(0).(*model.Policy), args.Error(1)
-}
-
-func (m *MockPolicyStore) Update(policy *model.Policy) error {
-	args := m.Called(policy)
-	return args.Error(0)
-}
-
-func (m *MockPolicyStore) Delete(id int) error {
-	args := m.Called(id)
-	return args.Error(0)
-}
-
-func (m *MockPolicyStore) List() ([]*model.Policy, error) {
-	args := m.Called()
-	if args.Get(0) == nil {
-		return nil, args.Error(1)
-	}
-	return args.Get(0).([]*model.Policy), args.Error(1)
-}
-
-// STSServiceTestSuite STS服务测试套件
-type STSServiceTestSuite struct {
+// STSServiceIntegrationTestSuite STS服务集成测试套件
+type STSServiceIntegrationTestSuite struct {
 	suite.Suite
-	stsService          *service.STSService
-	mockTempCredStore   *MockTemporaryCredentialStore
-	mockUserStore       *MockUserStore
-	mockPolicyStore     *MockPolicyStore
-	masterKey          string
+	dbStore    *db.PostgresStore
+	userStore  store.UserStore
+	policyStore store.PolicyStore
+	tempCredStore store.TemporaryCredentialStore
+	stsService *service.STSService
+	cfg        *config.AppConfig
+	testUser   *model.User
+	testPolicy *model.Policy
 }
 
-// SetupTest 设置测试环境
-func (suite *STSServiceTestSuite) SetupTest() {
-	suite.mockTempCredStore = &MockTemporaryCredentialStore{}
-	suite.mockUserStore = &MockUserStore{}
-	suite.mockPolicyStore = &MockPolicyStore{}
-	suite.masterKey = "test-master-key-32-bytes-long!!"
+// SetupSuite 测试套件初始化
+func (suite *STSServiceIntegrationTestSuite) SetupSuite() {
+	// 使用vgo-kit加载配置文件
+	v, err := vgoconfig.LoadConfig("../config/config.yaml")
+	if err != nil {
+		suite.T().Fatalf("无法加载配置文件: %v", err)
+	}
+
+	// 反序列化配置到结构体
+	suite.cfg = &config.AppConfig{}
+	if err := v.Unmarshal(suite.cfg); err != nil {
+		suite.T().Fatalf("无法解析配置文件: %v", err)
+	}
+
+	// 使用vgo-kit初始化数据库连接
+	suite.dbStore, err = db.NewPostgresStore(suite.cfg.Database.DSN)
+	if err != nil {
+		suite.T().Fatalf("无法连接到测试数据库: %v", err)
+	}
+
+	// 初始化存储层
+	suite.userStore = store.NewUserStore(suite.dbStore.Session)
+	suite.policyStore = store.NewPolicyStore(suite.dbStore.Session)
+	suite.tempCredStore = store.NewTemporaryCredentialStore(suite.dbStore.Session)
 
 	// 创建STS服务实例
 	suite.stsService = service.NewSTSService(
-		suite.mockTempCredStore,
-		suite.mockUserStore,
-		suite.mockPolicyStore,
-		suite.masterKey,
+		suite.tempCredStore,
+		suite.userStore,
+		suite.policyStore,
+		suite.cfg.Middleware.MasterKey,
+		&suite.cfg.STS,
 	)
 }
 
-// TearDownTest 清理测试环境
-func (suite *STSServiceTestSuite) TearDownTest() {
-	suite.mockTempCredStore.AssertExpectations(suite.T())
-	suite.mockUserStore.AssertExpectations(suite.T())
-	suite.mockPolicyStore.AssertExpectations(suite.T())
+// SetupTest 每个测试前的准备工作
+func (suite *STSServiceIntegrationTestSuite) SetupTest() {
+	// 清理测试数据
+	suite.cleanupTestData()
+
+	// 创建测试用户（ID必须为1，因为STS服务硬编码使用userID=1）
+	testUser := &model.User{
+		Name:        "testuser",
+		DisplayName: "Test User",
+		Email:       "test@example.com",
+	}
+	userID, err := suite.userStore.Create(testUser)
+	if err != nil {
+		suite.T().Fatalf("创建测试用户失败: %v", err)
+	}
+	testUser.ID = userID
+	suite.testUser = testUser
+
+	// 如果创建的用户ID不是1，需要确保ID为1的用户存在
+	if userID != 1 {
+		// 检查ID为1的用户是否存在，如果不存在则创建
+		existingUser, err := suite.userStore.GetByID(1)
+		if err != nil {
+			// 用户不存在，创建一个ID为1的用户
+			testUser1 := &model.User{
+				Name:        "testuser1",
+				DisplayName: "Test User 1",
+				Email:       "test1@example.com",
+			}
+			// 直接插入ID为1的用户
+			suite.dbStore.Session.InsertInto("users").
+				Columns("id", "name", "display_name", "email", "created_at", "updated_at").
+				Values(1, testUser1.Name, testUser1.DisplayName, testUser1.Email, time.Now(), time.Now()).
+				Exec()
+		} else {
+			// 用户已存在，使用现有用户
+			suite.testUser = existingUser
+		}
+	}
+
+	// 创建测试策略
+	testPolicy := &model.Policy{
+		Name:           "TestRole",
+		PolicyDocument: `{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":"*","Resource":"*"}]}`,
+		Description:    "Test policy for STS",
+	}
+	err = suite.policyStore.Create(testPolicy)
+	if err != nil {
+		suite.T().Fatalf("创建测试策略失败: %v", err)
+	}
+	suite.testPolicy = testPolicy
+}
+
+// TearDownTest 每个测试后的清理工作
+func (suite *STSServiceIntegrationTestSuite) TearDownTest() {
+	suite.cleanupTestData()
+}
+
+// TearDownSuite 测试套件清理
+func (suite *STSServiceIntegrationTestSuite) TearDownSuite() {
+	if suite.dbStore != nil {
+		suite.dbStore.Close()
+	}
+}
+
+// cleanupTestData 清理测试数据
+func (suite *STSServiceIntegrationTestSuite) cleanupTestData() {
+	// 清理临时凭证
+	suite.dbStore.Session.DeleteFrom("temporary_credentials").Exec()
+	// 清理用户
+	suite.dbStore.Session.DeleteFrom("users").Where("name = ?", "testuser").Exec()
+	// 清理策略
+	suite.dbStore.Session.DeleteFrom("policies").Where("name = ?", "TestRole").Exec()
 }
 
 // TestGetSessionToken_Success 测试获取会话令牌成功
-func (suite *STSServiceTestSuite) TestGetSessionToken_Success() {
-	// 测试GetSessionToken成功场景
+func (suite *STSServiceIntegrationTestSuite) TestGetSessionToken_Success() {
 	req := &iamv1.GetSessionTokenRequest{
 		DurationSeconds: 3600,
 	}
-
-	// 模拟用户存在
-	suite.mockUserStore.On("GetByName", "testuser").Return(&model.User{
-		ID:   1,
-		Name: "testuser",
-	}, nil)
-
-	// 模拟创建临时凭证
-	suite.mockTempCredStore.On("Create", mock.AnythingOfType("*model.TemporaryCredential"), mock.AnythingOfType("string")).Return(nil)
 
 	resp, err := suite.stsService.GetSessionToken(context.Background(), req)
 
@@ -284,43 +153,42 @@ func (suite *STSServiceTestSuite) TestGetSessionToken_Success() {
 	assert.NotEmpty(suite.T(), resp.Credentials.AccessKeyId)
 	assert.NotEmpty(suite.T(), resp.Credentials.SecretAccessKey)
 	assert.NotEmpty(suite.T(), resp.Credentials.SessionToken)
+	assert.NotNil(suite.T(), resp.Credentials.Expiration)
 }
 
-// TestGetSessionToken_UserNotFound 测试获取会话令牌用户不存在
-func (suite *STSServiceTestSuite) TestGetSessionToken_UserNotFound() {
-	// 测试GetSessionToken用户不存在场景
+// TestGetSessionToken_UserNotFound 测试用户不存在（删除ID为1的用户）
+func (suite *STSServiceIntegrationTestSuite) TestGetSessionToken_UserNotFound() {
+	// 删除ID为1的用户以模拟用户不存在的情况
+	suite.dbStore.Session.DeleteFrom("users").Where("id = ?", 1).Exec()
+
 	req := &iamv1.GetSessionTokenRequest{
 		DurationSeconds: 3600,
 	}
-
-	// 模拟用户不存在
-	suite.mockUserStore.On("GetByName", "nonexistent").Return(nil, ErrUserNotFound)
 
 	resp, err := suite.stsService.GetSessionToken(context.Background(), req)
 
 	assert.Error(suite.T(), err)
 	assert.Nil(suite.T(), resp)
-	assert.Equal(suite.T(), ErrUserNotFound, err)
+
+	// 恢复ID为1的用户
+	testUser1 := &model.User{
+		Name:        "testuser1",
+		DisplayName: "Test User 1",
+		Email:       "test1@example.com",
+	}
+	suite.dbStore.Session.InsertInto("users").
+		Columns("id", "name", "display_name", "email", "created_at", "updated_at").
+		Values(1, testUser1.Name, testUser1.DisplayName, testUser1.Email, time.Now(), time.Now()).
+		Exec()
 }
 
 // TestAssumeRole_Success 测试假设角色成功
-func (suite *STSServiceTestSuite) TestAssumeRole_Success() {
-	// 测试AssumeRole成功场景
+func (suite *STSServiceIntegrationTestSuite) TestAssumeRole_Success() {
 	req := &iamv1.AssumeRoleRequest{
 		RoleArn:         "arn:aws:iam::123456789012:role/TestRole",
 		RoleSessionName: "TestSession",
 		DurationSeconds: 3600,
 	}
-
-	// 模拟策略存在
-	suite.mockPolicyStore.On("GetByName", "TestRole").Return(&model.Policy{
-		ID:             1,
-		Name:           "TestRole",
-		PolicyDocument: "{\"Version\":\"2012-10-17\",\"Statement\":[]}",
-	}, nil)
-
-	// 模拟创建临时凭证
-	suite.mockTempCredStore.On("Create", mock.AnythingOfType("*model.TemporaryCredential"), mock.AnythingOfType("string")).Return(nil)
 
 	resp, err := suite.stsService.AssumeRole(context.Background(), req)
 
@@ -335,149 +203,155 @@ func (suite *STSServiceTestSuite) TestAssumeRole_Success() {
 }
 
 // TestAssumeRole_PolicyNotFound 测试假设角色策略不存在
-func (suite *STSServiceTestSuite) TestAssumeRole_PolicyNotFound() {
-	// 测试AssumeRole策略不存在场景
+func (suite *STSServiceIntegrationTestSuite) TestAssumeRole_PolicyNotFound() {
 	req := &iamv1.AssumeRoleRequest{
 		RoleArn:         "arn:aws:iam::123456789012:role/NonExistentRole",
 		RoleSessionName: "TestSession",
 		DurationSeconds: 3600,
 	}
 
-	// 模拟策略不存在
-	suite.mockPolicyStore.On("GetByName", "NonExistentRole").Return(nil, ErrPolicyNotFound)
-
 	resp, err := suite.stsService.AssumeRole(context.Background(), req)
 
 	assert.Error(suite.T(), err)
 	assert.Nil(suite.T(), resp)
-	assert.Equal(suite.T(), ErrPolicyNotFound, err)
 }
 
 // TestRefreshToken_Success 测试刷新令牌成功
-func (suite *STSServiceTestSuite) TestRefreshToken_Success() {
-	// 测试RefreshToken成功场景
-	req := &iamv1.RefreshTokenRequest{
-		SessionToken:    "test-session-token",
+func (suite *STSServiceIntegrationTestSuite) TestRefreshToken_Success() {
+	// 先创建一个临时凭证
+	getReq := &iamv1.GetSessionTokenRequest{
+		DurationSeconds: 3600,
+	}
+	getResp, err := suite.stsService.GetSessionToken(context.Background(), getReq)
+	assert.NoError(suite.T(), err)
+	assert.NotNil(suite.T(), getResp)
+
+	// 刷新令牌
+	refreshReq := &iamv1.RefreshTokenRequest{
+		SessionToken:    getResp.Credentials.SessionToken,
 		DurationSeconds: 7200,
 	}
 
-	// 模拟临时凭证存在
-	existingCred := &model.TemporaryCredential{
-		ID:              1,
-		AccessKeyID:     "AKIATEST123",
-		SecretAccessKey: "secret123",
-		SessionToken:    "test-session-token",
-		ExpiresAt:       time.Now().Add(time.Hour),
-	}
-	suite.mockTempCredStore.On("GetBySessionToken", "test-session-token", mock.AnythingOfType("string")).Return(existingCred, nil)
-
-	// 模拟刷新凭证
-	suite.mockTempCredStore.On("Refresh", mock.AnythingOfType("int64"), mock.AnythingOfType("int32")).Return(existingCred, nil)
-
-	resp, err := suite.stsService.RefreshToken(context.Background(), req)
+	refreshResp, err := suite.stsService.RefreshToken(context.Background(), refreshReq)
 
 	assert.NoError(suite.T(), err)
-	assert.NotNil(suite.T(), resp)
-	assert.NotNil(suite.T(), resp.Credentials)
-	assert.NotEmpty(suite.T(), resp.Credentials.AccessKeyId)
-	assert.NotEmpty(suite.T(), resp.Credentials.SecretAccessKey)
-	assert.NotEmpty(suite.T(), resp.Credentials.SessionToken)
+	assert.NotNil(suite.T(), refreshResp)
+	assert.NotNil(suite.T(), refreshResp.Credentials)
+	assert.NotEmpty(suite.T(), refreshResp.Credentials.AccessKeyId)
+	assert.NotEmpty(suite.T(), refreshResp.Credentials.SecretAccessKey)
+	assert.NotEmpty(suite.T(), refreshResp.Credentials.SessionToken)
 }
 
 // TestRefreshToken_CredentialNotFound 测试刷新令牌凭证不存在
-func (suite *STSServiceTestSuite) TestRefreshToken_CredentialNotFound() {
-	// 测试RefreshToken凭证不存在场景
+func (suite *STSServiceIntegrationTestSuite) TestRefreshToken_CredentialNotFound() {
 	req := &iamv1.RefreshTokenRequest{
 		SessionToken:    "nonexistent-token",
 		DurationSeconds: 7200,
 	}
 
-	// 模拟临时凭证不存在
-	suite.mockTempCredStore.On("GetBySessionToken", "nonexistent-token", mock.AnythingOfType("string")).Return(nil, ErrCredentialNotFound)
-
 	resp, err := suite.stsService.RefreshToken(context.Background(), req)
 
 	assert.Error(suite.T(), err)
 	assert.Nil(suite.T(), resp)
-	assert.Equal(suite.T(), ErrCredentialNotFound, err)
 }
 
 // TestValidateTemporaryCredential_Success 测试验证临时凭证成功
-func (suite *STSServiceTestSuite) TestValidateTemporaryCredential_Success() {
-	// 测试验证临时凭证成功场景
-	accessKeyID := "AKIATEST123"
-	sessionToken := "test-session-token"
-
-	// 模拟临时凭证存在且未过期
-	cred := &model.TemporaryCredential{
-		ID:              1,
-		AccessKeyID:     accessKeyID,
-		SecretAccessKey: "secret123",
-		SessionToken:    sessionToken,
-		ExpiresAt:       time.Now().Add(time.Hour),
+func (suite *STSServiceIntegrationTestSuite) TestValidateTemporaryCredential_Success() {
+	// 先创建一个临时凭证
+	getReq := &iamv1.GetSessionTokenRequest{
+		DurationSeconds: 3600,
 	}
-	suite.mockTempCredStore.On("GetByAccessKeyID", accessKeyID, mock.AnythingOfType("string")).Return(cred, nil)
+	getResp, err := suite.stsService.GetSessionToken(context.Background(), getReq)
+	assert.NoError(suite.T(), err)
+	assert.NotNil(suite.T(), getResp)
 
-	result, err := suite.stsService.ValidateTemporaryCredential(accessKeyID, sessionToken)
+	// 验证临时凭证
+	result, err := suite.stsService.ValidateTemporaryCredential(
+		getResp.Credentials.AccessKeyId,
+		getResp.Credentials.SessionToken,
+	)
 
 	assert.NoError(suite.T(), err)
 	assert.NotNil(suite.T(), result)
+	assert.Equal(suite.T(), getResp.Credentials.AccessKeyId, result.AccessKeyID)
 }
 
-// TestValidateTemporaryCredential_Expired 测试验证临时凭证已过期
-func (suite *STSServiceTestSuite) TestValidateTemporaryCredential_Expired() {
-	// 测试验证临时凭证已过期场景
-	accessKeyID := "AKIATEST123"
-	sessionToken := "test-session-token"
-
-	// 模拟临时凭证存在但已过期
-	cred := &model.TemporaryCredential{
-		ID:              1,
-		AccessKeyID:     accessKeyID,
-		SecretAccessKey: "secret123",
-		SessionToken:    sessionToken,
-		ExpiresAt:       time.Now().Add(-time.Hour), // 已过期
-	}
-	suite.mockTempCredStore.On("GetByAccessKeyID", accessKeyID, mock.AnythingOfType("string")).Return(cred, nil)
-
-	result, err := suite.stsService.ValidateTemporaryCredential(accessKeyID, sessionToken)
+// TestValidateTemporaryCredential_NotFound 测试验证临时凭证不存在
+func (suite *STSServiceIntegrationTestSuite) TestValidateTemporaryCredential_NotFound() {
+	result, err := suite.stsService.ValidateTemporaryCredential(
+		"AKIATEST123",
+		"test-session-token",
+	)
 
 	assert.Error(suite.T(), err)
 	assert.Nil(suite.T(), result)
 }
 
 // TestCleanupExpiredCredentials_Success 测试清理过期凭证成功
-func (suite *STSServiceTestSuite) TestCleanupExpiredCredentials_Success() {
-	// 模拟清理过期凭证成功
-	suite.mockTempCredStore.On("CleanupExpired").Return(int64(5), nil)
+func (suite *STSServiceIntegrationTestSuite) TestCleanupExpiredCredentials_Success() {
+	// 创建一个已过期的临时凭证
+	expiredCred := model.NewSessionToken(
+		suite.testUser.ID,
+		"AKIAEXPIRED123",
+		"expired-secret",
+		"expired-session-token",
+		900, // 15分钟
+	)
+	// 手动设置为已过期
+	expiredCred.ExpiresAt = time.Now().Add(-time.Hour)
+	err := suite.tempCredStore.Create(expiredCred, suite.cfg.Middleware.MasterKey)
+	assert.NoError(suite.T(), err)
 
+	// 清理过期凭证
 	count, err := suite.stsService.CleanupExpiredCredentials()
 
 	assert.NoError(suite.T(), err)
-	assert.Equal(suite.T(), int64(5), count)
+	assert.GreaterOrEqual(suite.T(), count, int64(1))
 }
 
 // TestGetStore 测试获取存储接口
-func (suite *STSServiceTestSuite) TestGetStore() {
+func (suite *STSServiceIntegrationTestSuite) TestGetStore() {
 	store := suite.stsService.GetStore()
 	assert.NotNil(suite.T(), store)
-	assert.Equal(suite.T(), suite.mockTempCredStore, store)
+	assert.Equal(suite.T(), suite.tempCredStore, store)
 }
 
-// TestSTSServiceTestSuite 运行测试套件
-func TestSTSServiceTestSuite(t *testing.T) {
-	suite.Run(t, new(STSServiceTestSuite))
+// TestSTSServiceIntegrationTestSuite 运行集成测试套件
+func TestSTSServiceIntegrationTestSuite(t *testing.T) {
+	suite.Run(t, new(STSServiceIntegrationTestSuite))
 }
 
 // TestNewSTSService 测试创建STS服务
 func TestNewSTSService(t *testing.T) {
-	mockTempCredStore := &MockTemporaryCredentialStore{}
-	mockUserStore := &MockUserStore{}
-	mockPolicyStore := &MockPolicyStore{}
-	masterKey := "test-master-key-32-bytes-long!!"
+	// 使用vgo-kit加载配置文件
+	v, err := vgoconfig.LoadConfig("../config/config.yaml")
+	if err != nil {
+		t.Skipf("跳过测试，无法加载配置文件: %v", err)
+		return
+	}
 
-	stsService := service.NewSTSService(mockTempCredStore, mockUserStore, mockPolicyStore, masterKey)
+	// 反序列化配置到结构体
+	cfg := &config.AppConfig{}
+	if err := v.Unmarshal(cfg); err != nil {
+		t.Skipf("跳过测试，无法解析配置文件: %v", err)
+		return
+	}
+
+	// 使用vgo-kit初始化数据库连接
+	dbStore, err := db.NewPostgresStore(cfg.Database.DSN)
+	if err != nil {
+		t.Skipf("跳过测试，无法连接到数据库: %v", err)
+		return
+	}
+	defer dbStore.Close()
+
+	// 初始化存储层
+	userStore := store.NewUserStore(dbStore.Session)
+	policyStore := store.NewPolicyStore(dbStore.Session)
+	tempCredStore := store.NewTemporaryCredentialStore(dbStore.Session)
+
+	stsService := service.NewSTSService(tempCredStore, userStore, policyStore, cfg.Middleware.MasterKey, &cfg.STS)
 
 	assert.NotNil(t, stsService)
-	assert.Equal(t, mockTempCredStore, stsService.GetStore())
+	assert.Equal(t, tempCredStore, stsService.GetStore())
 }

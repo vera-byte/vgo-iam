@@ -1,0 +1,63 @@
+grpc:
+  port: "50051"
+
+database:
+  dsn: "postgres://vgo_user:vgo_password@localhost:5432/vgo_iam?sslmode=disable"
+
+middleware:
+  master_key: "0b9caecb31b882aa86cfeb68cd41c9ff28c21a02e8d507f442e805ea88925ec3" # 实际使用时替换为安全密钥
+  # 忽略认证
+  ignore:
+    - "/iam.v1.IAM/VerifyAccessKey"
+
+# Sentry和日志配置
+log:
+  level: info
+  directory: logs
+  filename: iam.log
+  stdout: true
+  max_size: 100
+  max_backups: 3
+  max_age: 28
+  compress: true
+
+sentry:
+  enabled: false
+  dsn: "https://d019949ed7dddcc9ea45a73a1144685d@sentry.mailevw.com/18"
+  environment: "development"
+  debug: true
+
+ratelimit:
+  enabled: true
+  type: "redis" # "redis" or "memory"
+  limit: 1000 # 每分钟最大请求数
+  window: "1m" # 时间窗口
+  prefix: "iam_ratelimit"
+  redis_addr: "localhost:6379"
+  redis_db: 0
+  redis_pass: ""
+
+cache:
+  addr: "localhost:6379"
+  password: ""
+  db: 0
+  pool_size: 100
+  min_idle_conns: 10
+  dial_timeout: 10s
+  read_timeout: 10s
+  write_timeout: 10s
+
+# STS临时凭证配置
+sts:
+  # 默认过期时间（秒）
+  default_duration: 3600 # 1小时
+  # 最大过期时间（秒）
+  max_duration: 43200 # 12小时
+  # 最小过期时间（秒）
+  min_duration: 900 # 15分钟
+  # 清理过期凭证的间隔时间
+  cleanup_interval: "1h"
+  # 是否启用自动清理
+  auto_cleanup: true
+  # 单个用户最大临时凭证数量
+  max_credentials_per_user: 10

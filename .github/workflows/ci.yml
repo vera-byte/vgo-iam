@@ -1,0 +1,233 @@
+name: CI for vgo-iam
+
+# 触发条件：推送到主分支或创建PR时
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  GO_VERSION: '1.24.1'
+  REGISTRY: ghcr.io
+  IMAGE_NAME: vera-byte/vgo-iam
+
+jobs:
+  # 测试作业
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: vgo_iam_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          # 获取完整历史，包括子模块
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Cache Go modules
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+
+      - name: Download dependencies
+        run: |
+          cd vgo-iam
+          go mod download
+
+      - name: Verify dependencies
+        run: |
+          cd vgo-iam
+          go mod verify
+
+      - name: Run database migrations
+        run: |
+          # 安装migrate工具
+          go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+          # 运行迁移（如果有迁移文件）
+          if [ -d "vgo-iam/migrations" ] && [ "$(ls -A vgo-iam/migrations)" ]; then
+            migrate -path vgo-iam/migrations -database "postgres://postgres:postgres@localhost:5432/vgo_iam_test?sslmode=disable" up
+          fi
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/vgo_iam_test?sslmode=disable
+
+      - name: Run tests
+        run: |
+          cd vgo-iam
+          go test -v -race -coverprofile=coverage.out ./...
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/vgo_iam_test?sslmode=disable
+          REDIS_URL: redis://localhost:6379
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./vgo-iam/coverage.out
+          flags: unittests
+          name: codecov-vgo-iam
+
+  # 代码质量检查
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: latest
+          working-directory: vgo-iam
+          args: --timeout=5m
+
+  # 安全扫描
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Run Gosec Security Scanner
+        uses: securecodewarrior/github-action-gosec@master
+        with:
+          args: './vgo-iam/...'
+
+  # 构建检查
+  build:
+    name: Build Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Build binary
+        run: |
+          cd vgo-iam
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+            -ldflags "-X github.com/vera-byte/vgo-iam/internal/version.Version=dev \
+            -X github.com/vera-byte/vgo-iam/internal/version.Commit=${{ github.sha }} \
+            -X github.com/vera-byte/vgo-iam/internal/version.BuildTime=$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            -o vgo-iam ./cmd
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vgo-iam-binary
+          path: vgo-iam/vgo-iam
+
+  # Docker镜像构建（仅在PR时测试构建）
+  docker-build:
+    name: Docker Build Test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image (test only)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./vgo-iam/Dockerfile
+          push: false
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:test
+          build-args: |
+            VERSION=test
+            COMMIT=${{ github.sha }}
+            BUILD_TIME=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # 代码格式检查
+  format:
+    name: Format Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      - name: Check formatting
+        run: |
+          cd vgo-iam
+          if [ "$(gofmt -s -l . | wc -l)" -gt 0 ]; then
+            echo "以下文件需要格式化："
+            gofmt -s -l .
+            exit 1
+          fi
+
+      - name: Check imports
+        run: |
+          go install golang.org/x/tools/cmd/goimports@latest
+          cd vgo-iam
+          if [ "$(goimports -l . | wc -l)" -gt 0 ]; then
+            echo "以下文件的导入需要整理："
+            goimports -l .
+            exit 1
+          fi

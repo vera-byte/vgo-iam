@@ -60,7 +60,6 @@ func (suite *STSServiceIntegrationTestSuite) SetupSuite() {
 		suite.userStore,
 		suite.policyStore,
 		suite.cfg.Middleware.MasterKey,
-		&suite.cfg.STS,
 	)
 }
 
@@ -350,7 +349,7 @@ func TestNewSTSService(t *testing.T) {
 	policyStore := store.NewPolicyStore(dbStore.Session)
 	tempCredStore := store.NewTemporaryCredentialStore(dbStore.Session)
 
-	stsService := service.NewSTSService(tempCredStore, userStore, policyStore, cfg.Middleware.MasterKey, &cfg.STS)
+	stsService := service.NewSTSService(tempCredStore, userStore, policyStore, cfg.Middleware.MasterKey)
 
 	assert.NotNil(t, stsService)
 	assert.Equal(t, tempCredStore, stsService.GetStore())

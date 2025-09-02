@@ -17,8 +17,8 @@ import (
 )
 
 const (
-	AccessKeyID     = "clQEoeGlHr0Xkke9HmdM"
-	SecretAccessKey = "Efz04B__Z-rj0R_6mr84GtZd6GJ62bs33rEcfObH"
+	AccessKeyID     = "Ga0rTSg3NSyoOkFUx9jg"
+	SecretAccessKey = "poh7b4bQi9fwXfIPXVGMzF0qiqaf9gDI9drEXtpk"
 )
 
 // 客户端

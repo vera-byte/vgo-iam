@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/gocraft/dbr/v2"
 	"github.com/spf13/cobra"
@@ -13,6 +14,7 @@ import (
 	"github.com/vera-byte/vgo-iam/internal/config"
 	"github.com/vera-byte/vgo-iam/internal/model"
 	"github.com/vera-byte/vgo-iam/internal/service"
+	"github.com/vera-byte/vgo-iam/internal/util"
 	vgokit "github.com/vera-byte/vgo-kit"
 	"go.uber.org/zap"
 	"golang.org/x/term"
@@ -114,21 +116,19 @@ func initAdminUser(userService *service.UserService, policyService *service.Poli
 		return err
 	}
 
-	// 确保在函数退出时处理事务
+	// 用于标记是否需要回滚
+	var shouldCommit = false
 	defer func() {
 		if r := recover(); r != nil {
 			tx.RollbackUnlessCommitted()
 			vgokit.Log.Error("事务回滚 - panic", zap.Any("panic", r))
 			panic(r)
 		}
-	}()
-
-	// 用于标记是否需要回滚
-	var shouldCommit = false
-	defer func() {
 		if shouldCommit {
 			if commitErr := tx.Commit(); commitErr != nil {
 				vgokit.Log.Error("提交事务失败", zap.Error(commitErr))
+			} else {
+				vgokit.Log.Info("事务提交成功")
 			}
 		} else {
 			tx.RollbackUnlessCommitted()
@@ -136,30 +136,54 @@ func initAdminUser(userService *service.UserService, policyService *service.Poli
 		}
 	}()
 
-	user, err := userService.CreateUser(ctx, "admin", "System Administrator", email)
+	// 在事务中创建或获取管理员用户
+	var userID int64
+	err = tx.QueryRow("SELECT id FROM users WHERE name = $1", "admin").Scan(&userID)
 	if err != nil {
-		// 如果用户已存在，获取现有用户
-		if strings.Contains(err.Error(), "already exists") {
-			vgokit.Log.Info("管理员用户已存在，获取现有用户信息")
-			user, err = userService.GetUser(ctx, "admin")
+		if err.Error() == "sql: no rows in result set" {
+			// 用户不存在，创建新用户
+			err = tx.QueryRow(`
+				INSERT INTO users (name, display_name, email, created_at, updated_at) 
+				VALUES ($1, $2, $3, NOW(), NOW()) 
+				RETURNING id`,
+				"admin", "System Administrator", email).Scan(&userID)
 			if err != nil {
-				vgokit.Log.Error("获取管理员用户失败", zap.Error(err))
-				// 错误时不设置shouldCommit，将触发回滚
+				vgokit.Log.Error("创建管理员用户失败", zap.Error(err))
 				return err
 			}
+			vgokit.Log.Info("管理员用户创建成功", zap.Int64("user_id", userID))
 		} else {
-			vgokit.Log.Error("创建管理员用户失败", zap.Error(err))
-			// 错误时不设置shouldCommit，将触发回滚
+			vgokit.Log.Error("查询管理员用户失败", zap.Error(err))
 			return err
 		}
+	} else {
+		vgokit.Log.Info("管理员用户已存在", zap.Int64("user_id", userID))
 	}
-	vgokit.Log.Info("管理员用户创建成功", zap.Int64("user_id", user.ID))
 
-	// 设置管理员用户密码
-	vgokit.Log.Info("正在设置管理员用户密码...", zap.Int64("user_id", user.ID))
-	if err = userService.UpdateUserPassword(ctx, user.ID, password); err != nil {
+	// 设置管理员用户密码（在事务内部直接更新）
+	vgokit.Log.Info("正在设置管理员用户密码...", zap.Int64("user_id", userID))
+	
+	// 验证密码强度
+	if !util.ValidatePasswordStrength(password) {
+		vgokit.Log.Error("密码不符合强度要求")
+		return fmt.Errorf("password does not meet strength requirements")
+	}
+	
+	// 生成密码哈希
+	passwordHash, err := util.HashPassword(password)
+	if err != nil {
+		vgokit.Log.Error("密码哈希生成失败", zap.Error(err))
+		return err
+	}
+	
+	// 在事务内部直接更新密码
+	_, err = tx.Update("users").
+		Set("password_hash", passwordHash).
+		Set("updated_at", time.Now()).
+		Where("id = ?", userID).
+		Exec()
+	if err != nil {
 		vgokit.Log.Error("设置管理员密码失败", zap.Error(err))
-		// 错误时不设置shouldCommit，将触发回滚
 		return err
 	}
 	vgokit.Log.Info("管理员用户密码设置成功")
@@ -179,32 +203,50 @@ func initAdminUser(userService *service.UserService, policyService *service.Poli
 		vgokit.Log.Info("Admin policy created successfully")
 	}
 
-	attachPolicyErr := userService.AttachPolicy(ctx, "admin", "admin-policy")
-	if attachPolicyErr != nil {
-		// 忽略已存在的错误s
-		if attachPolicyErr.Error() != "user policy already exists" {
-			vgokit.Log.Error("Failed to attach policy to admin user", zap.Error(attachPolicyErr))
-			// 错误时不设置shouldCommit，将触发回滚
-			return attachPolicyErr
-		}
+	// 在事务内部直接绑定策略到用户
+	// 首先获取策略ID
+	var policyID int
+	err = tx.Select("id").From("policies").Where("name = ?", "admin-policy").LoadOne(&policyID)
+	if err != nil {
+		vgokit.Log.Error("Failed to find admin policy", zap.Error(err))
+		return err
 	}
 
-	// 检查是否已有访问密钥
-	accessKeys, err := accessKeyService.ListAccessKeys(ctx, "admin")
+	// 检查策略绑定是否已存在
+	var existingBinding int
+	err = tx.Select("COUNT(*)").From("user_policies").Where("user_id = ? AND policy_id = ?", userID, policyID).LoadOne(&existingBinding)
 	if err != nil {
-		vgokit.Log.Error("Failed to list admin access keys", zap.Error(err))
-		// 错误时不设置shouldCommit，将触发回滚
+		vgokit.Log.Error("Failed to check existing policy binding", zap.Error(err))
+		return err
+	}
+
+	// 如果策略绑定不存在，则创建
+	if existingBinding == 0 {
+		_, err = tx.InsertInto("user_policies").Columns("user_id", "policy_id").Values(userID, policyID).Exec()
+		if err != nil {
+			vgokit.Log.Error("Failed to attach policy to admin user", zap.Error(err))
+			return err
+		}
+		vgokit.Log.Info("Admin policy attached successfully")
+	} else {
+		vgokit.Log.Info("管理员策略绑定已存在，跳过")
+	}
+
+	// 在事务内部直接检查是否已有访问密钥
+	var accessKeyCount int
+	err = tx.Select("COUNT(*)").From("access_keys").Where("user_id = ?", userID).LoadOne(&accessKeyCount)
+	if err != nil {
+		vgokit.Log.Error("Failed to count admin access keys", zap.Error(err))
 		return err
 	}
 
 	// 如果没有访问密钥，创建一个
-	if len(accessKeys) == 0 {
+	if accessKeyCount == 0 {
 		vgokit.Log.Info("No access keys found for admin, creating...")
 		// 为admin用户创建一个不绑定应用的访问密钥，跳过开发者认证检查
-		accessKey, err := createAdminAccessKey(ctx, accessKeyService, user.ID)
+		accessKey, err := createAdminAccessKey(ctx, accessKeyService, userID)
 		if err != nil {
 			vgokit.Log.Error("Failed to create admin access key", zap.Error(err))
-			// 错误时不设置shouldCommit，将触发回滚
 			return err
 		}
 		vgokit.Log.Info("Admin access key created",
@@ -223,11 +265,18 @@ func initAdminUser(userService *service.UserService, policyService *service.Poli
 
 // createAdminAccessKey 为admin用户创建访问密钥，跳过开发者认证检查
 func createAdminAccessKey(ctx context.Context, accessKeyService *service.AccessKeyService, userID int64) (*model.AccessKey, error) {
-	// 临时禁用开发者认证检查
-	accessKeyService.SetDeveloperVerificationService(nil)
+	// 生成访问密钥ID和密钥
+	accessKeyID := util.GenerateAccessKeyID()
+	secretKey := util.GenerateSecretAccessKey()
 	
-	// 创建访问密钥
-	accessKey, err := accessKeyService.CreateAccessKey(ctx, "admin")
+	// 创建访问密钥模型
+	accessKey := model.NewAccessKey(userID, accessKeyID, secretKey, nil, "Admin access key")
+	
+	// 直接使用AccessKeyStore创建访问密钥
+	accessKeyStore := accessKeyService.GetStore()
+	masterKey := accessKeyService.GetMasterKey()
+	
+	err := accessKeyStore.Create(accessKey, masterKey)
 	if err != nil {
 		return nil, err
 	}

@@ -4,16 +4,20 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"runtime"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 	"github.com/vera-byte/vgo-iam/internal/api"
 	"github.com/vera-byte/vgo-iam/internal/bootstrap"
 	"github.com/vera-byte/vgo-iam/internal/config"
+	"github.com/vera-byte/vgo-iam/internal/errors"
 	"github.com/vera-byte/vgo-iam/internal/model"
 	"github.com/vera-byte/vgo-iam/internal/service"
+	iamv1 "github.com/vera-byte/vgo-iam/pkg/proto"
 	vgokit "github.com/vera-byte/vgo-kit"
 	"go.uber.org/zap"
 )
@@ -119,6 +123,16 @@ func (s *DebugServer) setupRoutes() {
 		// 开发者认证
 		api.POST("/developer-verification", s.handleSubmitDeveloperVerification)
 		api.GET("/developer-verification/:username", s.handleGetDeveloperVerification)
+
+		// 系统监控
+		api.GET("/metrics", s.handleMetrics)
+		api.GET("/health", s.handleHealth)
+		api.GET("/logs", s.handleLogs)
+		api.GET("/system-info", s.handleSystemInfo)
+		
+		// 配置管理
+		api.GET("/config", s.handleGetConfig)
+		api.POST("/config/update", s.handleUpdateConfig)
 	}
 }
 
@@ -186,7 +200,58 @@ func (s *DebugServer) handleUpdateUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusNotImplemented, gin.H{"message": "用户更新功能暂未实现"})
+	var req struct {
+		DisplayName string `json:"display_name"`
+		Email       string `json:"email"`
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "请求格式无效: " + err.Error()})
+		return
+	}
+
+	// 验证至少提供一个更新字段
+	if req.DisplayName == "" && req.Email == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "至少需要提供一个更新字段(display_name或email)"})
+		return
+	}
+
+	// 验证邮箱格式
+	if req.Email != "" {
+		if len(req.Email) > 100 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "邮箱长度不能超过100个字符"})
+			return
+		}
+	}
+
+	// 验证显示名称
+	if req.DisplayName != "" {
+		if len(req.DisplayName) > 50 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "显示名称长度不能超过50个字符"})
+			return
+		}
+	}
+
+	ctx := context.Background()
+	
+	// 首先获取用户信息
+	user, err := s.iamServer.UserService().GetUser(ctx, username)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "用户不存在: " + err.Error()})
+		return
+	}
+
+	// 更新用户信息
+	updatedUser, err := s.iamServer.UserService().UpdateUser(ctx, user.ID, req.DisplayName, req.Email)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "更新用户失败: " + err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "用户更新成功",
+		"user":    updatedUser,
+	})
 }
 
 // handleDeleteUser 删除用户
@@ -202,10 +267,37 @@ func (s *DebugServer) handleDeleteUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusNotImplemented, gin.H{"message": "用户删除功能暂未实现"})
+	ctx := context.Background()
+	
+	// 首先检查用户是否存在
+	user, err := s.iamServer.UserService().GetUser(ctx, username)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "用户不存在: " + err.Error()})
+		return
+	}
+
+	// 删除用户
+	err = s.iamServer.UserService().DeleteUser(ctx, user.ID)
+	if err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			c.JSON(http.StatusNotFound, gin.H{"error": "用户不存在"})
+		} else if strings.Contains(err.Error(), "permission") {
+			c.JSON(http.StatusForbidden, gin.H{"error": "没有权限删除此用户"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "删除用户失败: " + err.Error()})
+		}
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "用户删除成功",
+		"username": username,
+	})
 }
 
-// handleListUsers 列出用户
+// handleListUsers 处理用户列表请求
+// 参数: c - Gin上下文
+// 功能: 获取系统中所有用户的列表
 func (s *DebugServer) handleListUsers(c *gin.Context) {
 	pageStr := c.DefaultQuery("page", "1")
 	pageSizeStr := c.DefaultQuery("page_size", "10")
@@ -224,7 +316,34 @@ func (s *DebugServer) handleListUsers(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusNotImplemented, gin.H{"message": "用户列表功能暂未实现"})
+	ctx := context.Background()
+	
+	// 获取用户列表
+	users, err := s.iamServer.UserService().ListUsers(ctx)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "获取用户列表失败: " + err.Error()})
+		return
+	}
+
+	// 构建响应数据，隐藏敏感信息
+	var userList []map[string]interface{}
+	for _, user := range users {
+		userInfo := map[string]interface{}{
+			"id":           user.ID,
+			"name":         user.Name,
+			"display_name": user.DisplayName,
+			"email":        user.Email,
+			"created_at":   user.CreatedAt.Format("2006-01-02 15:04:05"),
+			"updated_at":   user.UpdatedAt.Format("2006-01-02 15:04:05"),
+		}
+		userList = append(userList, userInfo)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "获取用户列表成功",
+		"users":   userList,
+		"count":   len(userList),
+	})
 }
 
 // handleCreateAccessKey 创建访问密钥
@@ -270,19 +389,57 @@ func (s *DebugServer) handleListAccessKeys(c *gin.Context) {
 }
 
 // handleDeleteAccessKey 删除访问密钥
+// 参数:
+//   - c: Gin上下文
 func (s *DebugServer) handleDeleteAccessKey(c *gin.Context) {
-	accessKeyId := c.Param("accessKeyId")
-	if accessKeyId == "" {
+	var req struct {
+		UserName    string `json:"user_name" binding:"required"`
+		AccessKeyID string `json:"access_key_id" binding:"required"`
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "请求格式无效: " + err.Error()})
+		return
+	}
+
+	if req.UserName == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "用户名不能为空"})
+		return
+	}
+
+	if req.AccessKeyID == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "访问密钥ID不能为空"})
 		return
 	}
 
-	if len(accessKeyId) < 10 || len(accessKeyId) > 50 {
+	if len(req.AccessKeyID) < 10 || len(req.AccessKeyID) > 50 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "访问密钥ID格式无效"})
 		return
 	}
 
-	c.JSON(http.StatusNotImplemented, gin.H{"message": "访问密钥删除功能暂未实现"})
+	ctx := context.Background()
+	
+	// 调用访问密钥服务删除访问密钥
+	err := s.iamServer.AccessKeyService().DeleteAccessKey(ctx, req.UserName, req.AccessKeyID)
+	if err != nil {
+		if businessErr, ok := err.(*errors.BusinessError); ok {
+			switch businessErr.Code {
+			case errors.CodeUserNotFound:
+				c.JSON(http.StatusNotFound, gin.H{"error": "用户不存在"})
+			case errors.CodeAccessKeyNotFound:
+				c.JSON(http.StatusNotFound, gin.H{"error": "访问密钥不存在"})
+			case errors.CodePermissionDenied:
+				c.JSON(http.StatusForbidden, gin.H{"error": "没有权限删除此访问密钥"})
+			default:
+				c.JSON(http.StatusInternalServerError, gin.H{"error": businessErr.Message})
+			}
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "删除访问密钥失败: " + err.Error()})
+		}
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "访问密钥删除成功"})
 }
 
 // handleVerifyAccessKey 验证访问密钥
@@ -309,6 +466,9 @@ func (s *DebugServer) handleVerifyAccessKey(c *gin.Context) {
 }
 
 // handleCheckPermission 检查权限
+// 功能: 处理权限检查请求，验证用户对指定资源的操作权限
+// 参数: c *gin.Context - Gin上下文对象
+// 返回值: 无
 func (s *DebugServer) handleCheckPermission(c *gin.Context) {
 	var req struct {
 		Username string `json:"username" binding:"required"`
@@ -327,46 +487,210 @@ func (s *DebugServer) handleCheckPermission(c *gin.Context) {
 		return
 	}
 
-	// 验证操作
-	validActions := map[string]bool{
-		"read":   true,
-		"write":  true,
-		"delete": true,
-		"admin":  true,
-	}
-	if !validActions[req.Action] {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "操作类型无效，支持的值：read, write, delete, admin"})
-		return
-	}
-
 	// 验证资源
 	if len(req.Resource) > 200 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "资源路径长度不能超过200个字符"})
 		return
 	}
 
-	c.JSON(http.StatusNotImplemented, gin.H{"message": "权限检查功能暂未实现"})
+	ctx := context.Background()
+	
+	// 使用IAMServer的CheckPermission方法进行权限检查
+	checkReq := &iamv1.CheckPermissionRequest{
+		UserName: req.Username,
+		Action:   req.Action,
+		Resource: req.Resource,
+	}
+	
+	checkResp, err := s.iamServer.CheckPermission(ctx, checkReq)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "权限检查失败: " + err.Error()})
+		return
+	}
+
+	// 返回权限检查结果
+	response := gin.H{
+		"success":  true,
+		"allowed":  checkResp.Allowed,
+		"username": req.Username,
+		"action":   req.Action,
+		"resource": req.Resource,
+		"message":  fmt.Sprintf("权限检查完成，结果: %t", checkResp.Allowed),
+	}
+
+	c.JSON(http.StatusOK, response)
 }
 
 // 其他API处理函数...
+// handleCreatePolicy 创建策略
 func (s *DebugServer) handleCreatePolicy(c *gin.Context) {
-	c.JSON(http.StatusNotImplemented, gin.H{"message": "Not implemented yet"})
+	var req struct {
+		Name           string `json:"name" binding:"required"`
+		Description    string `json:"description"`
+		PolicyDocument string `json:"policy_document" binding:"required"`
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "请求格式无效: " + err.Error()})
+		return
+	}
+
+	// 验证策略名称
+	if len(req.Name) == 0 || len(req.Name) > 100 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "策略名称长度必须在1-100个字符之间"})
+		return
+	}
+
+	// 验证策略文档
+	if len(req.PolicyDocument) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "策略文档不能为空"})
+		return
+	}
+
+	ctx := context.Background()
+	
+	// 调用策略服务创建策略
+	policy, err := s.iamServer.PolicyService().CreatePolicy(ctx, req.Name, req.Description, req.PolicyDocument)
+	if err != nil {
+		if businessErr, ok := err.(*errors.BusinessError); ok {
+			switch businessErr.Code {
+			case errors.CodePolicyAlreadyExists:
+				c.JSON(http.StatusConflict, gin.H{"error": "策略已存在"})
+			case errors.CodeInvalidPolicy:
+				c.JSON(http.StatusBadRequest, gin.H{"error": "策略文档格式无效"})
+			default:
+				c.JSON(http.StatusInternalServerError, gin.H{"error": businessErr.Message})
+			}
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "创建策略失败: " + err.Error()})
+		}
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{"success": true, "data": policy, "message": "策略创建成功"})
 }
 
+// handleGetPolicy 获取策略
 func (s *DebugServer) handleGetPolicy(c *gin.Context) {
-	c.JSON(http.StatusNotImplemented, gin.H{"message": "Not implemented yet"})
+	policyName := c.Param("name")
+	if policyName == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "策略名称不能为空"})
+		return
+	}
+
+	ctx := context.Background()
+	
+	// 调用策略服务获取策略
+	policy, err := s.iamServer.PolicyService().GetPolicy(ctx, policyName)
+	if err != nil {
+		if businessErr, ok := err.(*errors.BusinessError); ok {
+			switch businessErr.Code {
+			case errors.CodePolicyNotFound:
+				c.JSON(http.StatusNotFound, gin.H{"error": "策略不存在"})
+			default:
+				c.JSON(http.StatusInternalServerError, gin.H{"error": businessErr.Message})
+			}
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "获取策略失败: " + err.Error()})
+		}
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"success": true, "data": policy})
 }
 
+// handleUpdatePolicy 更新策略
 func (s *DebugServer) handleUpdatePolicy(c *gin.Context) {
-	c.JSON(http.StatusNotImplemented, gin.H{"message": "Not implemented yet"})
+	policyName := c.Param("name")
+	if policyName == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "策略名称不能为空"})
+		return
+	}
+
+	var req struct {
+		Description    string `json:"description"`
+		PolicyDocument string `json:"policy_document" binding:"required"`
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "请求格式无效: " + err.Error()})
+		return
+	}
+
+	// 验证策略文档
+	if len(req.PolicyDocument) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "策略文档不能为空"})
+		return
+	}
+
+	ctx := context.Background()
+	
+	// 调用策略服务更新策略
+	policy, err := s.iamServer.PolicyService().UpdatePolicy(ctx, policyName, req.Description, req.PolicyDocument)
+	if err != nil {
+		if businessErr, ok := err.(*errors.BusinessError); ok {
+			switch businessErr.Code {
+			case errors.CodePolicyNotFound:
+				c.JSON(http.StatusNotFound, gin.H{"error": "策略不存在"})
+			case errors.CodeInvalidPolicy:
+				c.JSON(http.StatusBadRequest, gin.H{"error": "策略文档格式无效"})
+			default:
+				c.JSON(http.StatusInternalServerError, gin.H{"error": businessErr.Message})
+			}
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "更新策略失败: " + err.Error()})
+		}
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"success": true, "data": policy, "message": "策略更新成功"})
 }
 
+// handleDeletePolicy 删除策略
 func (s *DebugServer) handleDeletePolicy(c *gin.Context) {
-	c.JSON(http.StatusNotImplemented, gin.H{"message": "Not implemented yet"})
+	policyName := c.Param("name")
+	if policyName == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "策略名称不能为空"})
+		return
+	}
+
+	ctx := context.Background()
+	
+	// 调用策略服务删除策略
+	err := s.iamServer.PolicyService().DeletePolicy(ctx, policyName)
+	if err != nil {
+		if businessErr, ok := err.(*errors.BusinessError); ok {
+			switch businessErr.Code {
+			case errors.CodePolicyNotFound:
+				c.JSON(http.StatusNotFound, gin.H{"error": "策略不存在"})
+			default:
+				c.JSON(http.StatusInternalServerError, gin.H{"error": businessErr.Message})
+			}
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "删除策略失败: " + err.Error()})
+		}
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"success": true, "message": "策略删除成功"})
 }
 
+// handleListPolicies 获取策略列表
 func (s *DebugServer) handleListPolicies(c *gin.Context) {
-	c.JSON(http.StatusNotImplemented, gin.H{"message": "Not implemented yet"})
+	ctx := context.Background()
+	
+	// 调用策略服务获取策略列表
+	policies, err := s.iamServer.PolicyService().ListPolicies(ctx)
+	if err != nil {
+		if businessErr, ok := err.(*errors.BusinessError); ok {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": businessErr.Message})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "获取策略列表失败: " + err.Error()})
+		}
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"success": true, "data": policies, "count": len(policies)})
 }
 
 func (s *DebugServer) handleCreateApplication(c *gin.Context) {
@@ -714,12 +1038,113 @@ func (s *DebugServer) handleListApplications(c *gin.Context) {
 	})
 }
 
+// handleSubmitDeveloperVerification 处理提交开发者认证请求
+// 参数: 开发者类型、个人信息或企业信息
+// 返回值: 认证记录或错误信息
 func (s *DebugServer) handleSubmitDeveloperVerification(c *gin.Context) {
-	c.JSON(http.StatusNotImplemented, gin.H{"message": "Not implemented yet"})
+	var req struct {
+		DeveloperType         string `json:"developer_type" binding:"required"`
+		RealName             string `json:"real_name"`
+		IDCardNumber         string `json:"id_card_number"`
+		IDCardFrontURL       string `json:"id_card_front_url"`
+		IDCardBackURL        string `json:"id_card_back_url"`
+		CompanyName          string `json:"company_name"`
+		BusinessLicenseNumber string `json:"business_license_number"`
+		BusinessLicenseURL   string `json:"business_license_url"`
+		LegalRepresentative  string `json:"legal_representative"`
+		CompanyAddress       string `json:"company_address"`
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "请求参数错误: " + err.Error()})
+		return
+	}
+
+	// 验证开发者类型
+	if req.DeveloperType != "individual" && req.DeveloperType != "enterprise" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "开发者类型必须是 individual 或 enterprise"})
+		return
+	}
+
+	ctx := context.Background()
+
+	// 构建gRPC请求
+	grpcReq := &iamv1.SubmitDeveloperVerificationRequest{
+		DeveloperType: req.DeveloperType,
+	}
+
+	// 根据开发者类型设置相应字段
+	if req.DeveloperType == "individual" {
+		grpcReq.RealName = req.RealName
+		grpcReq.IdCardNumber = req.IDCardNumber
+		grpcReq.IdCardFrontUrl = req.IDCardFrontURL
+		grpcReq.IdCardBackUrl = req.IDCardBackURL
+	} else {
+		grpcReq.CompanyName = req.CompanyName
+		grpcReq.BusinessLicenseNumber = req.BusinessLicenseNumber
+		grpcReq.BusinessLicenseUrl = req.BusinessLicenseURL
+		grpcReq.LegalRepresentative = req.LegalRepresentative
+		grpcReq.CompanyAddress = req.CompanyAddress
+	}
+
+	// 调用IAMServer的SubmitDeveloperVerification方法
+	resp, err := s.iamServer.SubmitDeveloperVerification(ctx, grpcReq)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "提交开发者认证失败: " + err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "开发者认证提交成功",
+		"data":    resp,
+	})
 }
 
+// handleGetDeveloperVerification 处理获取开发者认证信息请求
+// 参数: 用户名、开发者类型
+// 返回值: 认证信息或错误信息
 func (s *DebugServer) handleGetDeveloperVerification(c *gin.Context) {
-	c.JSON(http.StatusNotImplemented, gin.H{"message": "Not implemented yet"})
+	username := c.Param("username")
+	developerType := c.Query("developer_type")
+
+	if username == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "用户名不能为空"})
+		return
+	}
+
+	if developerType == "" {
+		developerType = "individual" // 默认为个人开发者
+	}
+
+	// 验证开发者类型
+	if developerType != "individual" && developerType != "enterprise" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "开发者类型必须是 individual 或 enterprise"})
+		return
+	}
+
+	ctx := context.Background()
+
+	// 构建gRPC请求
+	grpcReq := &iamv1.GetDeveloperVerificationRequest{
+		UserName:      username,
+		DeveloperType: developerType,
+	}
+
+	// 调用IAMServer的GetDeveloperVerification方法
+	resp, err := s.iamServer.GetDeveloperVerification(ctx, grpcReq)
+	if err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			c.JSON(http.StatusNotFound, gin.H{"error": "未找到开发者认证信息"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "获取开发者认证信息失败: " + err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "获取开发者认证信息成功",
+		"data":    resp,
+	})
 }
 
 // getIndexHTML 返回调试界面HTML
@@ -857,6 +1282,8 @@ func (s *DebugServer) getIndexHTML() string {
             border-radius: 4px;
             white-space: pre-wrap;
             font-family: monospace;
+            max-height: 400px;
+            overflow-y: auto;
         }
         
         .result.success {
@@ -869,6 +1296,84 @@ func (s *DebugServer) getIndexHTML() string {
             background: #f8d7da;
             border: 1px solid #f5c6cb;
             color: #721c24;
+        }
+        
+        .result.loading {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 4px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            background: #28a745;
+        }
+        
+        .notification.error {
+            background: #dc3545;
+        }
+        
+        .notification.info {
+            background: #17a2b8;
+        }
+        
+        .form-group.error input,
+        .form-group.error select,
+        .form-group.error textarea {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+        
+        .form-group .error-message {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        .form-group.error .error-message {
+            display: block;
+        }
+        
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        
+        .btn:disabled:hover {
+            background: #6c757d;
         }
         
         .grid {
@@ -900,6 +1405,8 @@ func (s *DebugServer) getIndexHTML() string {
             <div class="tab" onclick="showTab('keys')">🔑 访问密钥</div>
             <div class="tab" onclick="showTab('permissions')">🛡️ 权限检查</div>
             <div class="tab" onclick="showTab('apps')">📱 应用管理</div>
+            <div class="tab" onclick="showTab('monitoring')">📊 系统监控</div>
+            <div class="tab" onclick="showTab('config')">⚙️ 配置管理</div>
         </div>
         
         <div class="content">
@@ -1136,6 +1643,86 @@ func (s *DebugServer) getIndexHTML() string {
                 </div>
                 <div id="appsResult" class="result" style="display: none;"></div>
             </div>
+            
+            <!-- 系统监控 -->
+            <div id="monitoring" class="tab-content">
+                <h2>系统监控</h2>
+                <div class="grid">
+                    <div>
+                        <h3>系统信息</h3>
+                        <button id="refreshSystemInfo" class="btn">刷新系统信息</button>
+                        <div id="systemInfoResult" class="result" style="display: none;"></div>
+                        
+                        <h3 style="margin-top: 20px;">健康检查</h3>
+                        <button id="checkHealth" class="btn">检查健康状态</button>
+                        <div id="healthResult" class="result" style="display: none;"></div>
+                    </div>
+                    
+                    <div>
+                        <h3>性能指标</h3>
+                        <button id="getMetrics" class="btn">获取Prometheus指标</button>
+                        <div id="metricsResult" class="result" style="display: none;"></div>
+                        
+                        <h3 style="margin-top: 20px;">系统日志</h3>
+                        <form id="getLogsForm">
+                            <div class="form-group">
+                                <label>日志级别</label>
+                                <select name="level">
+                                    <option value="info">Info</option>
+                                    <option value="warn">Warning</option>
+                                    <option value="error">Error</option>
+                                    <option value="debug">Debug</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>限制条数</label>
+                                <input type="number" name="limit" value="100" min="1" max="1000">
+                            </div>
+                            <button type="submit" class="btn">获取日志</button>
+                        </form>
+                        <div id="logsResult" class="result" style="display: none;"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 配置管理 -->
+            <div id="config" class="tab-content">
+                <h2>配置管理</h2>
+                <div class="grid">
+                    <!-- 查看当前配置 -->
+                    <div class="card">
+                        <h3>当前配置</h3>
+                        <button type="button" class="btn" onclick="loadCurrentConfig()">加载配置</button>
+                        <div id="currentConfigResult" class="result" style="display: none;"></div>
+                    </div>
+                    
+                    <!-- 更新配置 -->
+                    <div class="card">
+                        <h3>更新配置</h3>
+                        <form id="updateConfigForm">
+                            <div class="form-group">
+                                <label>配置项</label>
+                                <select name="configKey" required>
+                                    <option value="">请选择配置项</option>
+                                    <option value="log.level">日志级别</option>
+                                    <option value="log.to_stdout">控制台输出</option>
+                                    <option value="sentry.enabled">Sentry启用</option>
+                                    <option value="ratelimit.enabled">限流启用</option>
+                                    <option value="ratelimit.limit">限流数量</option>
+                                    <option value="sts.default_duration">STS默认有效期</option>
+                                    <option value="sts.auto_cleanup">STS自动清理</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>配置值</label>
+                                <input type="text" name="configValue" placeholder="输入新的配置值" required>
+                            </div>
+                            <button type="submit" class="btn">更新配置</button>
+                        </form>
+                        <div id="updateConfigResult" class="result" style="display: none;"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     
@@ -1157,6 +1744,77 @@ func (s *DebugServer) getIndexHTML() string {
             
             // 激活选中的标签
             document.querySelector('.tab[onclick*="' + tabName + '"]').classList.add('active');
+        };
+        
+        // 通知系统
+        function showNotification(message, type) {
+            type = type || 'info';
+            const notification = document.createElement('div');
+            notification.className = 'notification ' + type;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            // 显示通知
+            setTimeout(() => notification.classList.add('show'), 100);
+            
+            // 3秒后自动隐藏
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => document.body.removeChild(notification), 300);
+            }, 3000);
+        }
+        
+        // 表单验证
+        function validateForm(form) {
+            let isValid = true;
+            const requiredFields = form.querySelectorAll('[required]');
+            
+            requiredFields.forEach(field => {
+                const formGroup = field.closest('.form-group');
+                const errorMessage = formGroup.querySelector('.error-message');
+                
+                if (!field.value.trim()) {
+                    formGroup.classList.add('error');
+                    if (!errorMessage) {
+                        const error = document.createElement('div');
+                        error.className = 'error-message';
+                        error.textContent = '此字段为必填项';
+                        formGroup.appendChild(error);
+                    }
+                    isValid = false;
+                } else {
+                    formGroup.classList.remove('error');
+                }
+            });
+            
+            return isValid;
+        }
+        
+        // 清除表单错误
+        function clearFormErrors(form) {
+            form.querySelectorAll('.form-group.error').forEach(group => {
+                group.classList.remove('error');
+            });
+        }
+        
+        // 设置按钮加载状态
+        function setButtonLoading(button, loading) {
+            if (loading) {
+                button.disabled = true;
+                button.dataset.originalText = button.textContent;
+                button.innerHTML = '<span class="loading-spinner"></span>处理中...';
+            } else {
+                button.disabled = false;
+                button.textContent = button.dataset.originalText || button.textContent;
+            }
+        }
+        
+        // 显示加载状态
+        function showLoading(elementId) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = 'result loading';
+            element.innerHTML = '<span class="loading-spinner"></span>正在处理请求...';
         }
         
         // 通用API请求函数
@@ -1173,7 +1831,8 @@ func (s *DebugServer) getIndexHTML() string {
                 const data = await response.json();
                 return { success: response.ok, data, status: response.status };
             } catch (error) {
-                return { success: false, error: error.message };
+                console.error('API请求错误:', error);
+                return { success: false, error: '网络请求失败: ' + error.message };
             }
         }
         
@@ -1184,17 +1843,41 @@ func (s *DebugServer) getIndexHTML() string {
             
             if (result.success) {
                 element.className = 'result success';
-                element.textContent = JSON.stringify(result.data, null, 2);
+                const message = result.data.message || '操作成功';
+                const data = result.data.data || result.data;
+                element.textContent = message + '\n\n' + JSON.stringify(data, null, 2);
+                showNotification(message, 'success');
             } else {
                 element.className = 'result error';
-                element.textContent = result.error || JSON.stringify(result.data, null, 2);
+                const errorMsg = result.data?.error || result.error || '操作失败';
+                element.textContent = '错误: ' + errorMsg;
+                if (result.data && typeof result.data === 'object') {
+                    element.textContent += '\n\n' + JSON.stringify(result.data, null, 2);
+                }
+                showNotification(errorMsg, 'error');
             }
         }
         
         // 用户管理事件
         document.getElementById('createUserForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const formData = new FormData(e.target);
+            const form = e.target;
+            const submitButton = form.querySelector('button[type="submit"]');
+            
+            // 清除之前的错误
+            clearFormErrors(form);
+            
+            // 验证表单
+            if (!validateForm(form)) {
+                showNotification('请填写所有必填字段', 'error');
+                return;
+            }
+            
+            // 设置加载状态
+            setButtonLoading(submitButton, true);
+            showLoading('usersResult');
+            
+            const formData = new FormData(form);
             const data = Object.fromEntries(formData);
             
             const result = await apiRequest('/api/users', {
@@ -1202,38 +1885,88 @@ func (s *DebugServer) getIndexHTML() string {
                 body: JSON.stringify(data)
             });
             
+            // 恢复按钮状态
+            setButtonLoading(submitButton, false);
             showResult('usersResult', result);
+            
+            // 如果成功，清空表单
+            if (result.success) {
+                form.reset();
+            }
         });
         
         document.getElementById('getUserForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const formData = new FormData(e.target);
+            const form = e.target;
+            const submitButton = form.querySelector('button[type="submit"]');
+            
+            clearFormErrors(form);
+            if (!validateForm(form)) {
+                showNotification('请填写所有必填字段', 'error');
+                return;
+            }
+            
+            setButtonLoading(submitButton, true);
+            showLoading('usersResult');
+            
+            const formData = new FormData(form);
             const username = formData.get('username');
             
             const result = await apiRequest('/api/users/' + username);
+            
+            setButtonLoading(submitButton, false);
             showResult('usersResult', result);
         });
         
         document.getElementById('deleteUserForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const formData = new FormData(e.target);
+            const form = e.target;
+            const submitButton = form.querySelector('button[type="submit"]');
+            
+            clearFormErrors(form);
+            if (!validateForm(form)) {
+                showNotification('请填写所有必填字段', 'error');
+                return;
+            }
+            
+            const formData = new FormData(form);
             const username = formData.get('username');
             
             if (!confirm('确定要删除用户 ' + username + ' 吗？')) {
                 return;
             }
             
+            setButtonLoading(submitButton, true);
+            showLoading('usersResult');
+            
             const result = await apiRequest('/api/users/' + username, {
                 method: 'DELETE'
             });
             
+            setButtonLoading(submitButton, false);
             showResult('usersResult', result);
+            
+            if (result.success) {
+                form.reset();
+            }
         });
         
         // 访问密钥事件
         document.getElementById('createKeyForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const formData = new FormData(e.target);
+            const form = e.target;
+            const submitButton = form.querySelector('button[type="submit"]');
+            
+            clearFormErrors(form);
+            if (!validateForm(form)) {
+                showNotification('请填写所有必填字段', 'error');
+                return;
+            }
+            
+            setButtonLoading(submitButton, true);
+            showLoading('keysResult');
+            
+            const formData = new FormData(form);
             const username = formData.get('username');
             const description = formData.get('description');
             
@@ -1242,21 +1975,52 @@ func (s *DebugServer) getIndexHTML() string {
                 body: JSON.stringify({ description })
             });
             
+            setButtonLoading(submitButton, false);
             showResult('keysResult', result);
+            
+            if (result.success) {
+                form.reset();
+            }
         });
         
         document.getElementById('listKeysForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const formData = new FormData(e.target);
+            const form = e.target;
+            const submitButton = form.querySelector('button[type="submit"]');
+            
+            clearFormErrors(form);
+            if (!validateForm(form)) {
+                showNotification('请填写所有必填字段', 'error');
+                return;
+            }
+            
+            setButtonLoading(submitButton, true);
+            showLoading('keysResult');
+            
+            const formData = new FormData(form);
             const username = formData.get('username');
             
             const result = await apiRequest('/api/users/' + username + '/access-keys');
+            
+            setButtonLoading(submitButton, false);
             showResult('keysResult', result);
         });
         
         document.getElementById('verifyKeyForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const formData = new FormData(e.target);
+            const form = e.target;
+            const submitButton = form.querySelector('button[type="submit"]');
+            
+            clearFormErrors(form);
+            if (!validateForm(form)) {
+                showNotification('请填写所有必填字段', 'error');
+                return;
+            }
+            
+            setButtonLoading(submitButton, true);
+            showLoading('keysResult');
+            
+            const formData = new FormData(form);
             const data = Object.fromEntries(formData);
             
             const result = await apiRequest('/api/access-keys/verify', {
@@ -1264,13 +2028,26 @@ func (s *DebugServer) getIndexHTML() string {
                 body: JSON.stringify(data)
             });
             
+            setButtonLoading(submitButton, false);
             showResult('keysResult', result);
         });
         
         // 权限检查事件
         document.getElementById('checkPermissionForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const formData = new FormData(e.target);
+            const form = e.target;
+            const submitButton = form.querySelector('button[type="submit"]');
+            
+            clearFormErrors(form);
+            if (!validateForm(form)) {
+                showNotification('请填写所有必填字段', 'error');
+                return;
+            }
+            
+            setButtonLoading(submitButton, true);
+            showLoading('permissionsResult');
+            
+            const formData = new FormData(form);
             const data = Object.fromEntries(formData);
             
             const result = await apiRequest('/api/check-permission', {
@@ -1278,13 +2055,26 @@ func (s *DebugServer) getIndexHTML() string {
                 body: JSON.stringify(data)
             });
             
+            setButtonLoading(submitButton, false);
             showResult('permissionsResult', result);
         });
         
         // 应用管理事件
         document.getElementById('createAppForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const formData = new FormData(e.target);
+            const form = e.target;
+            const submitButton = form.querySelector('button[type="submit"]');
+            
+            clearFormErrors(form);
+            if (!validateForm(form)) {
+                showNotification('请填写所有必填字段', 'error');
+                return;
+            }
+            
+            setButtonLoading(submitButton, true);
+            showLoading('appsResult');
+            
+            const formData = new FormData(form);
             const data = Object.fromEntries(formData);
             
             // 处理数组字段
@@ -1300,21 +2090,52 @@ func (s *DebugServer) getIndexHTML() string {
                 body: JSON.stringify(data)
             });
             
+            setButtonLoading(submitButton, false);
             showResult('appsResult', result);
+            
+            if (result.success) {
+                form.reset();
+            }
         });
         
         document.getElementById('getAppForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const formData = new FormData(e.target);
+            const form = e.target;
+            const submitButton = form.querySelector('button[type="submit"]');
+            
+            clearFormErrors(form);
+            if (!validateForm(form)) {
+                showNotification('请填写所有必填字段', 'error');
+                return;
+            }
+            
+            setButtonLoading(submitButton, true);
+            showLoading('appsResult');
+            
+            const formData = new FormData(form);
             const appId = formData.get('app_id');
             
             const result = await apiRequest('/api/applications/' + appId);
+            
+            setButtonLoading(submitButton, false);
             showResult('appsResult', result);
         });
         
         document.getElementById('listAppsForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const formData = new FormData(e.target);
+            const form = e.target;
+            const submitButton = form.querySelector('button[type="submit"]');
+            
+            clearFormErrors(form);
+            if (!validateForm(form)) {
+                showNotification('请填写所有必填字段', 'error');
+                return;
+            }
+            
+            setButtonLoading(submitButton, true);
+            showLoading('appsResult');
+            
+            const formData = new FormData(form);
             const userName = formData.get('user_name');
             const page = formData.get('page') || 1;
             const pageSize = formData.get('page_size') || 10;
@@ -1326,12 +2147,26 @@ func (s *DebugServer) getIndexHTML() string {
             });
             
             const result = await apiRequest('/api/applications?' + params.toString());
+            
+            setButtonLoading(submitButton, false);
             showResult('appsResult', result);
         });
         
         document.getElementById('updateAppForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const formData = new FormData(e.target);
+            const form = e.target;
+            const submitButton = form.querySelector('button[type="submit"]');
+            
+            clearFormErrors(form);
+            if (!validateForm(form)) {
+                showNotification('请填写所有必填字段', 'error');
+                return;
+            }
+            
+            setButtonLoading(submitButton, true);
+            showLoading('appsResult');
+            
+            const formData = new FormData(form);
             const data = Object.fromEntries(formData);
             const appId = data.app_id;
             delete data.app_id;
@@ -1341,25 +2176,390 @@ func (s *DebugServer) getIndexHTML() string {
                 body: JSON.stringify(data)
             });
             
+            setButtonLoading(submitButton, false);
             showResult('appsResult', result);
+            
+            if (result.success) {
+                form.reset();
+            }
         });
         
         document.getElementById('deleteAppForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const formData = new FormData(e.target);
+            const form = e.target;
+            const submitButton = form.querySelector('button[type="submit"]');
+            
+            clearFormErrors(form);
+            if (!validateForm(form)) {
+                showNotification('请填写所有必填字段', 'error');
+                return;
+            }
+            
+            const formData = new FormData(form);
             const appId = formData.get('app_id');
             
             if (!confirm('确定要删除应用 ID ' + appId + ' 吗？')) {
                 return;
             }
             
+            setButtonLoading(submitButton, true);
+            showLoading('appsResult');
+            
             const result = await apiRequest('/api/applications/' + appId, {
                 method: 'DELETE'
             });
             
+            setButtonLoading(submitButton, false);
             showResult('appsResult', result);
+            
+            if (result.success) {
+                form.reset();
+            }
         });
+        
+        // 监控功能事件
+        document.getElementById('refreshSystemInfo').addEventListener('click', async () => {
+            const button = document.getElementById('refreshSystemInfo');
+            setButtonLoading(button, true);
+            showLoading('systemInfoResult');
+            
+            const result = await apiRequest('/api/system-info');
+            
+            setButtonLoading(button, false);
+            showResult('systemInfoResult', result);
+        });
+        
+        document.getElementById('checkHealth').addEventListener('click', async () => {
+            const button = document.getElementById('checkHealth');
+            setButtonLoading(button, true);
+            showLoading('healthResult');
+            
+            const result = await apiRequest('/api/health');
+            
+            setButtonLoading(button, false);
+            showResult('healthResult', result);
+        });
+        
+        document.getElementById('getMetrics').addEventListener('click', async () => {
+            const button = document.getElementById('getMetrics');
+            setButtonLoading(button, true);
+            showLoading('metricsResult');
+            
+            try {
+                const response = await fetch('/api/metrics');
+                const metricsText = await response.text();
+                
+                setButtonLoading(button, false);
+                
+                const resultDiv = document.getElementById('metricsResult');
+                resultDiv.style.display = 'block';
+                resultDiv.innerHTML = '<h4>Prometheus 指标:</h4><pre>' + metricsText + '</pre>';
+            } catch (error) {
+                setButtonLoading(button, false);
+                showResult('metricsResult', { success: false, error: error.message });
+            }
+        });
+        
+        document.getElementById('getLogsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const submitButton = form.querySelector('button[type="submit"]');
+            
+            setButtonLoading(submitButton, true);
+            showLoading('logsResult');
+            
+            const formData = new FormData(form);
+            const level = formData.get('level');
+            const limit = formData.get('limit');
+            
+            const params = new URLSearchParams({
+                level: level,
+                limit: limit
+            });
+            
+            const result = await apiRequest('/api/logs?' + params.toString());
+            
+            setButtonLoading(submitButton, false);
+            showResult('logsResult', result);
+        });
+        
+        // 配置管理相关事件处理
+        document.getElementById('updateConfigForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const submitButton = form.querySelector('button[type="submit"]');
+            
+            clearFormErrors(form);
+            if (!validateForm(form)) {
+                showNotification('请填写所有必填字段', 'error');
+                return;
+            }
+            
+            setButtonLoading(submitButton, true);
+            showLoading('updateConfigResult');
+            
+            const formData = new FormData(form);
+            const configKey = formData.get('configKey');
+            const configValue = formData.get('configValue');
+            
+            const result = await apiRequest('/api/config/update', {
+                method: 'POST',
+                body: JSON.stringify({
+                    key: configKey,
+                    value: configValue
+                })
+            });
+            
+            setButtonLoading(submitButton, false);
+            showResult('updateConfigResult', result);
+        });
+        
+        // 加载当前配置
+        async function loadCurrentConfig() {
+            showLoading('currentConfigResult');
+            const result = await apiRequest('/api/config');
+            showResult('currentConfigResult', result);
+        }
     </script>
 </body>
 </html>`
+}
+
+// 全局变量记录启动时间
+var startTime = time.Now()
+
+// 监控相关处理函数
+
+// handleMetrics 处理指标查询
+// 功能: 返回Prometheus格式的指标数据
+// 参数: c - Gin上下文
+// 返回值: 无
+func (s *DebugServer) handleMetrics(c *gin.Context) {
+	// 这里应该集成实际的metrics收集器
+	// 暂时返回模拟数据
+	metricsData := `# HELP vgo_iam_requests_total Total number of requests
+# TYPE vgo_iam_requests_total counter
+vgo_iam_requests_total{method="GET",status="200"} 1234
+vgo_iam_requests_total{method="POST",status="200"} 567
+vgo_iam_requests_total{method="POST",status="400"} 12
+
+# HELP vgo_iam_request_duration_seconds Request duration in seconds
+# TYPE vgo_iam_request_duration_seconds histogram
+vgo_iam_request_duration_seconds_bucket{le="0.1"} 100
+vgo_iam_request_duration_seconds_bucket{le="0.5"} 200
+vgo_iam_request_duration_seconds_bucket{le="1.0"} 250
+vgo_iam_request_duration_seconds_bucket{le="+Inf"} 300
+vgo_iam_request_duration_seconds_sum 45.6
+vgo_iam_request_duration_seconds_count 300
+`
+	c.Header("Content-Type", "text/plain; version=0.0.4; charset=utf-8")
+	c.String(http.StatusOK, metricsData)
+}
+
+// handleHealth 处理健康检查
+// 功能: 返回服务健康状态
+// 参数: c - Gin上下文
+// 返回值: 无
+func (s *DebugServer) handleHealth(c *gin.Context) {
+	// 检查数据库连接
+	ctx := context.Background()
+	_, err := s.iamServer.UserService().GetUser(ctx, "health-check")
+	
+	health := gin.H{
+		"status": "healthy",
+		"timestamp": fmt.Sprintf("%d", time.Now().Unix()),
+		"version": "1.0.0",
+		"database": "connected",
+	}
+	
+	if err != nil && !strings.Contains(err.Error(), "not found") {
+		health["status"] = "unhealthy"
+		health["database"] = "disconnected"
+		health["error"] = err.Error()
+		c.JSON(http.StatusServiceUnavailable, health)
+		return
+	}
+	
+	c.JSON(http.StatusOK, health)
+}
+
+// handleLogs 处理日志查询
+// 功能: 返回系统日志信息
+// 参数: c - Gin上下文
+// 返回值: 无
+func (s *DebugServer) handleLogs(c *gin.Context) {
+	level := c.DefaultQuery("level", "info")
+	limit := c.DefaultQuery("limit", "100")
+	
+	// 模拟日志数据
+	logs := []gin.H{
+		{
+			"timestamp": "2024-01-20T10:30:00Z",
+			"level": "info",
+			"message": "User login successful",
+			"username": "admin",
+			"ip": "192.168.1.100",
+		},
+		{
+			"timestamp": "2024-01-20T10:29:45Z",
+			"level": "warn",
+			"message": "Failed login attempt",
+			"username": "unknown",
+			"ip": "192.168.1.200",
+		},
+		{
+			"timestamp": "2024-01-20T10:29:30Z",
+			"level": "error",
+			"message": "Database connection timeout",
+			"error": "connection timeout after 30s",
+		},
+	}
+	
+	c.JSON(http.StatusOK, gin.H{
+		"logs": logs,
+		"level": level,
+		"limit": limit,
+		"total": len(logs),
+	})
+}
+
+// handleSystemInfo 处理系统信息查询
+// 功能: 返回系统运行时信息
+// 参数: c - Gin上下文
+// 返回值: 无
+func (s *DebugServer) handleSystemInfo(c *gin.Context) {
+	var m runtime.MemStats
+	runtime.ReadMemStats(&m)
+	
+	systemInfo := gin.H{
+		"go_version": runtime.Version(),
+		"go_os": runtime.GOOS,
+		"go_arch": runtime.GOARCH,
+		"cpu_count": runtime.NumCPU(),
+		"goroutines": runtime.NumGoroutine(),
+		"memory": gin.H{
+			"alloc_mb": bToMb(m.Alloc),
+			"total_alloc_mb": bToMb(m.TotalAlloc),
+			"sys_mb": bToMb(m.Sys),
+			"gc_runs": m.NumGC,
+		},
+		"uptime_seconds": time.Since(startTime).Seconds(),
+	}
+	
+	c.JSON(http.StatusOK, systemInfo)
+}
+
+// bToMb 字节转换为MB
+// 功能: 将字节数转换为MB
+// 参数: b - 字节数
+// 返回值: MB数
+func bToMb(b uint64) uint64 {
+	return b / 1024 / 1024
+}
+
+// handleGetConfig 处理获取配置请求
+// 功能: 获取当前应用配置信息
+// 参数: c - Gin上下文
+// 返回值: 无
+func (s *DebugServer) handleGetConfig(c *gin.Context) {
+	// 获取当前配置
+	cfg := config.LodIAMConfig()
+	if cfg == nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": "无法加载配置",
+		})
+		return
+	}
+	
+	// 返回配置信息（隐藏敏感信息）
+	configData := map[string]interface{}{
+		"grpc": map[string]interface{}{
+			"port": cfg.GRPC.Port,
+		},
+		"database": map[string]interface{}{
+			"dsn": "[HIDDEN]", // 隐藏数据库连接字符串
+		},
+		"log": map[string]interface{}{
+			"level":     cfg.Log.Level,
+			"format":    cfg.Log.Format,
+			"directory": cfg.Log.Directory,
+			"filename":  cfg.Log.Filename,
+			"to_stdout": cfg.Log.ToStdout,
+		},
+		"sentry": map[string]interface{}{
+			"enabled":     cfg.Sentry.Enabled,
+			"dsn":         "[HIDDEN]", // 隐藏Sentry DSN
+			"environment": cfg.Sentry.Environment,
+		},
+		"ratelimit": map[string]interface{}{
+			"enabled":    cfg.RateLimit.Enabled,
+			"type":       cfg.RateLimit.Type,
+			"limit":      cfg.RateLimit.Limit,
+			"window":     cfg.RateLimit.Window.String(),
+			"prefix":     cfg.RateLimit.Prefix,
+			"redis_addr": cfg.RateLimit.RedisAddr,
+			"redis_db":   cfg.RateLimit.RedisDB,
+		},
+		"middleware": map[string]interface{}{
+			"ignore":     cfg.Middleware.Ignore,
+			"master_key": "[HIDDEN]", // 隐藏主密钥
+		},
+		"sts": map[string]interface{}{
+			"default_duration":          cfg.STS.DefaultDuration.String(),
+			"max_duration":              cfg.STS.MaxDuration.String(),
+			"min_duration":              cfg.STS.MinDuration.String(),
+			"cleanup_interval":          cfg.STS.CleanupInterval.String(),
+			"auto_cleanup":              cfg.STS.AutoCleanup,
+			"max_credentials_per_user":  cfg.STS.MaxCredentialsPerUser,
+		},
+	}
+	
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"data":    configData,
+	})
+}
+
+// handleUpdateConfig 处理更新配置请求
+// 功能: 更新指定的配置项（注意：这是演示功能，实际生产环境中配置更新需要更复杂的处理）
+// 参数: c - Gin上下文
+// 返回值: 无
+func (s *DebugServer) handleUpdateConfig(c *gin.Context) {
+	var req struct {
+		Key   string `json:"key" binding:"required"`
+		Value string `json:"value" binding:"required"`
+	}
+	
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "请求参数错误: " + err.Error(),
+		})
+		return
+	}
+	
+	// 注意：这里只是演示功能，实际生产环境中需要：
+	// 1. 验证配置项的有效性
+	// 2. 持久化配置更改
+	// 3. 重新加载配置或重启相关服务
+	// 4. 记录配置更改日志
+	
+	// 模拟配置更新结果
+	result := map[string]interface{}{
+		"key":       req.Key,
+		"old_value": "[PREVIOUS_VALUE]",
+		"new_value": req.Value,
+		"updated_at": time.Now().Format("2006-01-02 15:04:05"),
+		"note":      "配置更新成功（演示模式，实际未持久化）",
+	}
+	
+	vgokit.Log.Info("配置更新请求", 
+		zap.String("key", req.Key),
+		zap.String("value", req.Value),
+	)
+	
+	c.JSON(http.StatusOK, gin.H{
+		"success": true,
+		"message": "配置更新成功",
+		"data":    result,
+	})
 }

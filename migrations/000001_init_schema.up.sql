@@ -22,7 +22,7 @@ CREATE TABLE policies (
 -- 创建访问密钥表
 CREATE TABLE access_keys (
     id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    user_id INTEGER NOT NULL,
     access_key_id VARCHAR(20) NOT NULL UNIQUE,
     encrypted_secret_access_key VARCHAR(255) NOT NULL,
     status VARCHAR(10) NOT NULL CHECK (status IN ('active', 'inactive')),
@@ -32,8 +32,8 @@ CREATE TABLE access_keys (
 
 -- 用户策略关联表
 CREATE TABLE user_policies (
-    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    policy_id INTEGER NOT NULL REFERENCES policies(id) ON DELETE CASCADE,
+    user_id INTEGER NOT NULL,
+    policy_id INTEGER NOT NULL,
     PRIMARY KEY (user_id, policy_id)
 );
 

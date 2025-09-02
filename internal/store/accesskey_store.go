@@ -20,6 +20,7 @@ type AccessKeyStore interface {
 	ListAll() ([]*model.AccessKey, error)
 	UpdateStatus(accessKeyID, status string) error
 	RotateKey(accessKeyID string, masterKey string) (*model.AccessKey, error)
+	Delete(accessKeyID string) error
 }
 
 // accessKeyStore 访问密钥存储实现
@@ -43,38 +44,26 @@ func (s *accessKeyStore) Create(ak *model.AccessKey, masterKey string) error {
 		return err
 	}
 
-	insertBuilder := s.session.InsertInto("access_keys").
-		Columns(
-			"user_id",
-			"access_key_id",
-			"encrypted_secret_access_key",
-			"status",
-			"app_id",
-			"description",
-			"created_at",
-			"updated_at",
-		).
-		Values(
-			ak.UserID,
-			ak.AccessKeyID,
-			base64.StdEncoding.EncodeToString(encryptedSecret),
-			ak.Status,
-			ak.AppID,
-			ak.Description,
-			ak.CreatedAt,
-			ak.UpdatedAt,
-		)
-
-	result, err := insertBuilder.Exec()
+	// 使用原生SQL和RETURNING子句获取插入后的ID（PostgreSQL支持）
+	var id int64
+	sql := `INSERT INTO access_keys (user_id, access_key_id, encrypted_secret_access_key, status, app_id, description, created_at, updated_at) 
+			 VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`
+	
+	err = s.session.QueryRow(sql, 
+		ak.UserID,
+		ak.AccessKeyID,
+		base64.StdEncoding.EncodeToString(encryptedSecret),
+		ak.Status,
+		ak.AppID,
+		ak.Description,
+		ak.CreatedAt,
+		ak.UpdatedAt,
+	).Scan(&id)
+	
 	if err != nil {
 		return err
 	}
-
-	// 获取插入后的ID
-	id, err := result.LastInsertId()
-	if err != nil {
-		return err
-	}
+	
 	ak.ID = id
 
 	return nil
@@ -201,6 +190,18 @@ func (s *accessKeyStore) ListAll() ([]*model.AccessKey, error) {
 	).From("access_keys").
 		Load(&aks)
 	return aks, err
+}
+
+// Delete 删除访问密钥
+// 参数:
+//   - accessKeyID: 访问密钥ID
+// 返回值:
+//   - error: 删除过程中的错误
+func (s *accessKeyStore) Delete(accessKeyID string) error {
+	_, err := s.session.DeleteFrom("access_keys").
+		Where("access_key_id = ?", accessKeyID).
+		Exec()
+	return err
 }
 
 // generateRandomSecret 生成随机密钥

@@ -276,6 +276,39 @@ func (s *AccessKeyService) GetAccessKey(ctx context.Context, accessKeyID string)
 	return ak, nil
 }
 
+// DeleteAccessKey 删除访问密钥
+// 参数:
+//   - ctx: 上下文
+//   - userName: 用户名
+//   - accessKeyID: 访问密钥ID
+// 返回值:
+//   - error: 删除过程中的错误
+func (s *AccessKeyService) DeleteAccessKey(ctx context.Context, userName string, accessKeyID string) error {
+	// 获取用户
+	user, err := s.userStore.GetByName(userName)
+	if err != nil {
+		return errors.NewBusinessError(errors.CodeUserNotFound, "user not found")
+	}
+
+	// 获取访问密钥以验证所有权
+	ak, err := s.accessKeyStore.GetByAccessKeyID(accessKeyID, s.masterKey)
+	if err != nil {
+		return errors.NewBusinessError(errors.CodeAccessKeyNotFound, "access key not found")
+	}
+
+	// 检查访问密钥是否属于该用户
+	if ak.UserID != user.ID {
+		return errors.NewBusinessError(errors.CodePermissionDenied, "access key does not belong to user")
+	}
+
+	// 删除访问密钥
+	if err := s.accessKeyStore.Delete(accessKeyID); err != nil {
+		return errors.NewBusinessError(errors.CodeInternalError, "failed to delete access key")
+	}
+
+	return nil
+}
+
 // GetStore 返回访问密钥存储实现
 func (s *AccessKeyService) GetStore() store.AccessKeyStore {
 	return s.accessKeyStore
@@ -350,7 +383,7 @@ func (s *AccessKeyService) CheckKeyHealth(ctx context.Context, accessKeyID strin
 	}
 
 	// 检查轮换时间
-	if !ak.LastRotatedAt.IsZero() && now.Sub(ak.LastRotatedAt) > 30*24*time.Hour {
+	if ak.LastRotatedAt != nil && now.Sub(*ak.LastRotatedAt) > 30*24*time.Hour {
 		status.Warnings = append(status.Warnings, "密钥长时间未轮换")
 		status.Recommendations = append(status.Recommendations, "考虑轮换密钥")
 	}

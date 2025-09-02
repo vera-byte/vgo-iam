@@ -16,8 +16,8 @@ type AccessKey struct {
 	Description              string    `json:"description" db:"description"`             // 密钥描述
 	CreatedAt                time.Time `json:"created_at" db:"created_at"`                  // 创建时间
 	UpdatedAt                time.Time `json:"updated_at" db:"updated_at"`                  // 更新时间
-	ExpiresAt                time.Time `json:"expires_at,omitempty" db:"expires_at"`        // 过期时间
-	LastRotatedAt            time.Time `json:"last_rotated_at,omitempty" db:"last_rotated_at"`   // 最后轮换时间
+	ExpiresAt                *time.Time `json:"expires_at,omitempty" db:"expires_at"`        // 过期时间
+	LastRotatedAt            *time.Time `json:"last_rotated_at,omitempty" db:"last_rotated_at"`   // 最后轮换时间
 
 	// 关联信息（非数据库字段）
 	UserName string `json:"user_name,omitempty" db:"user_name"`         // 用户名
@@ -27,6 +27,7 @@ type AccessKey struct {
 // NewAccessKey 创建新的访问密钥
 func NewAccessKey(userID int64, accessKeyID, secretKey string, appID *int64, description string) *AccessKey {
 	now := time.Now()
+	expiresAt := now.AddDate(0, 3, 0) // 默认3个月过期
 	return &AccessKey{
 		UserID:          userID,
 		AccessKeyID:     accessKeyID,
@@ -36,7 +37,7 @@ func NewAccessKey(userID int64, accessKeyID, secretKey string, appID *int64, des
 		Description:     description,
 		CreatedAt:       now,
 		UpdatedAt:       now,
-		ExpiresAt:       now.AddDate(0, 3, 0), // 默认3个月过期
+		ExpiresAt:       &expiresAt,
 	}
 }
 
@@ -52,7 +53,10 @@ func (ak *AccessKey) IsInactive() bool {
 
 // IsExpired 是否已过期
 func (ak *AccessKey) IsExpired() bool {
-	return time.Now().After(ak.ExpiresAt)
+	if ak.ExpiresAt == nil {
+		return false
+	}
+	return time.Now().After(*ak.ExpiresAt)
 }
 
 // SetStatus 设置状态
@@ -65,8 +69,9 @@ func (ak *AccessKey) SetStatus(status string) {
 func (ak *AccessKey) Rotate(newSecretKey string) {
 	now := time.Now()
 	ak.SecretAccessKey = newSecretKey
-	ak.LastRotatedAt = now
+	ak.LastRotatedAt = &now
 	ak.UpdatedAt = now
 	// 延长过期时间
-	ak.ExpiresAt = now.AddDate(0, 3, 0)
+	expiresAt := now.AddDate(0, 3, 0)
+	ak.ExpiresAt = &expiresAt
 }

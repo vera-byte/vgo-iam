@@ -24,6 +24,7 @@ type AppConfig struct {
 		MasterKey string   `mapstructure:"master_key"`
 	} `mapstructure:"middleware"`
 	Cache *cache.CacheConfig `mapstructure:"cache"`
+	STS   STSConfig          `mapstructure:"sts"`
 }
 type LogConfig struct {
 	Level     string `mapstructure:"level"`     // 日志级别: debug/info/warn/error
@@ -48,6 +49,22 @@ type RateLimitConfig struct {
 	RedisAddr string        `mapstructure:"redis_addr"`
 	RedisDB   int           `mapstructure:"redis_db"`
 	RedisPass string        `mapstructure:"redis_pass"`
+}
+
+// STSConfig STS临时凭证配置
+type STSConfig struct {
+	// 默认凭证有效期
+	DefaultDuration time.Duration `mapstructure:"default_duration"`
+	// 最大凭证有效期
+	MaxDuration time.Duration `mapstructure:"max_duration"`
+	// 最小凭证有效期
+	MinDuration time.Duration `mapstructure:"min_duration"`
+	// 清理过期凭证的间隔时间
+	CleanupInterval time.Duration `mapstructure:"cleanup_interval"`
+	// 是否启用自动清理
+	AutoCleanup bool `mapstructure:"auto_cleanup"`
+	// 每个用户最大凭证数量
+	MaxCredentialsPerUser int `mapstructure:"max_credentials_per_user"`
 }
 
 func LodIAMConfig() *AppConfig {

@@ -61,8 +61,9 @@ type TemporaryCredentialStore interface {
 
 	// RevokeBySessionToken 根据会话令牌撤销凭证
 	// sessionToken: 会话令牌
+	// masterKey: 主密钥
 	// 返回: 错误信息
-	RevokeBySessionToken(sessionToken string) error
+	RevokeBySessionToken(sessionToken string, masterKey string) error
 
 	// Refresh 刷新凭证有效期
 	// id: 凭证ID
@@ -112,7 +113,9 @@ func (s *temporaryCredentialStore) Create(tc *model.TemporaryCredential, masterK
 		return err
 	}
 
-	insertBuilder := s.session.InsertInto("temporary_credentials").
+	// 使用PostgreSQL的RETURNING子句获取插入的ID
+	var id int64
+	err = s.session.InsertInto("temporary_credentials").
 		Columns(
 			"user_id",
 			"access_key_id",
@@ -144,20 +147,15 @@ func (s *temporaryCredentialStore) Create(tc *model.TemporaryCredential, masterK
 			tc.DurationSeconds,
 			tc.CreatedAt,
 			tc.ExpiresAt,
-		)
+		).
+		Returning("id").
+		Load(&id)
 
-	result, err := insertBuilder.Exec()
 	if err != nil {
 		return err
 	}
 
-	// 获取插入后的ID
-	id, err := result.LastInsertId()
-	if err != nil {
-		return err
-	}
 	tc.ID = id
-
 	return nil
 }
 
@@ -193,32 +191,28 @@ func (s *temporaryCredentialStore) GetByAccessKeyID(accessKeyID string, masterKe
 
 // GetBySessionToken 根据会话令牌获取临时凭证
 func (s *temporaryCredentialStore) GetBySessionToken(sessionToken string, masterKey string) (*model.TemporaryCredential, error) {
-	// 首先需要加密输入的sessionToken来进行比较
-	key, err := hex.DecodeString(masterKey)
-	if err != nil {
-		return nil, err
-	}
-
-	encryptedToken, err := crypto.EncryptKey([]byte(sessionToken), key)
-	if err != nil {
-		return nil, err
-	}
-
-	var tc model.TemporaryCredential
-	err = s.session.Select("*").
+	// 由于AES-GCM加密每次都会产生不同的密文（随机nonce），
+	// 我们不能直接比较加密后的token，需要获取所有活跃凭证然后逐一解密比较
+	var tcs []*model.TemporaryCredential
+	_, err := s.session.Select("*").
 		From("temporary_credentials").
-		Where("encrypted_session_token = ?", base64.StdEncoding.EncodeToString(encryptedToken)).
-		LoadOne(&tc)
+		Where("status = ? AND expires_at > ?", model.CredentialStatusActive, time.Now()).
+		Load(&tcs)
 	if err != nil {
 		return nil, err
 	}
 
-	// 解密密钥和会话令牌
-	if err := s.decryptCredential(&tc, masterKey); err != nil {
-		return nil, err
+	// 逐一解密并比较SessionToken
+	for _, tc := range tcs {
+		if err := s.decryptCredential(tc, masterKey); err != nil {
+			continue // 解密失败，跳过这个凭证
+		}
+		if tc.SessionToken == sessionToken {
+			return tc, nil
+		}
 	}
 
-	return &tc, nil
+	return nil, dbr.ErrNotFound
 }
 
 // ListByUser 获取用户的所有临时凭证
@@ -271,13 +265,18 @@ func (s *temporaryCredentialStore) Revoke(id int64) error {
 }
 
 // RevokeBySessionToken 根据会话令牌撤销凭证
-func (s *temporaryCredentialStore) RevokeBySessionToken(sessionToken string) error {
-	// 这里需要先找到对应的凭证ID，然后撤销
-	// 为了简化，我们直接更新
-	_, err := s.session.Update("temporary_credentials").
+func (s *temporaryCredentialStore) RevokeBySessionToken(sessionToken string, masterKey string) error {
+	// 由于AES-GCM加密每次都会产生不同的密文（随机nonce），
+	// 我们需要先通过GetBySessionToken找到凭证，然后通过ID撤销
+	tc, err := s.GetBySessionToken(sessionToken, masterKey)
+	if err != nil {
+		return err
+	}
+
+	_, err = s.session.Update("temporary_credentials").
 		Set("status", model.CredentialStatusRevoked).
 		Set("revoked_at", time.Now()).
-		Where("session_token = ?", sessionToken).
+		Where("id = ?", tc.ID).
 		Exec()
 	return err
 }
@@ -303,9 +302,12 @@ func (s *temporaryCredentialStore) Refresh(id int64, newDurationSeconds int32) (
 }
 
 // CleanupExpired 清理过期的凭证
+// 返回: 清理的凭证数量和错误信息
 func (s *temporaryCredentialStore) CleanupExpired() (int64, error) {
+	// 删除已过期的凭证（expires_at <= 当前时间）
+	// 不管状态如何，只要过期就删除
 	result, err := s.session.DeleteFrom("temporary_credentials").
-		Where("expires_at <= ? AND status != ?", time.Now().Add(-24*time.Hour), model.CredentialStatusActive). // 保留24小时的过期记录
+		Where("expires_at <= ?", time.Now()).
 		Exec()
 
 	if err != nil {

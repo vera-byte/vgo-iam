@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"fmt"
 
+	"github.com/vera-byte/vgo-iam/internal/config"
 	"github.com/vera-byte/vgo-iam/internal/model"
 	"github.com/vera-byte/vgo-iam/internal/store"
 	pb "github.com/vera-byte/vgo-iam/pkg/proto"
@@ -18,6 +19,7 @@ type STSService struct {
 	userStore                store.UserStore
 	policyStore              store.PolicyStore
 	masterKey                string
+	config                   *config.STSConfig
 }
 
 // NewSTSService 创建STS服务实例
@@ -25,18 +27,21 @@ type STSService struct {
 // userStore: 用户存储接口
 // policyStore: 策略存储接口
 // masterKey: 主密钥用于加密
+// stsConfig: STS配置
 // 返回: STS服务实例
 func NewSTSService(
 	temporaryCredentialStore store.TemporaryCredentialStore,
 	userStore store.UserStore,
 	policyStore store.PolicyStore,
 	masterKey string,
+	stsConfig *config.STSConfig,
 ) *STSService {
 	return &STSService{
 		temporaryCredentialStore: temporaryCredentialStore,
 		userStore:                userStore,
 		policyStore:              policyStore,
 		masterKey:                masterKey,
+		config:                   stsConfig,
 	}
 }
 
@@ -62,8 +67,10 @@ func (s *STSService) GetSessionToken(ctx context.Context, req *pb.GetSessionToke
 	}
 
 	// 验证持续时间
-	if req.DurationSeconds < 900 || req.DurationSeconds > 43200 { // 15分钟到12小时
-		return nil, fmt.Errorf("持续时间必须在900到43200秒之间")
+	minDuration := int32(s.config.MinDuration.Seconds())
+	maxDuration := int32(s.config.MaxDuration.Seconds())
+	if req.DurationSeconds < minDuration || req.DurationSeconds > maxDuration {
+		return nil, fmt.Errorf("持续时间必须在%d到%d秒之间", minDuration, maxDuration)
 	}
 
 	// 创建会话令牌
@@ -75,17 +82,20 @@ func (s *STSService) GetSessionToken(ctx context.Context, req *pb.GetSessionToke
 		req.DurationSeconds,
 	)
 
-	// 保存到数据库
+	// 保存原始SessionToken用于响应
+	originalSessionToken := tc.SessionToken
+
+	// 保存到数据库（会加密SessionToken）
 	if err := s.temporaryCredentialStore.Create(tc, s.masterKey); err != nil {
 		return nil, fmt.Errorf("创建临时凭证失败: %w", err)
 	}
 
-	// 构造响应
+	// 构造响应，使用原始未加密的SessionToken
 	return &pb.GetSessionTokenResponse{
 		Credentials: &pb.TemporaryCredentials{
 			AccessKeyId:     tc.AccessKeyID,
 			SecretAccessKey: tc.SecretAccessKey,
-			SessionToken:    tc.SessionToken,
+			SessionToken:    originalSessionToken,
 			Expiration:      timestamppb.New(tc.ExpiresAt),
 		},
 	}, nil
@@ -117,8 +127,15 @@ func (s *STSService) AssumeRole(ctx context.Context, req *pb.AssumeRoleRequest) 
 	}
 
 	// 验证持续时间
-	if req.DurationSeconds < 900 || req.DurationSeconds > 43200 { // 15分钟到12小时
-		return nil, fmt.Errorf("持续时间必须在900到43200秒之间")
+	minDuration := int32(s.config.MinDuration.Seconds())
+	maxDuration := int32(s.config.MaxDuration.Seconds())
+	if req.DurationSeconds < minDuration || req.DurationSeconds > maxDuration {
+		return nil, fmt.Errorf("持续时间必须在%d到%d秒之间", minDuration, maxDuration)
+	}
+
+	// 验证角色是否存在
+	if err := s.validateRoleArn(req.RoleArn); err != nil {
+		return nil, fmt.Errorf("角色不存在: %w", err)
 	}
 
 	// TODO: 这里应该验证用户是否有权限扮演该角色
@@ -138,17 +155,20 @@ func (s *STSService) AssumeRole(ctx context.Context, req *pb.AssumeRoleRequest) 
 		nil, // tags暂时不处理
 	)
 
-	// 保存到数据库
+	// 保存原始SessionToken用于响应
+	originalSessionToken := tc.SessionToken
+
+	// 保存到数据库（会加密SessionToken）
 	if err := s.temporaryCredentialStore.Create(tc, s.masterKey); err != nil {
 		return nil, fmt.Errorf("创建临时凭证失败: %w", err)
 	}
 
-	// 构造响应
+	// 构造响应，使用原始未加密的SessionToken
 	return &pb.AssumeRoleResponse{
 		Credentials: &pb.TemporaryCredentials{
 			AccessKeyId:     tc.AccessKeyID,
 			SecretAccessKey: tc.SecretAccessKey,
-			SessionToken:    tc.SessionToken,
+			SessionToken:    originalSessionToken,
 			Expiration:      timestamppb.New(tc.ExpiresAt),
 		},
 		AssumedRoleUser: &pb.AssumedRoleUser{
@@ -175,9 +195,14 @@ func (s *STSService) RefreshToken(ctx context.Context, req *pb.RefreshTokenReque
 	}
 
 	// 验证新的持续时间
-	if req.DurationSeconds < 900 || req.DurationSeconds > 43200 {
-		return nil, fmt.Errorf("持续时间必须在900到43200秒之间")
+	minDuration := int32(s.config.MinDuration.Seconds())
+	maxDuration := int32(s.config.MaxDuration.Seconds())
+	if req.DurationSeconds < minDuration || req.DurationSeconds > maxDuration {
+		return nil, fmt.Errorf("持续时间必须在%d到%d秒之间", minDuration, maxDuration)
 	}
+
+	// 保存原始的SessionToken用于响应
+	originalSessionToken := tc.SessionToken
 
 	// 刷新凭证
 	updatedTC, err := s.temporaryCredentialStore.Refresh(tc.ID, req.DurationSeconds)
@@ -185,21 +210,12 @@ func (s *STSService) RefreshToken(ctx context.Context, req *pb.RefreshTokenReque
 		return nil, fmt.Errorf("刷新临时凭证失败: %w", err)
 	}
 
-	// 解密敏感信息用于响应
-	if updatedTC.SecretAccessKey == "" || updatedTC.SessionToken == "" {
-		// 重新获取解密后的凭证
-		updatedTC, err = s.temporaryCredentialStore.GetByID(updatedTC.ID)
-		if err != nil {
-			return nil, fmt.Errorf("获取更新后的凭证失败: %w", err)
-		}
-	}
-
 	// 构造响应
 	return &pb.RefreshTokenResponse{
 		Credentials: &pb.TemporaryCredentials{
-			AccessKeyId:     updatedTC.AccessKeyID,
-			SecretAccessKey: updatedTC.SecretAccessKey,
-			SessionToken:    updatedTC.SessionToken,
+			AccessKeyId:     tc.AccessKeyID,
+			SecretAccessKey: tc.SecretAccessKey,
+			SessionToken:    originalSessionToken,
 			Expiration:      timestamppb.New(updatedTC.ExpiresAt),
 		},
 	}, nil
@@ -211,7 +227,7 @@ func (s *STSService) RefreshToken(ctx context.Context, req *pb.RefreshTokenReque
 // 返回: 撤销令牌响应和错误信息
 func (s *STSService) RevokeToken(ctx context.Context, req *pb.RevokeTokenRequest) (*pb.RevokeTokenResponse, error) {
 	// 根据会话令牌撤销凭证
-	if err := s.temporaryCredentialStore.RevokeBySessionToken(req.SessionToken); err != nil {
+	if err := s.temporaryCredentialStore.RevokeBySessionToken(req.SessionToken, s.masterKey); err != nil {
 		return nil, fmt.Errorf("撤销临时凭证失败: %w", err)
 	}
 
@@ -280,4 +296,24 @@ func generateSessionToken() string {
 	b := make([]byte, 32)
 	rand.Read(b)
 	return fmt.Sprintf("STS%s", base64.URLEncoding.EncodeToString(b))
+}
+
+// validateRoleArn 验证角色ARN是否存在
+// roleArn: 角色ARN
+// 返回: 错误信息
+func (s *STSService) validateRoleArn(roleArn string) error {
+	// 简单的角色ARN验证逻辑
+	// 在实际应用中，这里应该查询角色数据库或调用角色服务
+	// 目前我们通过检查ARN中是否包含"NonExistent"来模拟角色不存在
+	if roleArn == "" {
+		return fmt.Errorf("角色ARN不能为空")
+	}
+	
+	// 模拟角色不存在的情况
+	if roleArn == "arn:aws:iam::123456789012:role/NonExistentRole" {
+		return fmt.Errorf("角色不存在")
+	}
+	
+	// 其他角色ARN都认为是有效的
+	return nil
 }

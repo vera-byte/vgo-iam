@@ -1,7 +1,7 @@
 -- 创建临时凭证表
 CREATE TABLE temporary_credentials (
     id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    user_id INTEGER NOT NULL,
     access_key_id VARCHAR(20) NOT NULL UNIQUE,
     encrypted_secret_access_key VARCHAR(255) NOT NULL,
     encrypted_session_token VARCHAR(255) NOT NULL UNIQUE,

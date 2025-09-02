@@ -28,9 +28,9 @@ sentry:
   debug: true
 
 ratelimit:
-  enabled: true
+  enabled: false
   type: "redis" # "redis" or "memory"
-  limit: 1 # 每分钟最大请求数
+  limit: 1000 # 每分钟最大请求数
   window: "1m" # 时间窗口
   prefix: "iam_ratelimit"
   redis_addr: "localhost:6379"

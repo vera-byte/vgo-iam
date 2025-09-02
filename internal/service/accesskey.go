@@ -383,7 +383,7 @@ func (s *AccessKeyService) CheckKeyHealth(ctx context.Context, accessKeyID strin
 	}
 
 	// 检查轮换时间
-	if !ak.LastRotatedAt.IsZero() && now.Sub(ak.LastRotatedAt) > 30*24*time.Hour {
+	if ak.LastRotatedAt != nil && now.Sub(*ak.LastRotatedAt) > 30*24*time.Hour {
 		status.Warnings = append(status.Warnings, "密钥长时间未轮换")
 		status.Recommendations = append(status.Recommendations, "考虑轮换密钥")
 	}

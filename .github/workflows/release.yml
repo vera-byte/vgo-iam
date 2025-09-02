@@ -13,6 +13,11 @@ on:
         required: true
         type: string
 
+# 权限配置
+permissions:
+  contents: write
+  packages: write
+
 env:
   GO_VERSION: '1.24.1'
   REGISTRY: ghcr.io
@@ -124,7 +129,7 @@ jobs:
           submodules: recursive
 
       - name: Run Gosec Security Scanner
-        uses: securecodewarrior/github-action-gosec@master
+        uses: securego/gosec@master
         with:
           args: './vgo-iam/...'
 
@@ -221,12 +226,10 @@ jobs:
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Create Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.version.outputs.version }}
-          release_name: vgo-iam ${{ steps.version.outputs.version }}
+          name: vgo-iam ${{ steps.version.outputs.version }}
           body: |
             ## 🚀 vgo-iam ${{ steps.version.outputs.version }}
             
@@ -273,6 +276,7 @@ jobs:
             ```
           draft: false
           prerelease: ${{ contains(steps.version.outputs.version, '-') }}
+          generate_release_notes: true
 
   # 安全扫描Docker镜像
   security-scan:

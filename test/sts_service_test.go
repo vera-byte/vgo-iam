@@ -12,21 +12,21 @@ import (
 	"github.com/vera-byte/vgo-iam/internal/service"
 	"github.com/vera-byte/vgo-iam/internal/store"
 	iamv1 "github.com/vera-byte/vgo-iam/pkg/proto"
-	"github.com/vera-byte/vgo-kit/db"
 	vgoconfig "github.com/vera-byte/vgo-kit/config"
+	"github.com/vera-byte/vgo-kit/db"
 )
 
 // STSServiceIntegrationTestSuite STS服务集成测试套件
 type STSServiceIntegrationTestSuite struct {
 	suite.Suite
-	dbStore    *db.PostgresStore
-	userStore  store.UserStore
-	policyStore store.PolicyStore
+	dbStore       *db.PostgresStore
+	userStore     store.UserStore
+	policyStore   store.PolicyStore
 	tempCredStore store.TemporaryCredentialStore
-	stsService *service.STSService
-	cfg        *config.AppConfig
-	testUser   *model.User
-	testPolicy *model.Policy
+	stsService    *service.STSService
+	cfg           *config.AppConfig
+	testUser      *model.User
+	testPolicy    *model.Policy
 }
 
 // SetupSuite 测试套件初始化
@@ -60,6 +60,7 @@ func (suite *STSServiceIntegrationTestSuite) SetupSuite() {
 		suite.userStore,
 		suite.policyStore,
 		suite.cfg.Middleware.MasterKey,
+		&suite.cfg.STS,
 	)
 }
 
@@ -349,7 +350,7 @@ func TestNewSTSService(t *testing.T) {
 	policyStore := store.NewPolicyStore(dbStore.Session)
 	tempCredStore := store.NewTemporaryCredentialStore(dbStore.Session)
 
-	stsService := service.NewSTSService(tempCredStore, userStore, policyStore, cfg.Middleware.MasterKey)
+	stsService := service.NewSTSService(tempCredStore, userStore, policyStore, cfg.Middleware.MasterKey, &cfg.STS)
 
 	assert.NotNil(t, stsService)
 	assert.Equal(t, tempCredStore, stsService.GetStore())

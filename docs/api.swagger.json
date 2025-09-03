@@ -1,0 +1,1684 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "proto/iam.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "IAM"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/access-keys": {
+      "get": {
+        "summary": "访问密钥列表",
+        "operationId": "IAM_ListAccessKeys",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListAccessKeysResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "appId",
+            "description": "可选，筛选特定应用的密钥",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "IAM"
+        ]
+      },
+      "post": {
+        "summary": "访问密钥管理\n创建访问密钥",
+        "operationId": "IAM_CreateAccessKey",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AccessKey"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateAccessKeyRequest"
+            }
+          }
+        ],
+        "tags": [
+          "IAM"
+        ]
+      }
+    },
+    "/v1/access-keys/{accessKeyId}/status": {
+      "put": {
+        "summary": "更新访问密钥状态",
+        "operationId": "IAM_UpdateAccessKeyStatus",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AccessKey"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "accessKeyId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/IAMUpdateAccessKeyStatusBody"
+            }
+          }
+        ],
+        "tags": [
+          "IAM"
+        ]
+      }
+    },
+    "/v1/applications": {
+      "get": {
+        "summary": "应用列表",
+        "operationId": "IAM_ListApplications",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListApplicationsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "description": "active/inactive/suspended",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "IAM"
+        ]
+      },
+      "post": {
+        "summary": "应用管理\n创建应用",
+        "operationId": "IAM_CreateApplication",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Application"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateApplicationRequest"
+            }
+          }
+        ],
+        "tags": [
+          "IAM"
+        ]
+      }
+    },
+    "/v1/applications/{appId}": {
+      "get": {
+        "summary": "获取应用",
+        "operationId": "IAM_GetApplication",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Application"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "appId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "IAM"
+        ]
+      },
+      "delete": {
+        "summary": "删除应用",
+        "operationId": "IAM_DeleteApplication",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeleteApplicationResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "appId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "IAM"
+        ]
+      },
+      "put": {
+        "summary": "更新应用",
+        "operationId": "IAM_UpdateApplication",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Application"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "appId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/IAMUpdateApplicationBody"
+            }
+          }
+        ],
+        "tags": [
+          "IAM"
+        ]
+      }
+    },
+    "/v1/check-permission": {
+      "post": {
+        "summary": "检查权限",
+        "operationId": "IAM_CheckPermission",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CheckPermissionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CheckPermissionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "IAM"
+        ]
+      }
+    },
+    "/v1/developer-verifications": {
+      "get": {
+        "summary": "开发者认证列表",
+        "operationId": "IAM_ListDeveloperVerifications",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListDeveloperVerificationsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "status",
+            "description": "pending/approved/rejected",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "IAM"
+        ]
+      },
+      "post": {
+        "summary": "开发者认证管理\n提交开发者认证",
+        "operationId": "IAM_SubmitDeveloperVerification",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeveloperVerification"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1SubmitDeveloperVerificationRequest"
+            }
+          }
+        ],
+        "tags": [
+          "IAM"
+        ]
+      }
+    },
+    "/v1/developer-verifications/{userName}/{developerType}": {
+      "get": {
+        "summary": "获取开发者认证",
+        "operationId": "IAM_GetDeveloperVerification",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeveloperVerification"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "developerType",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "IAM"
+        ]
+      }
+    },
+    "/v1/developer-verifications/{verificationId}/review": {
+      "put": {
+        "summary": "审核开发者认证",
+        "operationId": "IAM_ReviewDeveloperVerification",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeveloperVerification"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "verificationId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/IAMReviewDeveloperVerificationBody"
+            }
+          }
+        ],
+        "tags": [
+          "IAM"
+        ]
+      }
+    },
+    "/v1/policies": {
+      "post": {
+        "summary": "策略管理\n创建策略",
+        "operationId": "IAM_CreatePolicy",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1Policy"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreatePolicyRequest"
+            }
+          }
+        ],
+        "tags": [
+          "IAM"
+        ]
+      }
+    },
+    "/v1/sts/assume-role": {
+      "post": {
+        "summary": "STS临时授权服务\n假设角色",
+        "operationId": "IAM_AssumeRole",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AssumeRoleResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1AssumeRoleRequest"
+            }
+          }
+        ],
+        "tags": [
+          "IAM"
+        ]
+      }
+    },
+    "/v1/sts/refresh-token": {
+      "post": {
+        "summary": "刷新令牌",
+        "operationId": "IAM_RefreshToken",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1RefreshTokenResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1RefreshTokenRequest"
+            }
+          }
+        ],
+        "tags": [
+          "IAM"
+        ]
+      }
+    },
+    "/v1/sts/revoke-token": {
+      "post": {
+        "summary": "撤销令牌",
+        "operationId": "IAM_RevokeToken",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1RevokeTokenResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1RevokeTokenRequest"
+            }
+          }
+        ],
+        "tags": [
+          "IAM"
+        ]
+      }
+    },
+    "/v1/sts/session-token": {
+      "post": {
+        "summary": "获取会话令牌",
+        "operationId": "IAM_GetSessionToken",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetSessionTokenResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1GetSessionTokenRequest"
+            }
+          }
+        ],
+        "tags": [
+          "IAM"
+        ]
+      }
+    },
+    "/v1/users": {
+      "get": {
+        "summary": "用户列表",
+        "operationId": "IAM_ListUsers",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListUsersResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "IAM"
+        ]
+      },
+      "post": {
+        "summary": "创建用户",
+        "operationId": "IAM_CreateUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1User"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "IAM"
+        ]
+      }
+    },
+    "/v1/users/{name}": {
+      "get": {
+        "summary": "获取用户",
+        "operationId": "IAM_GetUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1User"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "IAM"
+        ]
+      },
+      "delete": {
+        "summary": "删除用户",
+        "operationId": "IAM_DeleteUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeleteUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "IAM"
+        ]
+      },
+      "put": {
+        "summary": "更新用户",
+        "operationId": "IAM_UpdateUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1User"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/IAMUpdateUserBody"
+            }
+          }
+        ],
+        "tags": [
+          "IAM"
+        ]
+      }
+    },
+    "/v1/users/{userName}/policies/{policyName}": {
+      "post": {
+        "summary": "附加用户策略",
+        "operationId": "IAM_AttachUserPolicy",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1AttachUserPolicyResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "policyName",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "IAM"
+        ]
+      }
+    },
+    "/v1/validate-permission": {
+      "post": {
+        "summary": "验证权限",
+        "operationId": "IAM_ValidatePermission",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ValidatePermissionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1ValidatePermissionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "IAM"
+        ]
+      }
+    },
+    "/v1/verify-access-key": {
+      "post": {
+        "summary": "权限验证\n验证访问密钥",
+        "operationId": "IAM_VerifyAccessKey",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1VerifyResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "string access_key_id = 1;\n string signature = 2;\n string request_data = 3; // 序列化的请求数据\n string timestamp = 4;    // ISO8601格式",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1VerifyRequest"
+            }
+          }
+        ],
+        "tags": [
+          "IAM"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "IAMReviewDeveloperVerificationBody": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "title": "approved/rejected"
+        },
+        "reviewComment": {
+          "type": "string"
+        }
+      }
+    },
+    "IAMUpdateAccessKeyStatusBody": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "title": "active/inactive"
+        }
+      }
+    },
+    "IAMUpdateApplicationBody": {
+      "type": "object",
+      "properties": {
+        "appName": {
+          "type": "string"
+        },
+        "appDescription": {
+          "type": "string"
+        },
+        "appType": {
+          "type": "string"
+        },
+        "appIconUrl": {
+          "type": "string"
+        },
+        "appWebsite": {
+          "type": "string"
+        },
+        "callbackUrls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "allowedOrigins": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "type": "string"
+        }
+      }
+    },
+    "IAMUpdateUserBody": {
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1AccessKey": {
+      "type": "object",
+      "properties": {
+        "accessKeyId": {
+          "type": "string"
+        },
+        "secretAccessKey": {
+          "type": "string",
+          "title": "仅在创建时返回"
+        },
+        "status": {
+          "type": "string"
+        },
+        "userName": {
+          "type": "string"
+        },
+        "appId": {
+          "type": "string",
+          "format": "int64"
+        },
+        "appName": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1Application": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "userName": {
+          "type": "string"
+        },
+        "appName": {
+          "type": "string"
+        },
+        "appDescription": {
+          "type": "string"
+        },
+        "appType": {
+          "type": "string"
+        },
+        "appIconUrl": {
+          "type": "string"
+        },
+        "appWebsite": {
+          "type": "string"
+        },
+        "callbackUrls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "allowedOrigins": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1AssumeRoleRequest": {
+      "type": "object",
+      "properties": {
+        "roleArn": {
+          "type": "string",
+          "title": "角色ARN"
+        },
+        "roleSessionName": {
+          "type": "string",
+          "title": "会话名称"
+        },
+        "durationSeconds": {
+          "type": "integer",
+          "format": "int32",
+          "title": "有效期（秒），默认3600，最大43200"
+        },
+        "externalId": {
+          "type": "string",
+          "title": "外部ID（可选）"
+        },
+        "policy": {
+          "type": "string",
+          "title": "会话策略（可选，JSON格式）"
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "会话标签（可选）"
+        }
+      },
+      "title": "STS临时授权相关消息"
+    },
+    "v1AssumeRoleResponse": {
+      "type": "object",
+      "properties": {
+        "credentials": {
+          "$ref": "#/definitions/v1TemporaryCredentials",
+          "title": "临时凭证"
+        },
+        "assumedRoleUser": {
+          "$ref": "#/definitions/v1AssumedRoleUser",
+          "title": "假设角色用户信息"
+        },
+        "packedPolicySize": {
+          "type": "integer",
+          "format": "int32",
+          "title": "打包策略大小"
+        }
+      }
+    },
+    "v1AssumedRoleUser": {
+      "type": "object",
+      "properties": {
+        "arn": {
+          "type": "string",
+          "title": "假设角色用户ARN"
+        },
+        "assumedRoleId": {
+          "type": "string",
+          "title": "假设角色ID"
+        }
+      }
+    },
+    "v1AttachUserPolicyResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1CheckPermissionRequest": {
+      "type": "object",
+      "properties": {
+        "userName": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string"
+        },
+        "resource": {
+          "type": "string"
+        }
+      }
+    },
+    "v1CheckPermissionResponse": {
+      "type": "object",
+      "properties": {
+        "allowed": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1CreateAccessKeyRequest": {
+      "type": "object",
+      "properties": {
+        "userName": {
+          "type": "string"
+        },
+        "appId": {
+          "type": "string",
+          "format": "int64",
+          "title": "关联的应用ID"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "title": "访问密钥相关消息"
+    },
+    "v1CreateApplicationRequest": {
+      "type": "object",
+      "properties": {
+        "appName": {
+          "type": "string"
+        },
+        "appDescription": {
+          "type": "string"
+        },
+        "appType": {
+          "type": "string",
+          "title": "web/mobile/desktop/api"
+        },
+        "appIconUrl": {
+          "type": "string"
+        },
+        "appWebsite": {
+          "type": "string"
+        },
+        "callbackUrls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "allowedOrigins": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "title": "应用管理相关消息"
+    },
+    "v1CreatePolicyRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "policyDocument": {
+          "type": "string",
+          "title": "JSON字符串"
+        }
+      },
+      "title": "策略相关消息"
+    },
+    "v1CreateUserRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        }
+      },
+      "title": "用户相关消息"
+    },
+    "v1DeleteApplicationResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1DeleteUserResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1DeveloperVerification": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "userName": {
+          "type": "string"
+        },
+        "developerType": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "realName": {
+          "type": "string",
+          "title": "个人开发者信息"
+        },
+        "idCardNumber": {
+          "type": "string"
+        },
+        "idCardFrontUrl": {
+          "type": "string"
+        },
+        "idCardBackUrl": {
+          "type": "string"
+        },
+        "companyName": {
+          "type": "string",
+          "title": "企业开发者信息"
+        },
+        "businessLicenseNumber": {
+          "type": "string"
+        },
+        "businessLicenseUrl": {
+          "type": "string"
+        },
+        "legalRepresentative": {
+          "type": "string"
+        },
+        "companyAddress": {
+          "type": "string"
+        },
+        "reviewerName": {
+          "type": "string",
+          "title": "审核信息"
+        },
+        "reviewComment": {
+          "type": "string"
+        },
+        "reviewedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1GetSessionTokenRequest": {
+      "type": "object",
+      "properties": {
+        "durationSeconds": {
+          "type": "integer",
+          "format": "int32",
+          "title": "有效期（秒），默认3600，最大129600"
+        },
+        "serialNumber": {
+          "type": "string",
+          "title": "MFA设备序列号（可选）"
+        },
+        "tokenCode": {
+          "type": "string",
+          "title": "MFA令牌代码（可选）"
+        }
+      }
+    },
+    "v1GetSessionTokenResponse": {
+      "type": "object",
+      "properties": {
+        "credentials": {
+          "$ref": "#/definitions/v1TemporaryCredentials",
+          "title": "临时凭证"
+        }
+      }
+    },
+    "v1ListAccessKeysResponse": {
+      "type": "object",
+      "properties": {
+        "accessKeys": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1AccessKey"
+          }
+        }
+      }
+    },
+    "v1ListApplicationsResponse": {
+      "type": "object",
+      "properties": {
+        "applications": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Application"
+          }
+        },
+        "total": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "page": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "v1ListDeveloperVerificationsResponse": {
+      "type": "object",
+      "properties": {
+        "verifications": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1DeveloperVerification"
+          }
+        },
+        "total": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "page": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "v1ListUsersResponse": {
+      "type": "object",
+      "properties": {
+        "users": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1User"
+          }
+        },
+        "total": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "page": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "v1Policy": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "policyDocument": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1RefreshTokenRequest": {
+      "type": "object",
+      "properties": {
+        "sessionToken": {
+          "type": "string",
+          "title": "当前会话令牌"
+        },
+        "durationSeconds": {
+          "type": "integer",
+          "format": "int32",
+          "title": "新的有效期（秒）"
+        }
+      }
+    },
+    "v1RefreshTokenResponse": {
+      "type": "object",
+      "properties": {
+        "credentials": {
+          "$ref": "#/definitions/v1TemporaryCredentials",
+          "title": "新的临时凭证"
+        }
+      }
+    },
+    "v1RevokeTokenRequest": {
+      "type": "object",
+      "properties": {
+        "sessionToken": {
+          "type": "string",
+          "title": "要撤销的会话令牌"
+        }
+      }
+    },
+    "v1RevokeTokenResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "title": "撤销是否成功"
+        },
+        "message": {
+          "type": "string",
+          "title": "响应消息"
+        }
+      }
+    },
+    "v1SubmitDeveloperVerificationRequest": {
+      "type": "object",
+      "properties": {
+        "developerType": {
+          "type": "string",
+          "title": "individual/enterprise"
+        },
+        "realName": {
+          "type": "string",
+          "title": "个人开发者信息"
+        },
+        "idCardNumber": {
+          "type": "string"
+        },
+        "idCardFrontUrl": {
+          "type": "string"
+        },
+        "idCardBackUrl": {
+          "type": "string"
+        },
+        "companyName": {
+          "type": "string",
+          "title": "企业开发者信息"
+        },
+        "businessLicenseNumber": {
+          "type": "string"
+        },
+        "businessLicenseUrl": {
+          "type": "string"
+        },
+        "legalRepresentative": {
+          "type": "string"
+        },
+        "companyAddress": {
+          "type": "string"
+        }
+      },
+      "title": "开发者认证相关消息"
+    },
+    "v1TemporaryCredentials": {
+      "type": "object",
+      "properties": {
+        "accessKeyId": {
+          "type": "string",
+          "title": "临时访问密钥ID"
+        },
+        "secretAccessKey": {
+          "type": "string",
+          "title": "临时密钥"
+        },
+        "sessionToken": {
+          "type": "string",
+          "title": "会话令牌"
+        },
+        "expiration": {
+          "type": "string",
+          "format": "date-time",
+          "title": "过期时间"
+        }
+      }
+    },
+    "v1User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1ValidatePermissionRequest": {
+      "type": "object",
+      "properties": {
+        "userName": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string"
+        },
+        "resource": {
+          "type": "string"
+        }
+      }
+    },
+    "v1ValidatePermissionResponse": {
+      "type": "object",
+      "properties": {
+        "allowed": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1VerifyRequest": {
+      "type": "object",
+      "description": "string access_key_id = 1;\n string signature = 2;\n string request_data = 3; // 序列化的请求数据\n string timestamp = 4;    // ISO8601格式",
+      "title": "验证相关消息"
+    },
+    "v1VerifyResponse": {
+      "type": "object",
+      "properties": {
+        "valid": {
+          "type": "boolean"
+        },
+        "userName": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

@@ -1,10 +1,14 @@
 package cmd
 
 import (
+	"context"
+	"fmt"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	iamv1 "github.com/vera-byte/vgo-iam/pkg/proto"
 
 	"github.com/spf13/cobra"
@@ -17,6 +21,7 @@ import (
 	"github.com/vera-byte/vgo-kit/ratelimit"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 func init() {
@@ -90,21 +95,62 @@ func startServer() {
 	// 使用从bootstrap.Start()获取的listener
 	vgokit.Log.Info("Using listener from bootstrap.Start()")
 
-	// 启动服务协程
+	// 启动gRPC服务协程
 	go func() {
 		vgokit.Log.Info("Starting gRPC server on port 50051")
 		if err := server.Serve(lis); err != nil {
-			vgokit.Log.Fatal("Failed to serve", zap.Error(err))
+			vgokit.Log.Fatal("Failed to serve gRPC", zap.Error(err))
 		}
 	}()
+
+	// 创建gRPC Gateway
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	// 创建gRPC Gateway mux
+	mux := runtime.NewServeMux()
+
+	// 连接到gRPC服务器
+	grpcServerEndpoint := "localhost:50051"
+	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
+
+	// 注册gRPC Gateway处理器
+	err := iamv1.RegisterIAMHandlerFromEndpoint(ctx, mux, grpcServerEndpoint, opts)
+	if err != nil {
+		vgokit.Log.Fatal("Failed to register gateway", zap.Error(err))
+	}
+
+	// 启动HTTP服务器协程
+	httpServer := &http.Server{
+		Addr:    ":8080",
+		Handler: mux,
+	}
+
+	go func() {
+		vgokit.Log.Info("Starting HTTP Gateway server on port 8080")
+		if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			vgokit.Log.Fatal("Failed to serve HTTP", zap.Error(err))
+		}
+	}()
+
+	vgokit.Log.Info(fmt.Sprintf("gRPC server listening on port 50051"))
+	vgokit.Log.Info(fmt.Sprintf("HTTP Gateway server listening on port 8080"))
 
 	// 优雅关闭
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
-	vgokit.Log.Info("Shutting down server...")
+	vgokit.Log.Info("Shutting down servers...")
+
+	// 关闭HTTP服务器
+	if err := httpServer.Shutdown(ctx); err != nil {
+		vgokit.Log.Error("HTTP server shutdown error", zap.Error(err))
+	}
+
+	// 关闭gRPC服务器
 	server.GracefulStop()
-	vgokit.Log.Info("Server exiting")
+	vgokit.Log.Info("Servers exited")
 	vgokit.Log.Close()
 
 }

@@ -2,48 +2,218 @@ syntax = "proto3";
 
 package iam.v1;
 
+import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/vera-byte/vgo-iam/internal/proto;iamv1";
+option go_package = "github.com/vera-byte/vgo-iam/pkg/proto;iamv1";
 
 service IAM {
-  // 用户管理
-  rpc CreateUser(CreateUserRequest) returns (User) {}
-  rpc GetUser(GetUserRequest) returns (User) {}
+
+  // 创建用户
+  rpc CreateUser(CreateUserRequest) returns (User) {
+    option (google.api.http) = {
+      post: "/v1/users"
+      body: "*"
+    };
+  }
+  
+  // 获取用户
+  rpc GetUser(GetUserRequest) returns (User) {
+    option (google.api.http) = {
+      get: "/v1/users/{name}"
+    };
+  }
+  
+  // 用户列表
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {
+    option (google.api.http) = {
+      get: "/v1/users"
+    };
+  }
+  
+  // 更新用户
+  rpc UpdateUser(UpdateUserRequest) returns (User) {
+    option (google.api.http) = {
+      put: "/v1/users/{name}"
+      body: "*"
+    };
+  }
+  
+  // 删除用户
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {
+    option (google.api.http) = {
+      delete: "/v1/users/{name}"
+    };
+  }
 
   // 策略管理
-  rpc CreatePolicy(CreatePolicyRequest) returns (Policy) {}
+  // 创建策略
+  rpc CreatePolicy(CreatePolicyRequest) returns (Policy) {
+    option (google.api.http) = {
+      post: "/v1/policies"
+      body: "*"
+    };
+  }
+  
+  // 附加用户策略
   rpc AttachUserPolicy(AttachUserPolicyRequest)
-      returns (AttachUserPolicyResponse) {}
+      returns (AttachUserPolicyResponse) {
+    option (google.api.http) = {
+      post: "/v1/users/{user_name}/policies/{policy_name}"
+    };
+  }
 
   // 开发者认证管理
-  rpc SubmitDeveloperVerification(SubmitDeveloperVerificationRequest) returns (DeveloperVerification) {}
-  rpc GetDeveloperVerification(GetDeveloperVerificationRequest) returns (DeveloperVerification) {}
-  rpc ListDeveloperVerifications(ListDeveloperVerificationsRequest) returns (ListDeveloperVerificationsResponse) {}
-  rpc ReviewDeveloperVerification(ReviewDeveloperVerificationRequest) returns (DeveloperVerification) {}
+  // 提交开发者认证
+  rpc SubmitDeveloperVerification(SubmitDeveloperVerificationRequest) returns (DeveloperVerification) {
+    option (google.api.http) = {
+      post: "/v1/developer-verifications"
+      body: "*"
+    };
+  }
+  
+  // 获取开发者认证
+  rpc GetDeveloperVerification(GetDeveloperVerificationRequest) returns (DeveloperVerification) {
+    option (google.api.http) = {
+      get: "/v1/developer-verifications/{user_name}/{developer_type}"
+    };
+  }
+  
+  // 开发者认证列表
+  rpc ListDeveloperVerifications(ListDeveloperVerificationsRequest) returns (ListDeveloperVerificationsResponse) {
+    option (google.api.http) = {
+      get: "/v1/developer-verifications"
+    };
+  }
+  
+  // 审核开发者认证
+  rpc ReviewDeveloperVerification(ReviewDeveloperVerificationRequest) returns (DeveloperVerification) {
+    option (google.api.http) = {
+      put: "/v1/developer-verifications/{verification_id}/review"
+      body: "*"
+    };
+  }
 
   // 应用管理
-  rpc CreateApplication(CreateApplicationRequest) returns (Application) {}
-  rpc GetApplication(GetApplicationRequest) returns (Application) {}
-  rpc ListApplications(ListApplicationsRequest) returns (ListApplicationsResponse) {}
-  rpc UpdateApplication(UpdateApplicationRequest) returns (Application) {}
-  rpc DeleteApplication(DeleteApplicationRequest) returns (DeleteApplicationResponse) {}
+  // 创建应用
+  rpc CreateApplication(CreateApplicationRequest) returns (Application) {
+    option (google.api.http) = {
+      post: "/v1/applications"
+      body: "*"
+    };
+  }
+  
+  // 获取应用
+  rpc GetApplication(GetApplicationRequest) returns (Application) {
+    option (google.api.http) = {
+      get: "/v1/applications/{app_id}"
+    };
+  }
+  
+  // 应用列表
+  rpc ListApplications(ListApplicationsRequest) returns (ListApplicationsResponse) {
+    option (google.api.http) = {
+      get: "/v1/applications"
+    };
+  }
+  
+  // 更新应用
+  rpc UpdateApplication(UpdateApplicationRequest) returns (Application) {
+    option (google.api.http) = {
+      put: "/v1/applications/{app_id}"
+      body: "*"
+    };
+  }
+  
+  // 删除应用
+  rpc DeleteApplication(DeleteApplicationRequest) returns (DeleteApplicationResponse) {
+    option (google.api.http) = {
+      delete: "/v1/applications/{app_id}"
+    };
+  }
 
   // 访问密钥管理
-  rpc CreateAccessKey(CreateAccessKeyRequest) returns (AccessKey) {}
-  rpc ListAccessKeys(ListAccessKeysRequest) returns (ListAccessKeysResponse) {}
-  rpc UpdateAccessKeyStatus(UpdateAccessKeyStatusRequest) returns (AccessKey) {}
+  // 创建访问密钥
+  rpc CreateAccessKey(CreateAccessKeyRequest) returns (AccessKey) {
+    option (google.api.http) = {
+      post: "/v1/access-keys"
+      body: "*"
+    };
+  }
+  
+  // 访问密钥列表
+  rpc ListAccessKeys(ListAccessKeysRequest) returns (ListAccessKeysResponse) {
+    option (google.api.http) = {
+      get: "/v1/access-keys"
+    };
+  }
+  
+  // 更新访问密钥状态
+  rpc UpdateAccessKeyStatus(UpdateAccessKeyStatusRequest) returns (AccessKey) {
+    option (google.api.http) = {
+      put: "/v1/access-keys/{access_key_id}/status"
+      body: "*"
+    };
+  }
 
   // 权限验证
-  rpc VerifyAccessKey(VerifyRequest) returns (VerifyResponse) {}
+  // 验证访问密钥
+  rpc VerifyAccessKey(VerifyRequest) returns (VerifyResponse) {
+    option (google.api.http) = {
+      post: "/v1/verify-access-key"
+      body: "*"
+    };
+  }
+  
+  // 检查权限
   rpc CheckPermission(CheckPermissionRequest)
-      returns (CheckPermissionResponse) {}
+      returns (CheckPermissionResponse) {
+    option (google.api.http) = {
+      post: "/v1/check-permission"
+      body: "*"
+    };
+  }
+  
+  // 验证权限
+  rpc ValidatePermission(ValidatePermissionRequest) returns (ValidatePermissionResponse) {
+    option (google.api.http) = {
+      post: "/v1/validate-permission"
+      body: "*"
+    };
+  }
 
   // STS临时授权服务
-  rpc AssumeRole(AssumeRoleRequest) returns (AssumeRoleResponse) {}
-  rpc GetSessionToken(GetSessionTokenRequest) returns (GetSessionTokenResponse) {}
-  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {}
-  rpc RevokeToken(RevokeTokenRequest) returns (RevokeTokenResponse) {}
+  // 假设角色
+  rpc AssumeRole(AssumeRoleRequest) returns (AssumeRoleResponse) {
+    option (google.api.http) = {
+      post: "/v1/sts/assume-role"
+      body: "*"
+    };
+  }
+  
+  // 获取会话令牌
+  rpc GetSessionToken(GetSessionTokenRequest) returns (GetSessionTokenResponse) {
+    option (google.api.http) = {
+      post: "/v1/sts/session-token"
+      body: "*"
+    };
+  }
+  
+  // 刷新令牌
+  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {
+    option (google.api.http) = {
+      post: "/v1/sts/refresh-token"
+      body: "*"
+    };
+  }
+  
+  // 撤销令牌
+  rpc RevokeToken(RevokeTokenRequest) returns (RevokeTokenResponse) {
+    option (google.api.http) = {
+      post: "/v1/sts/revoke-token"
+      body: "*"
+    };
+  }
 }
 
 // 用户相关消息
@@ -54,6 +224,32 @@ message CreateUserRequest {
 }
 
 message GetUserRequest { string name = 1; }
+
+message ListUsersRequest {
+  int32 page = 1;
+  int32 size = 2;
+}
+
+message ListUsersResponse {
+  repeated User users = 1;
+  int32 total = 2;
+  int32 page = 3;
+  int32 size = 4;
+}
+
+message UpdateUserRequest {
+  string name = 1;
+  string display_name = 2;
+  string email = 3;
+}
+
+message DeleteUserRequest {
+  string name = 1;
+}
+
+message DeleteUserResponse {
+  bool success = 1;
+}
 
 message User {
   int64 id = 1;
@@ -272,6 +468,16 @@ message CheckPermissionRequest {
 }
 
 message CheckPermissionResponse { bool allowed = 1; }
+
+message ValidatePermissionRequest {
+  string user_name = 1;
+  string action = 2;
+  string resource = 3;
+}
+
+message ValidatePermissionResponse {
+  bool allowed = 1;
+}
 
 // STS临时授权相关消息
 message AssumeRoleRequest {

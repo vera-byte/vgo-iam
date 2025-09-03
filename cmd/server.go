@@ -2,10 +2,10 @@ package cmd
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
@@ -108,8 +108,20 @@ func startServer() {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	// 创建gRPC Gateway mux
-	mux := runtime.NewServeMux()
+	// 创建gRPC Gateway mux，配置metadata处理器
+	mux := runtime.NewServeMux(
+		// 允许所有HTTP请求头传递到gRPC metadata
+		runtime.WithIncomingHeaderMatcher(func(key string) (string, bool) {
+			// 将HTTP请求头转换为小写，并允许传递到gRPC metadata
+			// 这确保了像Access-Key-Id这样的头部能正确映射到access-key-id
+			return strings.ToLower(key), true
+		}),
+		// 设置传出头部处理器
+		runtime.WithOutgoingHeaderMatcher(func(key string) (string, bool) {
+			// 允许gRPC metadata传递回HTTP响应头
+			return key, true
+		}),
+	)
 
 	// 连接到gRPC服务器
 	grpcServerEndpoint := "localhost:50051"
@@ -134,8 +146,8 @@ func startServer() {
 		}
 	}()
 
-	vgokit.Log.Info(fmt.Sprintf("gRPC server listening on port 50051"))
-	vgokit.Log.Info(fmt.Sprintf("HTTP Gateway server listening on port 8080"))
+	vgokit.Log.Info("gRPC server listening on port 50051")
+	vgokit.Log.Info("HTTP Gateway server listening on port 8080")
 
 	// 优雅关闭
 	quit := make(chan os.Signal, 1)

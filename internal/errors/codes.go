@@ -160,13 +160,13 @@ var ErrorCodeToGRPCCode = map[ErrorCode]codes.Code{
 type BusinessError struct {
 	Code    ErrorCode `json:"code"`
 	Message string    `json:"message"`
-	Details string    `json:"details,omitempty"`
+	Data    string    `json:"data,omitempty"`
 }
 
 // Error 实现error接口
 func (e *BusinessError) Error() string {
-	if e.Details != "" {
-		return fmt.Sprintf("[%d] %s: %s", e.Code, e.Message, e.Details)
+	if e.Data != "" {
+		return fmt.Sprintf("[%d] %s: %s", e.Code, e.Message, e.Data)
 	}
 	return fmt.Sprintf("[%d] %s", e.Code, e.Message)
 }
@@ -194,7 +194,7 @@ func NewBusinessError(code ErrorCode, details ...string) *BusinessError {
 	}
 
 	if len(details) > 0 {
-		err.Details = details[0]
+		err.Data = details[0]
 	}
 
 	return err
@@ -241,7 +241,7 @@ func NewBusinessErrorWithTranslator(ctx context.Context, translator Translator, 
 	}
 
 	if len(details) > 0 {
-		err.Details = details[0]
+		err.Data = details[0]
 	}
 
 	return err

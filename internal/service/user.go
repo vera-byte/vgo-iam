@@ -229,3 +229,24 @@ func (s *UserService) UpdateUserPassword(ctx context.Context, userID int64, pass
 	user.UpdatedAt = time.Now()
 	return s.userStore.Update(user)
 }
+
+// GetUsersCount 获取用户总数
+// 返回系统中用户的总数量
+func (s *UserService) GetUsersCount(ctx context.Context) (int64, error) {
+	users, err := s.userStore.List()
+	if err != nil {
+		return 0, errors.NewBusinessError(errors.CodeInternalError, "failed to get users count")
+	}
+	return int64(len(users)), nil
+}
+
+// HealthCheck 检查用户服务健康状态
+// 返回服务是否正常运行
+func (s *UserService) HealthCheck(ctx context.Context) error {
+	// 尝试获取用户列表来检查数据库连接
+	_, err := s.userStore.List()
+	if err != nil {
+		return errors.NewBusinessError(errors.CodeInternalError, "user service health check failed")
+	}
+	return nil
+}

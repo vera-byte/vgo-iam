@@ -45,6 +45,9 @@ const (
 	IAM_GetSessionToken_FullMethodName             = "/iam.v1.IAM/GetSessionToken"
 	IAM_RefreshToken_FullMethodName                = "/iam.v1.IAM/RefreshToken"
 	IAM_RevokeToken_FullMethodName                 = "/iam.v1.IAM/RevokeToken"
+	IAM_GetDashboardStats_FullMethodName           = "/iam.v1.IAM/GetDashboardStats"
+	IAM_GetDashboardStatus_FullMethodName          = "/iam.v1.IAM/GetDashboardStatus"
+	IAM_GetDashboardActivities_FullMethodName      = "/iam.v1.IAM/GetDashboardActivities"
 )
 
 // IAMClient is the client API for IAM service.
@@ -109,6 +112,13 @@ type IAMClient interface {
 	RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*RefreshTokenResponse, error)
 	// 撤销令牌
 	RevokeToken(ctx context.Context, in *RevokeTokenRequest, opts ...grpc.CallOption) (*RevokeTokenResponse, error)
+	// Dashboard相关接口
+	// 获取统计数据
+	GetDashboardStats(ctx context.Context, in *DashboardStatsRequest, opts ...grpc.CallOption) (*DashboardStatsResponse, error)
+	// 获取系统状态
+	GetDashboardStatus(ctx context.Context, in *DashboardStatusRequest, opts ...grpc.CallOption) (*DashboardStatusResponse, error)
+	// 获取最近活动
+	GetDashboardActivities(ctx context.Context, in *DashboardActivitiesRequest, opts ...grpc.CallOption) (*DashboardActivitiesResponse, error)
 }
 
 type iAMClient struct {
@@ -379,6 +389,36 @@ func (c *iAMClient) RevokeToken(ctx context.Context, in *RevokeTokenRequest, opt
 	return out, nil
 }
 
+func (c *iAMClient) GetDashboardStats(ctx context.Context, in *DashboardStatsRequest, opts ...grpc.CallOption) (*DashboardStatsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DashboardStatsResponse)
+	err := c.cc.Invoke(ctx, IAM_GetDashboardStats_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *iAMClient) GetDashboardStatus(ctx context.Context, in *DashboardStatusRequest, opts ...grpc.CallOption) (*DashboardStatusResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DashboardStatusResponse)
+	err := c.cc.Invoke(ctx, IAM_GetDashboardStatus_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *iAMClient) GetDashboardActivities(ctx context.Context, in *DashboardActivitiesRequest, opts ...grpc.CallOption) (*DashboardActivitiesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DashboardActivitiesResponse)
+	err := c.cc.Invoke(ctx, IAM_GetDashboardActivities_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // IAMServer is the server API for IAM service.
 // All implementations should embed UnimplementedIAMServer
 // for forward compatibility.
@@ -441,6 +481,13 @@ type IAMServer interface {
 	RefreshToken(context.Context, *RefreshTokenRequest) (*RefreshTokenResponse, error)
 	// 撤销令牌
 	RevokeToken(context.Context, *RevokeTokenRequest) (*RevokeTokenResponse, error)
+	// Dashboard相关接口
+	// 获取统计数据
+	GetDashboardStats(context.Context, *DashboardStatsRequest) (*DashboardStatsResponse, error)
+	// 获取系统状态
+	GetDashboardStatus(context.Context, *DashboardStatusRequest) (*DashboardStatusResponse, error)
+	// 获取最近活动
+	GetDashboardActivities(context.Context, *DashboardActivitiesRequest) (*DashboardActivitiesResponse, error)
 }
 
 // UnimplementedIAMServer should be embedded to have
@@ -527,6 +574,15 @@ func (UnimplementedIAMServer) RefreshToken(context.Context, *RefreshTokenRequest
 }
 func (UnimplementedIAMServer) RevokeToken(context.Context, *RevokeTokenRequest) (*RevokeTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RevokeToken not implemented")
+}
+func (UnimplementedIAMServer) GetDashboardStats(context.Context, *DashboardStatsRequest) (*DashboardStatsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDashboardStats not implemented")
+}
+func (UnimplementedIAMServer) GetDashboardStatus(context.Context, *DashboardStatusRequest) (*DashboardStatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDashboardStatus not implemented")
+}
+func (UnimplementedIAMServer) GetDashboardActivities(context.Context, *DashboardActivitiesRequest) (*DashboardActivitiesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDashboardActivities not implemented")
 }
 func (UnimplementedIAMServer) testEmbeddedByValue() {}
 
@@ -1016,6 +1072,60 @@ func _IAM_RevokeToken_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _IAM_GetDashboardStats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DashboardStatsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IAMServer).GetDashboardStats(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IAM_GetDashboardStats_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IAMServer).GetDashboardStats(ctx, req.(*DashboardStatsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IAM_GetDashboardStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DashboardStatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IAMServer).GetDashboardStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IAM_GetDashboardStatus_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IAMServer).GetDashboardStatus(ctx, req.(*DashboardStatusRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IAM_GetDashboardActivities_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DashboardActivitiesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IAMServer).GetDashboardActivities(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IAM_GetDashboardActivities_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IAMServer).GetDashboardActivities(ctx, req.(*DashboardActivitiesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // IAM_ServiceDesc is the grpc.ServiceDesc for IAM service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1126,6 +1236,18 @@ var IAM_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RevokeToken",
 			Handler:    _IAM_RevokeToken_Handler,
+		},
+		{
+			MethodName: "GetDashboardStats",
+			Handler:    _IAM_GetDashboardStats_Handler,
+		},
+		{
+			MethodName: "GetDashboardStatus",
+			Handler:    _IAM_GetDashboardStatus_Handler,
+		},
+		{
+			MethodName: "GetDashboardActivities",
+			Handler:    _IAM_GetDashboardActivities_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

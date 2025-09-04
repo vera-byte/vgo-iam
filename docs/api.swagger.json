@@ -341,6 +341,85 @@
         ]
       }
     },
+    "/v1/dashboard/activities": {
+      "get": {
+        "summary": "获取最近活动",
+        "operationId": "IAM_GetDashboardActivities",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DashboardActivitiesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "limit",
+            "description": "限制返回数量，默认10",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "IAM"
+        ]
+      }
+    },
+    "/v1/dashboard/stats": {
+      "get": {
+        "summary": "Dashboard相关接口\n获取统计数据",
+        "operationId": "IAM_GetDashboardStats",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DashboardStatsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "IAM"
+        ]
+      }
+    },
+    "/v1/dashboard/status": {
+      "get": {
+        "summary": "获取系统状态",
+        "operationId": "IAM_GetDashboardStatus",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DashboardStatusResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "IAM"
+        ]
+      }
+    },
     "/v1/developer-verifications": {
       "get": {
         "summary": "开发者认证列表",
@@ -1064,6 +1143,32 @@
         }
       }
     },
+    "v1Activity": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "title": "活动ID"
+        },
+        "type": {
+          "type": "string",
+          "title": "活动类型"
+        },
+        "description": {
+          "type": "string",
+          "title": "活动描述"
+        },
+        "user": {
+          "type": "string",
+          "title": "操作用户"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "title": "时间戳"
+        }
+      }
+    },
     "v1Application": {
       "type": "object",
       "properties": {
@@ -1290,6 +1395,65 @@
         }
       },
       "title": "用户相关消息"
+    },
+    "v1DashboardActivitiesResponse": {
+      "type": "object",
+      "properties": {
+        "activities": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Activity"
+          },
+          "title": "活动列表"
+        }
+      }
+    },
+    "v1DashboardStatsResponse": {
+      "type": "object",
+      "properties": {
+        "users": {
+          "type": "integer",
+          "format": "int32",
+          "title": "用户总数"
+        },
+        "accessKeys": {
+          "type": "integer",
+          "format": "int32",
+          "title": "访问密钥总数"
+        },
+        "policies": {
+          "type": "integer",
+          "format": "int32",
+          "title": "策略总数"
+        },
+        "applications": {
+          "type": "integer",
+          "format": "int32",
+          "title": "应用总数"
+        }
+      }
+    },
+    "v1DashboardStatusResponse": {
+      "type": "object",
+      "properties": {
+        "serviceStatus": {
+          "type": "string",
+          "title": "服务状态: healthy/unhealthy"
+        },
+        "databaseStatus": {
+          "type": "string",
+          "title": "数据库状态: connected/disconnected"
+        },
+        "uptime": {
+          "type": "string",
+          "title": "运行时间"
+        },
+        "version": {
+          "type": "string",
+          "title": "版本信息"
+        }
+      }
     },
     "v1DeleteApplicationResponse": {
       "type": "object",

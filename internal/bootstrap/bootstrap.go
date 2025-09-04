@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"path/filepath"
+	"strconv"
 	"time"
 
 	"github.com/gocraft/dbr/v2"
@@ -46,7 +47,7 @@ func Banner() {
 
 // InitServices 初始化服务层和API层
 // 返回IAMServer实例，用于gRPC服务和命令行操作
-func InitServices(cfg *config.AppConfig) (*api.IAMServer, *dbr.Session) {
+func InitServices(cfg *config.AppConfig) (*api.IAMServer, *dbr.Session, store.AccessKeyStore, store.TemporaryCredentialStore) {
 	// 初始化指标收集器
 	if vgokit.Metrics == nil {
 		vgokit.Metrics = metrics.NewMetrics("vgo_iam")
@@ -70,12 +71,9 @@ func InitServices(cfg *config.AppConfig) (*api.IAMServer, *dbr.Session) {
 	sess, err := db.NewPostgresStore(cfg.Database.DSN)
 	if err != nil {
 		vgokit.Log.Error("failed to connect to database", zap.Error(err))
-		// 为了调试，先打印详细错误信息
-		fmt.Printf("Database connection failed: %v\n", err)
-		fmt.Printf("DSN: %s\n", cfg.Database.DSN)
 		panic(err)
 	}
-	vgokit.Log.Info("database connected successfully", zap.String("dsn", cfg.Database.DSN))
+	vgokit.Log.Info("database connected successfully")
 
 	// 初始化存储层
 	userStore := store.NewUserStore(sess.Session)
@@ -119,7 +117,7 @@ func InitServices(cfg *config.AppConfig) (*api.IAMServer, *dbr.Session) {
 		globalTranslator,
 	)
 
-	return server, sess.Session
+	return server, sess.Session, accessKeyStore, temporaryCredentialStore
 }
 
 func Start() (*config.AppConfig, net.Listener) {
@@ -161,9 +159,8 @@ func Start() (*config.AppConfig, net.Listener) {
 	}
 	vgokit.Log.Info("rate limiter initialized successfully")
 
-	listenAddr := ":" + cfg.GRPC.Port
-	vgokit.Log.Info("gRPC server will listen on", zap.String("address", listenAddr))
-	lis, err := net.Listen("tcp", listenAddr)
+	grpcAddr := cfg.GRPC.Server.Host + ":" + strconv.Itoa(cfg.GRPC.Server.Port)
+	lis, err := net.Listen("tcp", grpcAddr)
 	if err != nil {
 		vgokit.Log.Error("failed to listen", zap.Error(err))
 		panic(err)

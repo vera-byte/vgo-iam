@@ -1,3 +1,5 @@
 /debug/*
 /logs/*
 *.log
+/bin/*
+node_modules/

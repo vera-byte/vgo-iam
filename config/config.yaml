@@ -1,5 +1,23 @@
 grpc:
-  port: "50051"
+  server:
+    host: "0.0.0.0"
+    port: 50051
+    max_recv_msg_size: 4194304 # 4MB
+    max_send_msg_size: 4194304 # 4MB
+    connection_timeout: "30s"
+    keepalive:
+      time: "30s"
+      timeout: "5s"
+      permit_without_stream: true
+    tls:
+      enabled: false
+      cert_file: ""
+      key_file: ""
+      ca_file: ""
+  client:
+    connections: {}
+http:
+  addr: ":50052"
 
 database:
   dsn: "postgres://vgo_user:vgo_password@localhost:5432/vgo_iam?sslmode=disable"
@@ -9,6 +27,16 @@ middleware:
   # 忽略认证
   ignore:
     - "/iam.v1.IAM/VerifyAccessKey"
+  # 允许传递到gRPC metadata的HTTP头部
+  allowed_headers:
+    - "access-key-id"
+    - "signature"
+    - "x-iam-date"
+    - "request-data"
+    - "x-amz-security-token"
+    - "client-ip"
+    - "user-agent"
+    - "remote-addr"
 
 # Sentry和日志配置
 log:
@@ -50,11 +78,11 @@ cache:
 # STS临时凭证配置
 sts:
   # 默认过期时间
-  default_duration: "1h"    # 1小时
+  default_duration: "1h" # 1小时
   # 最大过期时间
-  max_duration: "12h"       # 12小时
+  max_duration: "12h" # 12小时
   # 最小过期时间
-  min_duration: "15m"       # 15分钟
+  min_duration: "15m" # 15分钟
   # 清理过期凭证的间隔时间
   cleanup_interval: "1h"
   # 是否启用自动清理

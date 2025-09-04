@@ -5,14 +5,21 @@ import (
 
 	vgokit "github.com/vera-byte/vgo-kit"
 	"github.com/vera-byte/vgo-kit/cache"
+	vgogrpc "github.com/vera-byte/vgo-kit/grpc"
 	"go.uber.org/zap"
 )
 
 // Config 应用配置
 type AppConfig struct {
 	GRPC struct {
-		Port string `mapstructure:"port"`
+		Server vgogrpc.ServerConfig `mapstructure:"server"`
+		Client struct {
+			Connections map[string]vgogrpc.ClientConfig `mapstructure:"connections"`
+		} `mapstructure:"client"`
 	} `mapstructure:"grpc"`
+	HTTP struct {
+		Addr string `mapstructure:"addr"`
+	} `mapstructure:"http"`
 	Database struct {
 		DSN string `mapstructure:"dsn"`
 	} `mapstructure:"database"`
@@ -20,8 +27,9 @@ type AppConfig struct {
 	Sentry     SentryConfig    `mapstructure:"sentry"`
 	RateLimit  RateLimitConfig `mapstructure:"ratelimit"`
 	Middleware struct {
-		Ignore    []string `mapstructure:"ignore"`
-		MasterKey string   `mapstructure:"master_key"`
+		Ignore         []string `mapstructure:"ignore"`
+		MasterKey      string   `mapstructure:"master_key"`
+		AllowedHeaders []string `mapstructure:"allowed_headers"`
 	} `mapstructure:"middleware"`
 	Cache *cache.CacheConfig `mapstructure:"cache"`
 	STS   STSConfig          `mapstructure:"sts"`

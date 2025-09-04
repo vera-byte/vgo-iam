@@ -3039,6 +3039,379 @@ func (x *AssumedRoleUser) GetAssumedRoleId() string {
 	return ""
 }
 
+// Dashboard相关消息
+type DashboardStatsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DashboardStatsRequest) Reset() {
+	*x = DashboardStatsRequest{}
+	mi := &file_proto_iam_proto_msgTypes[47]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DashboardStatsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DashboardStatsRequest) ProtoMessage() {}
+
+func (x *DashboardStatsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_iam_proto_msgTypes[47]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DashboardStatsRequest.ProtoReflect.Descriptor instead.
+func (*DashboardStatsRequest) Descriptor() ([]byte, []int) {
+	return file_proto_iam_proto_rawDescGZIP(), []int{47}
+}
+
+type DashboardStatsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Users         int32                  `protobuf:"varint,1,opt,name=users,proto3" json:"users,omitempty"`                             // 用户总数
+	AccessKeys    int32                  `protobuf:"varint,2,opt,name=access_keys,json=accessKeys,proto3" json:"access_keys,omitempty"` // 访问密钥总数
+	Policies      int32                  `protobuf:"varint,3,opt,name=policies,proto3" json:"policies,omitempty"`                       // 策略总数
+	Applications  int32                  `protobuf:"varint,4,opt,name=applications,proto3" json:"applications,omitempty"`               // 应用总数
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DashboardStatsResponse) Reset() {
+	*x = DashboardStatsResponse{}
+	mi := &file_proto_iam_proto_msgTypes[48]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DashboardStatsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DashboardStatsResponse) ProtoMessage() {}
+
+func (x *DashboardStatsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_iam_proto_msgTypes[48]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DashboardStatsResponse.ProtoReflect.Descriptor instead.
+func (*DashboardStatsResponse) Descriptor() ([]byte, []int) {
+	return file_proto_iam_proto_rawDescGZIP(), []int{48}
+}
+
+func (x *DashboardStatsResponse) GetUsers() int32 {
+	if x != nil {
+		return x.Users
+	}
+	return 0
+}
+
+func (x *DashboardStatsResponse) GetAccessKeys() int32 {
+	if x != nil {
+		return x.AccessKeys
+	}
+	return 0
+}
+
+func (x *DashboardStatsResponse) GetPolicies() int32 {
+	if x != nil {
+		return x.Policies
+	}
+	return 0
+}
+
+func (x *DashboardStatsResponse) GetApplications() int32 {
+	if x != nil {
+		return x.Applications
+	}
+	return 0
+}
+
+type DashboardStatusRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DashboardStatusRequest) Reset() {
+	*x = DashboardStatusRequest{}
+	mi := &file_proto_iam_proto_msgTypes[49]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DashboardStatusRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DashboardStatusRequest) ProtoMessage() {}
+
+func (x *DashboardStatusRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_iam_proto_msgTypes[49]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DashboardStatusRequest.ProtoReflect.Descriptor instead.
+func (*DashboardStatusRequest) Descriptor() ([]byte, []int) {
+	return file_proto_iam_proto_rawDescGZIP(), []int{49}
+}
+
+type DashboardStatusResponse struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	ServiceStatus  string                 `protobuf:"bytes,1,opt,name=service_status,json=serviceStatus,proto3" json:"service_status,omitempty"`    // 服务状态: healthy/unhealthy
+	DatabaseStatus string                 `protobuf:"bytes,2,opt,name=database_status,json=databaseStatus,proto3" json:"database_status,omitempty"` // 数据库状态: connected/disconnected
+	Uptime         string                 `protobuf:"bytes,3,opt,name=uptime,proto3" json:"uptime,omitempty"`                                       // 运行时间
+	Version        string                 `protobuf:"bytes,4,opt,name=version,proto3" json:"version,omitempty"`                                     // 版本信息
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *DashboardStatusResponse) Reset() {
+	*x = DashboardStatusResponse{}
+	mi := &file_proto_iam_proto_msgTypes[50]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DashboardStatusResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DashboardStatusResponse) ProtoMessage() {}
+
+func (x *DashboardStatusResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_iam_proto_msgTypes[50]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DashboardStatusResponse.ProtoReflect.Descriptor instead.
+func (*DashboardStatusResponse) Descriptor() ([]byte, []int) {
+	return file_proto_iam_proto_rawDescGZIP(), []int{50}
+}
+
+func (x *DashboardStatusResponse) GetServiceStatus() string {
+	if x != nil {
+		return x.ServiceStatus
+	}
+	return ""
+}
+
+func (x *DashboardStatusResponse) GetDatabaseStatus() string {
+	if x != nil {
+		return x.DatabaseStatus
+	}
+	return ""
+}
+
+func (x *DashboardStatusResponse) GetUptime() string {
+	if x != nil {
+		return x.Uptime
+	}
+	return ""
+}
+
+func (x *DashboardStatusResponse) GetVersion() string {
+	if x != nil {
+		return x.Version
+	}
+	return ""
+}
+
+type DashboardActivitiesRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Limit         int32                  `protobuf:"varint,1,opt,name=limit,proto3" json:"limit,omitempty"` // 限制返回数量，默认10
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DashboardActivitiesRequest) Reset() {
+	*x = DashboardActivitiesRequest{}
+	mi := &file_proto_iam_proto_msgTypes[51]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DashboardActivitiesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DashboardActivitiesRequest) ProtoMessage() {}
+
+func (x *DashboardActivitiesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_iam_proto_msgTypes[51]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DashboardActivitiesRequest.ProtoReflect.Descriptor instead.
+func (*DashboardActivitiesRequest) Descriptor() ([]byte, []int) {
+	return file_proto_iam_proto_rawDescGZIP(), []int{51}
+}
+
+func (x *DashboardActivitiesRequest) GetLimit() int32 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+type Activity struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`                   // 活动ID
+	Type          string                 `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`               // 活动类型
+	Description   string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"` // 活动描述
+	User          string                 `protobuf:"bytes,4,opt,name=user,proto3" json:"user,omitempty"`               // 操作用户
+	Timestamp     *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=timestamp,proto3" json:"timestamp,omitempty"`     // 时间戳
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Activity) Reset() {
+	*x = Activity{}
+	mi := &file_proto_iam_proto_msgTypes[52]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Activity) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Activity) ProtoMessage() {}
+
+func (x *Activity) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_iam_proto_msgTypes[52]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Activity.ProtoReflect.Descriptor instead.
+func (*Activity) Descriptor() ([]byte, []int) {
+	return file_proto_iam_proto_rawDescGZIP(), []int{52}
+}
+
+func (x *Activity) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *Activity) GetType() string {
+	if x != nil {
+		return x.Type
+	}
+	return ""
+}
+
+func (x *Activity) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *Activity) GetUser() string {
+	if x != nil {
+		return x.User
+	}
+	return ""
+}
+
+func (x *Activity) GetTimestamp() *timestamppb.Timestamp {
+	if x != nil {
+		return x.Timestamp
+	}
+	return nil
+}
+
+type DashboardActivitiesResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Activities    []*Activity            `protobuf:"bytes,1,rep,name=activities,proto3" json:"activities,omitempty"` // 活动列表
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DashboardActivitiesResponse) Reset() {
+	*x = DashboardActivitiesResponse{}
+	mi := &file_proto_iam_proto_msgTypes[53]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DashboardActivitiesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DashboardActivitiesResponse) ProtoMessage() {}
+
+func (x *DashboardActivitiesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_iam_proto_msgTypes[53]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DashboardActivitiesResponse.ProtoReflect.Descriptor instead.
+func (*DashboardActivitiesResponse) Descriptor() ([]byte, []int) {
+	return file_proto_iam_proto_rawDescGZIP(), []int{53}
+}
+
+func (x *DashboardActivitiesResponse) GetActivities() []*Activity {
+	if x != nil {
+		return x.Activities
+	}
+	return nil
+}
+
 var File_proto_iam_proto protoreflect.FileDescriptor
 
 const file_proto_iam_proto_rawDesc = "" +
@@ -3283,7 +3656,32 @@ const file_proto_iam_proto_rawDesc = "" +
 	"expiration\"K\n" +
 	"\x0fAssumedRoleUser\x12\x10\n" +
 	"\x03arn\x18\x01 \x01(\tR\x03arn\x12&\n" +
-	"\x0fassumed_role_id\x18\x02 \x01(\tR\rassumedRoleId2\x99\x17\n" +
+	"\x0fassumed_role_id\x18\x02 \x01(\tR\rassumedRoleId\"\x17\n" +
+	"\x15DashboardStatsRequest\"\x8f\x01\n" +
+	"\x16DashboardStatsResponse\x12\x14\n" +
+	"\x05users\x18\x01 \x01(\x05R\x05users\x12\x1f\n" +
+	"\vaccess_keys\x18\x02 \x01(\x05R\n" +
+	"accessKeys\x12\x1a\n" +
+	"\bpolicies\x18\x03 \x01(\x05R\bpolicies\x12\"\n" +
+	"\fapplications\x18\x04 \x01(\x05R\fapplications\"\x18\n" +
+	"\x16DashboardStatusRequest\"\x9b\x01\n" +
+	"\x17DashboardStatusResponse\x12%\n" +
+	"\x0eservice_status\x18\x01 \x01(\tR\rserviceStatus\x12'\n" +
+	"\x0fdatabase_status\x18\x02 \x01(\tR\x0edatabaseStatus\x12\x16\n" +
+	"\x06uptime\x18\x03 \x01(\tR\x06uptime\x12\x18\n" +
+	"\aversion\x18\x04 \x01(\tR\aversion\"2\n" +
+	"\x1aDashboardActivitiesRequest\x12\x14\n" +
+	"\x05limit\x18\x01 \x01(\x05R\x05limit\"\x9e\x01\n" +
+	"\bActivity\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04type\x18\x02 \x01(\tR\x04type\x12 \n" +
+	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x12\n" +
+	"\x04user\x18\x04 \x01(\tR\x04user\x128\n" +
+	"\ttimestamp\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\ttimestamp\"O\n" +
+	"\x1bDashboardActivitiesResponse\x120\n" +
+	"\n" +
+	"activities\x18\x01 \x03(\v2\x10.iam.v1.ActivityR\n" +
+	"activities2\x85\x1a\n" +
 	"\x03IAM\x12K\n" +
 	"\n" +
 	"CreateUser\x12\x19.iam.v1.CreateUserRequest\x1a\f.iam.v1.User\"\x14\x82\xd3\xe4\x93\x02\x0e:\x01*\"\t/v1/users\x12I\n" +
@@ -3314,7 +3712,10 @@ const file_proto_iam_proto_rawDesc = "" +
 	"AssumeRole\x12\x19.iam.v1.AssumeRoleRequest\x1a\x1a.iam.v1.AssumeRoleResponse\"\x1e\x82\xd3\xe4\x93\x02\x18:\x01*\"\x13/v1/sts/assume-role\x12t\n" +
 	"\x0fGetSessionToken\x12\x1e.iam.v1.GetSessionTokenRequest\x1a\x1f.iam.v1.GetSessionTokenResponse\" \x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/v1/sts/session-token\x12k\n" +
 	"\fRefreshToken\x12\x1b.iam.v1.RefreshTokenRequest\x1a\x1c.iam.v1.RefreshTokenResponse\" \x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/v1/sts/refresh-token\x12g\n" +
-	"\vRevokeToken\x12\x1a.iam.v1.RevokeTokenRequest\x1a\x1b.iam.v1.RevokeTokenResponse\"\x1f\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/v1/sts/revoke-tokenB.Z,github.com/vera-byte/vgo-iam/pkg/proto;iamv1b\x06proto3"
+	"\vRevokeToken\x12\x1a.iam.v1.RevokeTokenRequest\x1a\x1b.iam.v1.RevokeTokenResponse\"\x1f\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/v1/sts/revoke-token\x12o\n" +
+	"\x11GetDashboardStats\x12\x1d.iam.v1.DashboardStatsRequest\x1a\x1e.iam.v1.DashboardStatsResponse\"\x1b\x82\xd3\xe4\x93\x02\x15\x12\x13/v1/dashboard/stats\x12s\n" +
+	"\x12GetDashboardStatus\x12\x1e.iam.v1.DashboardStatusRequest\x1a\x1f.iam.v1.DashboardStatusResponse\"\x1c\x82\xd3\xe4\x93\x02\x16\x12\x14/v1/dashboard/status\x12\x83\x01\n" +
+	"\x16GetDashboardActivities\x12\".iam.v1.DashboardActivitiesRequest\x1a#.iam.v1.DashboardActivitiesResponse\" \x82\xd3\xe4\x93\x02\x1a\x12\x18/v1/dashboard/activitiesB.Z,github.com/vera-byte/vgo-iam/pkg/proto;iamv1b\x06proto3"
 
 var (
 	file_proto_iam_proto_rawDescOnce sync.Once
@@ -3328,7 +3729,7 @@ func file_proto_iam_proto_rawDescGZIP() []byte {
 	return file_proto_iam_proto_rawDescData
 }
 
-var file_proto_iam_proto_msgTypes = make([]protoimpl.MessageInfo, 48)
+var file_proto_iam_proto_msgTypes = make([]protoimpl.MessageInfo, 55)
 var file_proto_iam_proto_goTypes = []any{
 	(*CreateUserRequest)(nil),                  // 0: iam.v1.CreateUserRequest
 	(*GetUserRequest)(nil),                     // 1: iam.v1.GetUserRequest
@@ -3377,88 +3778,103 @@ var file_proto_iam_proto_goTypes = []any{
 	(*RevokeTokenResponse)(nil),                // 44: iam.v1.RevokeTokenResponse
 	(*TemporaryCredentials)(nil),               // 45: iam.v1.TemporaryCredentials
 	(*AssumedRoleUser)(nil),                    // 46: iam.v1.AssumedRoleUser
-	nil,                                        // 47: iam.v1.AssumeRoleRequest.TagsEntry
-	(*timestamppb.Timestamp)(nil),              // 48: google.protobuf.Timestamp
+	(*DashboardStatsRequest)(nil),              // 47: iam.v1.DashboardStatsRequest
+	(*DashboardStatsResponse)(nil),             // 48: iam.v1.DashboardStatsResponse
+	(*DashboardStatusRequest)(nil),             // 49: iam.v1.DashboardStatusRequest
+	(*DashboardStatusResponse)(nil),            // 50: iam.v1.DashboardStatusResponse
+	(*DashboardActivitiesRequest)(nil),         // 51: iam.v1.DashboardActivitiesRequest
+	(*Activity)(nil),                           // 52: iam.v1.Activity
+	(*DashboardActivitiesResponse)(nil),        // 53: iam.v1.DashboardActivitiesResponse
+	nil,                                        // 54: iam.v1.AssumeRoleRequest.TagsEntry
+	(*timestamppb.Timestamp)(nil),              // 55: google.protobuf.Timestamp
 }
 var file_proto_iam_proto_depIdxs = []int32{
 	7,  // 0: iam.v1.ListUsersResponse.users:type_name -> iam.v1.User
-	48, // 1: iam.v1.User.created_at:type_name -> google.protobuf.Timestamp
-	48, // 2: iam.v1.User.updated_at:type_name -> google.protobuf.Timestamp
-	48, // 3: iam.v1.Policy.created_at:type_name -> google.protobuf.Timestamp
-	48, // 4: iam.v1.Policy.updated_at:type_name -> google.protobuf.Timestamp
-	48, // 5: iam.v1.DeveloperVerification.reviewed_at:type_name -> google.protobuf.Timestamp
-	48, // 6: iam.v1.DeveloperVerification.created_at:type_name -> google.protobuf.Timestamp
-	48, // 7: iam.v1.DeveloperVerification.updated_at:type_name -> google.protobuf.Timestamp
+	55, // 1: iam.v1.User.created_at:type_name -> google.protobuf.Timestamp
+	55, // 2: iam.v1.User.updated_at:type_name -> google.protobuf.Timestamp
+	55, // 3: iam.v1.Policy.created_at:type_name -> google.protobuf.Timestamp
+	55, // 4: iam.v1.Policy.updated_at:type_name -> google.protobuf.Timestamp
+	55, // 5: iam.v1.DeveloperVerification.reviewed_at:type_name -> google.protobuf.Timestamp
+	55, // 6: iam.v1.DeveloperVerification.created_at:type_name -> google.protobuf.Timestamp
+	55, // 7: iam.v1.DeveloperVerification.updated_at:type_name -> google.protobuf.Timestamp
 	16, // 8: iam.v1.ListDeveloperVerificationsResponse.verifications:type_name -> iam.v1.DeveloperVerification
-	48, // 9: iam.v1.Application.created_at:type_name -> google.protobuf.Timestamp
-	48, // 10: iam.v1.Application.updated_at:type_name -> google.protobuf.Timestamp
+	55, // 9: iam.v1.Application.created_at:type_name -> google.protobuf.Timestamp
+	55, // 10: iam.v1.Application.updated_at:type_name -> google.protobuf.Timestamp
 	24, // 11: iam.v1.ListApplicationsResponse.applications:type_name -> iam.v1.Application
-	48, // 12: iam.v1.AccessKey.created_at:type_name -> google.protobuf.Timestamp
-	48, // 13: iam.v1.AccessKey.updated_at:type_name -> google.protobuf.Timestamp
+	55, // 12: iam.v1.AccessKey.created_at:type_name -> google.protobuf.Timestamp
+	55, // 13: iam.v1.AccessKey.updated_at:type_name -> google.protobuf.Timestamp
 	29, // 14: iam.v1.ListAccessKeysResponse.access_keys:type_name -> iam.v1.AccessKey
-	47, // 15: iam.v1.AssumeRoleRequest.tags:type_name -> iam.v1.AssumeRoleRequest.TagsEntry
+	54, // 15: iam.v1.AssumeRoleRequest.tags:type_name -> iam.v1.AssumeRoleRequest.TagsEntry
 	45, // 16: iam.v1.AssumeRoleResponse.credentials:type_name -> iam.v1.TemporaryCredentials
 	46, // 17: iam.v1.AssumeRoleResponse.assumed_role_user:type_name -> iam.v1.AssumedRoleUser
 	45, // 18: iam.v1.GetSessionTokenResponse.credentials:type_name -> iam.v1.TemporaryCredentials
 	45, // 19: iam.v1.RefreshTokenResponse.credentials:type_name -> iam.v1.TemporaryCredentials
-	48, // 20: iam.v1.TemporaryCredentials.expiration:type_name -> google.protobuf.Timestamp
-	0,  // 21: iam.v1.IAM.CreateUser:input_type -> iam.v1.CreateUserRequest
-	1,  // 22: iam.v1.IAM.GetUser:input_type -> iam.v1.GetUserRequest
-	2,  // 23: iam.v1.IAM.ListUsers:input_type -> iam.v1.ListUsersRequest
-	4,  // 24: iam.v1.IAM.UpdateUser:input_type -> iam.v1.UpdateUserRequest
-	5,  // 25: iam.v1.IAM.DeleteUser:input_type -> iam.v1.DeleteUserRequest
-	8,  // 26: iam.v1.IAM.CreatePolicy:input_type -> iam.v1.CreatePolicyRequest
-	9,  // 27: iam.v1.IAM.AttachUserPolicy:input_type -> iam.v1.AttachUserPolicyRequest
-	12, // 28: iam.v1.IAM.SubmitDeveloperVerification:input_type -> iam.v1.SubmitDeveloperVerificationRequest
-	13, // 29: iam.v1.IAM.GetDeveloperVerification:input_type -> iam.v1.GetDeveloperVerificationRequest
-	14, // 30: iam.v1.IAM.ListDeveloperVerifications:input_type -> iam.v1.ListDeveloperVerificationsRequest
-	15, // 31: iam.v1.IAM.ReviewDeveloperVerification:input_type -> iam.v1.ReviewDeveloperVerificationRequest
-	18, // 32: iam.v1.IAM.CreateApplication:input_type -> iam.v1.CreateApplicationRequest
-	19, // 33: iam.v1.IAM.GetApplication:input_type -> iam.v1.GetApplicationRequest
-	20, // 34: iam.v1.IAM.ListApplications:input_type -> iam.v1.ListApplicationsRequest
-	21, // 35: iam.v1.IAM.UpdateApplication:input_type -> iam.v1.UpdateApplicationRequest
-	22, // 36: iam.v1.IAM.DeleteApplication:input_type -> iam.v1.DeleteApplicationRequest
-	26, // 37: iam.v1.IAM.CreateAccessKey:input_type -> iam.v1.CreateAccessKeyRequest
-	27, // 38: iam.v1.IAM.ListAccessKeys:input_type -> iam.v1.ListAccessKeysRequest
-	28, // 39: iam.v1.IAM.UpdateAccessKeyStatus:input_type -> iam.v1.UpdateAccessKeyStatusRequest
-	31, // 40: iam.v1.IAM.VerifyAccessKey:input_type -> iam.v1.VerifyRequest
-	33, // 41: iam.v1.IAM.CheckPermission:input_type -> iam.v1.CheckPermissionRequest
-	35, // 42: iam.v1.IAM.ValidatePermission:input_type -> iam.v1.ValidatePermissionRequest
-	37, // 43: iam.v1.IAM.AssumeRole:input_type -> iam.v1.AssumeRoleRequest
-	39, // 44: iam.v1.IAM.GetSessionToken:input_type -> iam.v1.GetSessionTokenRequest
-	41, // 45: iam.v1.IAM.RefreshToken:input_type -> iam.v1.RefreshTokenRequest
-	43, // 46: iam.v1.IAM.RevokeToken:input_type -> iam.v1.RevokeTokenRequest
-	7,  // 47: iam.v1.IAM.CreateUser:output_type -> iam.v1.User
-	7,  // 48: iam.v1.IAM.GetUser:output_type -> iam.v1.User
-	3,  // 49: iam.v1.IAM.ListUsers:output_type -> iam.v1.ListUsersResponse
-	7,  // 50: iam.v1.IAM.UpdateUser:output_type -> iam.v1.User
-	6,  // 51: iam.v1.IAM.DeleteUser:output_type -> iam.v1.DeleteUserResponse
-	11, // 52: iam.v1.IAM.CreatePolicy:output_type -> iam.v1.Policy
-	10, // 53: iam.v1.IAM.AttachUserPolicy:output_type -> iam.v1.AttachUserPolicyResponse
-	16, // 54: iam.v1.IAM.SubmitDeveloperVerification:output_type -> iam.v1.DeveloperVerification
-	16, // 55: iam.v1.IAM.GetDeveloperVerification:output_type -> iam.v1.DeveloperVerification
-	17, // 56: iam.v1.IAM.ListDeveloperVerifications:output_type -> iam.v1.ListDeveloperVerificationsResponse
-	16, // 57: iam.v1.IAM.ReviewDeveloperVerification:output_type -> iam.v1.DeveloperVerification
-	24, // 58: iam.v1.IAM.CreateApplication:output_type -> iam.v1.Application
-	24, // 59: iam.v1.IAM.GetApplication:output_type -> iam.v1.Application
-	25, // 60: iam.v1.IAM.ListApplications:output_type -> iam.v1.ListApplicationsResponse
-	24, // 61: iam.v1.IAM.UpdateApplication:output_type -> iam.v1.Application
-	23, // 62: iam.v1.IAM.DeleteApplication:output_type -> iam.v1.DeleteApplicationResponse
-	29, // 63: iam.v1.IAM.CreateAccessKey:output_type -> iam.v1.AccessKey
-	30, // 64: iam.v1.IAM.ListAccessKeys:output_type -> iam.v1.ListAccessKeysResponse
-	29, // 65: iam.v1.IAM.UpdateAccessKeyStatus:output_type -> iam.v1.AccessKey
-	32, // 66: iam.v1.IAM.VerifyAccessKey:output_type -> iam.v1.VerifyResponse
-	34, // 67: iam.v1.IAM.CheckPermission:output_type -> iam.v1.CheckPermissionResponse
-	36, // 68: iam.v1.IAM.ValidatePermission:output_type -> iam.v1.ValidatePermissionResponse
-	38, // 69: iam.v1.IAM.AssumeRole:output_type -> iam.v1.AssumeRoleResponse
-	40, // 70: iam.v1.IAM.GetSessionToken:output_type -> iam.v1.GetSessionTokenResponse
-	42, // 71: iam.v1.IAM.RefreshToken:output_type -> iam.v1.RefreshTokenResponse
-	44, // 72: iam.v1.IAM.RevokeToken:output_type -> iam.v1.RevokeTokenResponse
-	47, // [47:73] is the sub-list for method output_type
-	21, // [21:47] is the sub-list for method input_type
-	21, // [21:21] is the sub-list for extension type_name
-	21, // [21:21] is the sub-list for extension extendee
-	0,  // [0:21] is the sub-list for field type_name
+	55, // 20: iam.v1.TemporaryCredentials.expiration:type_name -> google.protobuf.Timestamp
+	55, // 21: iam.v1.Activity.timestamp:type_name -> google.protobuf.Timestamp
+	52, // 22: iam.v1.DashboardActivitiesResponse.activities:type_name -> iam.v1.Activity
+	0,  // 23: iam.v1.IAM.CreateUser:input_type -> iam.v1.CreateUserRequest
+	1,  // 24: iam.v1.IAM.GetUser:input_type -> iam.v1.GetUserRequest
+	2,  // 25: iam.v1.IAM.ListUsers:input_type -> iam.v1.ListUsersRequest
+	4,  // 26: iam.v1.IAM.UpdateUser:input_type -> iam.v1.UpdateUserRequest
+	5,  // 27: iam.v1.IAM.DeleteUser:input_type -> iam.v1.DeleteUserRequest
+	8,  // 28: iam.v1.IAM.CreatePolicy:input_type -> iam.v1.CreatePolicyRequest
+	9,  // 29: iam.v1.IAM.AttachUserPolicy:input_type -> iam.v1.AttachUserPolicyRequest
+	12, // 30: iam.v1.IAM.SubmitDeveloperVerification:input_type -> iam.v1.SubmitDeveloperVerificationRequest
+	13, // 31: iam.v1.IAM.GetDeveloperVerification:input_type -> iam.v1.GetDeveloperVerificationRequest
+	14, // 32: iam.v1.IAM.ListDeveloperVerifications:input_type -> iam.v1.ListDeveloperVerificationsRequest
+	15, // 33: iam.v1.IAM.ReviewDeveloperVerification:input_type -> iam.v1.ReviewDeveloperVerificationRequest
+	18, // 34: iam.v1.IAM.CreateApplication:input_type -> iam.v1.CreateApplicationRequest
+	19, // 35: iam.v1.IAM.GetApplication:input_type -> iam.v1.GetApplicationRequest
+	20, // 36: iam.v1.IAM.ListApplications:input_type -> iam.v1.ListApplicationsRequest
+	21, // 37: iam.v1.IAM.UpdateApplication:input_type -> iam.v1.UpdateApplicationRequest
+	22, // 38: iam.v1.IAM.DeleteApplication:input_type -> iam.v1.DeleteApplicationRequest
+	26, // 39: iam.v1.IAM.CreateAccessKey:input_type -> iam.v1.CreateAccessKeyRequest
+	27, // 40: iam.v1.IAM.ListAccessKeys:input_type -> iam.v1.ListAccessKeysRequest
+	28, // 41: iam.v1.IAM.UpdateAccessKeyStatus:input_type -> iam.v1.UpdateAccessKeyStatusRequest
+	31, // 42: iam.v1.IAM.VerifyAccessKey:input_type -> iam.v1.VerifyRequest
+	33, // 43: iam.v1.IAM.CheckPermission:input_type -> iam.v1.CheckPermissionRequest
+	35, // 44: iam.v1.IAM.ValidatePermission:input_type -> iam.v1.ValidatePermissionRequest
+	37, // 45: iam.v1.IAM.AssumeRole:input_type -> iam.v1.AssumeRoleRequest
+	39, // 46: iam.v1.IAM.GetSessionToken:input_type -> iam.v1.GetSessionTokenRequest
+	41, // 47: iam.v1.IAM.RefreshToken:input_type -> iam.v1.RefreshTokenRequest
+	43, // 48: iam.v1.IAM.RevokeToken:input_type -> iam.v1.RevokeTokenRequest
+	47, // 49: iam.v1.IAM.GetDashboardStats:input_type -> iam.v1.DashboardStatsRequest
+	49, // 50: iam.v1.IAM.GetDashboardStatus:input_type -> iam.v1.DashboardStatusRequest
+	51, // 51: iam.v1.IAM.GetDashboardActivities:input_type -> iam.v1.DashboardActivitiesRequest
+	7,  // 52: iam.v1.IAM.CreateUser:output_type -> iam.v1.User
+	7,  // 53: iam.v1.IAM.GetUser:output_type -> iam.v1.User
+	3,  // 54: iam.v1.IAM.ListUsers:output_type -> iam.v1.ListUsersResponse
+	7,  // 55: iam.v1.IAM.UpdateUser:output_type -> iam.v1.User
+	6,  // 56: iam.v1.IAM.DeleteUser:output_type -> iam.v1.DeleteUserResponse
+	11, // 57: iam.v1.IAM.CreatePolicy:output_type -> iam.v1.Policy
+	10, // 58: iam.v1.IAM.AttachUserPolicy:output_type -> iam.v1.AttachUserPolicyResponse
+	16, // 59: iam.v1.IAM.SubmitDeveloperVerification:output_type -> iam.v1.DeveloperVerification
+	16, // 60: iam.v1.IAM.GetDeveloperVerification:output_type -> iam.v1.DeveloperVerification
+	17, // 61: iam.v1.IAM.ListDeveloperVerifications:output_type -> iam.v1.ListDeveloperVerificationsResponse
+	16, // 62: iam.v1.IAM.ReviewDeveloperVerification:output_type -> iam.v1.DeveloperVerification
+	24, // 63: iam.v1.IAM.CreateApplication:output_type -> iam.v1.Application
+	24, // 64: iam.v1.IAM.GetApplication:output_type -> iam.v1.Application
+	25, // 65: iam.v1.IAM.ListApplications:output_type -> iam.v1.ListApplicationsResponse
+	24, // 66: iam.v1.IAM.UpdateApplication:output_type -> iam.v1.Application
+	23, // 67: iam.v1.IAM.DeleteApplication:output_type -> iam.v1.DeleteApplicationResponse
+	29, // 68: iam.v1.IAM.CreateAccessKey:output_type -> iam.v1.AccessKey
+	30, // 69: iam.v1.IAM.ListAccessKeys:output_type -> iam.v1.ListAccessKeysResponse
+	29, // 70: iam.v1.IAM.UpdateAccessKeyStatus:output_type -> iam.v1.AccessKey
+	32, // 71: iam.v1.IAM.VerifyAccessKey:output_type -> iam.v1.VerifyResponse
+	34, // 72: iam.v1.IAM.CheckPermission:output_type -> iam.v1.CheckPermissionResponse
+	36, // 73: iam.v1.IAM.ValidatePermission:output_type -> iam.v1.ValidatePermissionResponse
+	38, // 74: iam.v1.IAM.AssumeRole:output_type -> iam.v1.AssumeRoleResponse
+	40, // 75: iam.v1.IAM.GetSessionToken:output_type -> iam.v1.GetSessionTokenResponse
+	42, // 76: iam.v1.IAM.RefreshToken:output_type -> iam.v1.RefreshTokenResponse
+	44, // 77: iam.v1.IAM.RevokeToken:output_type -> iam.v1.RevokeTokenResponse
+	48, // 78: iam.v1.IAM.GetDashboardStats:output_type -> iam.v1.DashboardStatsResponse
+	50, // 79: iam.v1.IAM.GetDashboardStatus:output_type -> iam.v1.DashboardStatusResponse
+	53, // 80: iam.v1.IAM.GetDashboardActivities:output_type -> iam.v1.DashboardActivitiesResponse
+	52, // [52:81] is the sub-list for method output_type
+	23, // [23:52] is the sub-list for method input_type
+	23, // [23:23] is the sub-list for extension type_name
+	23, // [23:23] is the sub-list for extension extendee
+	0,  // [0:23] is the sub-list for field type_name
 }
 
 func init() { file_proto_iam_proto_init() }
@@ -3472,7 +3888,7 @@ func file_proto_iam_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_iam_proto_rawDesc), len(file_proto_iam_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   48,
+			NumMessages:   55,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

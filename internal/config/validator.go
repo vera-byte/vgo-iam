@@ -59,9 +59,12 @@ func ValidateConfig(cfg *AppConfig) error {
 		return fmt.Errorf("主密钥验证失败: %w", err)
 	}
 
-	// 验证gRPC端口
-	if cfg.GRPC.Port == "" {
-		return fmt.Errorf("gRPC端口不能为空")
+	// 验证gRPC配置
+	if cfg.GRPC.Server.Host == "" {
+		return fmt.Errorf("gRPC服务器主机不能为空")
+	}
+	if cfg.GRPC.Server.Port == 0 {
+		return fmt.Errorf("gRPC服务器端口不能为空")
 	}
 
 	// 验证数据库DSN

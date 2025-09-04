@@ -91,12 +91,12 @@ func TestCreateUserAccessKey(t *testing.T) {
 	if access == nil {
 		t.Fatalf("为用户创建访问密钥失败")
 	}
-	
+
 	// 验证返回的访问密钥包含应用ID
 	if access.AppId != 1 {
 		t.Fatalf("访问密钥应该关联到应用ID 1，但得到: %d", access.AppId)
 	}
-	
+
 	t.Logf("用户访问密钥创建成功: %+v", access)
 }
 
@@ -394,7 +394,7 @@ func TestCreateAccessKeyForApp(t *testing.T) {
 	if resp.AppId != 1 {
 		t.Fatalf("访问密钥应该关联到应用ID 1，但得到: %d", resp.AppId)
 	}
-	
+
 	if resp.Description != "Second Test App Access Key" {
 		t.Fatalf("访问密钥描述不匹配，期望: %s，得到: %s", "Second Test App Access Key", resp.Description)
 	}

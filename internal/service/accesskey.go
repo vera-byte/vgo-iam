@@ -502,3 +502,13 @@ func (s *AccessKeyService) ProcessScheduledRotations(ctx context.Context) error 
 
 	return nil
 }
+
+// GetAccessKeysCount 获取访问密钥总数
+// 返回系统中所有访问密钥的总数量
+func (s *AccessKeyService) GetAccessKeysCount(ctx context.Context) (int64, error) {
+	accessKeys, err := s.accessKeyStore.ListAll()
+	if err != nil {
+		return 0, fmt.Errorf("failed to get access keys count: %w", err)
+	}
+	return int64(len(accessKeys)), nil
+}

@@ -785,3 +785,115 @@ func (s *IAMServer) RevokeToken(ctx context.Context, req *iamv1.RevokeTokenReque
 	vgokit.Log.Info("Token revoked successfully")
 	return resp, nil
 }
+
+// Dashboard相关方法实现
+
+// GetDashboardStats 获取仪表板统计数据
+func (s *IAMServer) GetDashboardStats(ctx context.Context, req *iamv1.DashboardStatsRequest) (*iamv1.DashboardStatsResponse, error) {
+	vgokit.Log.Info("GetDashboardStats request received")
+
+	// 获取用户总数
+	usersCount, err := s.userService.GetUsersCount(ctx)
+	if err != nil {
+		vgokit.Log.Error("Failed to get users count", zap.Error(err))
+		usersCount = 0
+	}
+
+	// 获取访问密钥总数
+	accessKeysCount, err := s.accessKeyService.GetAccessKeysCount(ctx)
+	if err != nil {
+		vgokit.Log.Error("Failed to get access keys count", zap.Error(err))
+		accessKeysCount = 0
+	}
+
+	// 获取策略总数
+	policiesCount, err := s.policyService.GetPoliciesCount(ctx)
+	if err != nil {
+		vgokit.Log.Error("Failed to get policies count", zap.Error(err))
+		policiesCount = 0
+	}
+
+	// 获取应用总数
+	applicationsCount, err := s.applicationService.GetApplicationsCount(ctx)
+	if err != nil {
+		vgokit.Log.Error("Failed to get applications count", zap.Error(err))
+		applicationsCount = 0
+	}
+
+	return &iamv1.DashboardStatsResponse{
+		Users:        int32(usersCount),
+		AccessKeys:   int32(accessKeysCount),
+		Policies:     int32(policiesCount),
+		Applications: int32(applicationsCount),
+	}, nil
+}
+
+// GetDashboardStatus 获取系统状态
+func (s *IAMServer) GetDashboardStatus(ctx context.Context, req *iamv1.DashboardStatusRequest) (*iamv1.DashboardStatusResponse, error) {
+	vgokit.Log.Info("GetDashboardStatus request received")
+
+	// 检查数据库连接状态
+	databaseStatus := "connected"
+	if err := s.userService.HealthCheck(ctx); err != nil {
+		vgokit.Log.Error("Database health check failed", zap.Error(err))
+		databaseStatus = "disconnected"
+	}
+
+	// 获取系统运行时间（简化实现）
+	uptime := "running"
+
+	// 获取版本信息
+	version := "v1.0.0"
+
+	return &iamv1.DashboardStatusResponse{
+		ServiceStatus:  "healthy",
+		DatabaseStatus: databaseStatus,
+		Uptime:         uptime,
+		Version:        version,
+	}, nil
+}
+
+// GetDashboardActivities 获取最近活动
+func (s *IAMServer) GetDashboardActivities(ctx context.Context, req *iamv1.DashboardActivitiesRequest) (*iamv1.DashboardActivitiesResponse, error) {
+	vgokit.Log.Info("GetDashboardActivities request received")
+
+	// 设置默认限制
+	limit := req.Limit
+	if limit <= 0 {
+		limit = 10
+	}
+
+	// 这里返回模拟数据，实际项目中应该从数据库或日志系统获取
+	activities := []*iamv1.Activity{
+		{
+			Id:          "1",
+			Type:        "user_created",
+			Description: "Created new user",
+			User:        "admin",
+			Timestamp:   timestamppb.New(time.Now().Add(-30 * time.Minute)),
+		},
+		{
+			Id:          "2",
+			Type:        "key_created",
+			Description: "Created new access key",
+			User:        "admin",
+			Timestamp:   timestamppb.New(time.Now().Add(-2 * time.Hour)),
+		},
+		{
+			Id:          "3",
+			Type:        "policy_updated",
+			Description: "Updated policy",
+			User:        "admin",
+			Timestamp:   timestamppb.New(time.Now().Add(-4 * time.Hour)),
+		},
+	}
+
+	// 限制返回数量
+	if int(limit) < len(activities) {
+		activities = activities[:limit]
+	}
+
+	return &iamv1.DashboardActivitiesResponse{
+		Activities: activities,
+	}, nil
+}

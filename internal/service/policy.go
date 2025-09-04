@@ -88,11 +88,21 @@ func (s *PolicyService) DeletePolicy(ctx context.Context, name string) error {
 	return nil
 }
 
-// ListPolicies 获取策略列表
+// ListPolicies 列出所有策略
 func (s *PolicyService) ListPolicies(ctx context.Context) ([]*model.Policy, error) {
 	policies, err := s.policyStore.List()
 	if err != nil {
 		return nil, errors.NewBusinessError(errors.CodeInternalError, "failed to list policies")
 	}
 	return policies, nil
+}
+
+// GetPoliciesCount 获取策略总数
+// 返回系统中策略的总数量
+func (s *PolicyService) GetPoliciesCount(ctx context.Context) (int64, error) {
+	policies, err := s.policyStore.List()
+	if err != nil {
+		return 0, errors.NewBusinessError(errors.CodeInternalError, "failed to get policies count")
+	}
+	return int64(len(policies)), nil
 }

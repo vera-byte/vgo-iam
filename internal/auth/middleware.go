@@ -33,7 +33,7 @@ func AccessKeyInterceptor(akStore store.AccessKeyStore) grpc.UnaryServerIntercep
 		timestamp := vgokit.GetMetadataValue(ctx, "x-iam-date")
 		requestData := vgokit.GetMetadataValue(ctx, "request-data")
 
-		if accessKeyID == "" || sign == "" || timestamp == "" || requestData == "" {
+		if accessKeyID == "" || sign == "" || timestamp == "" {
 			return nil, status.Error(codes.Unauthenticated, "非法访问,请检查请求参数是否正确")
 		}
 

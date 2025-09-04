@@ -16,6 +16,7 @@ type ApplicationService interface {
 	UpdateApplication(ctx context.Context, req *UpdateApplicationRequest) error
 	DeleteApplication(ctx context.Context, id int64, userID int64) error
 	CheckApplicationOwnership(ctx context.Context, appID, userID int64) (bool, error)
+	GetApplicationsCount(ctx context.Context) (int64, error)
 }
 
 // CreateApplicationRequest 创建应用请求
@@ -154,7 +155,7 @@ func (s *applicationService) UpdateApplication(ctx context.Context, req *UpdateA
 	}
 
 	// 验证请求参数
-	if err := s.validateUpdateRequest(req); err != nil {
+	if err = s.validateUpdateRequest(req); err != nil {
 		return err
 	}
 
@@ -240,8 +241,8 @@ func (s *applicationService) validateCreateRequest(req *CreateApplicationRequest
 
 	// 验证应用类型
 	appType := model.AppType(req.AppType)
-	if appType != model.AppTypeWeb && appType != model.AppTypeMobile && 
-	   appType != model.AppTypeDesktop && appType != model.AppTypeAPI {
+	if appType != model.AppTypeWeb && appType != model.AppTypeMobile &&
+		appType != model.AppTypeDesktop && appType != model.AppTypeAPI {
 		return fmt.Errorf("invalid application type")
 	}
 
@@ -272,10 +273,21 @@ func (s *applicationService) validateUpdateRequest(req *UpdateApplicationRequest
 
 	// 验证应用类型
 	appType := model.AppType(req.AppType)
-	if appType != model.AppTypeWeb && appType != model.AppTypeMobile && 
-	   appType != model.AppTypeDesktop && appType != model.AppTypeAPI {
+	if appType != model.AppTypeWeb && appType != model.AppTypeMobile &&
+		appType != model.AppTypeDesktop && appType != model.AppTypeAPI {
 		return fmt.Errorf("invalid application type")
 	}
 
 	return nil
+}
+
+// GetApplicationsCount 获取应用总数
+// 返回系统中应用的总数量
+func (s *applicationService) GetApplicationsCount(ctx context.Context) (int64, error) {
+	// 使用List方法获取总数，传入0表示不限制用户ID，空字符串表示不限制状态
+	_, total, err := s.appStore.List(ctx, 0, "", 1, 1)
+	if err != nil {
+		return 0, fmt.Errorf("failed to get applications count: %w", err)
+	}
+	return int64(total), nil
 }

@@ -1,0 +1,128 @@
+// 混合器
+
+// 清除浮动
+@mixin clearfix {
+  &::after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+}
+
+// 文本省略
+@mixin text-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// 多行文本省略
+@mixin text-ellipsis-multiline($lines: 2) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// 居中对齐
+@mixin center-flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// 垂直居中
+@mixin center-vertical {
+  display: flex;
+  align-items: center;
+}
+
+// 水平居中
+@mixin center-horizontal {
+  display: flex;
+  justify-content: center;
+}
+
+// 绝对定位居中
+@mixin absolute-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+// 响应式断点
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == 'mobile' {
+    @media (max-width: 767px) {
+      @content;
+    }
+  }
+  @if $breakpoint == 'tablet' {
+    @media (min-width: 768px) and (max-width: 1023px) {
+      @content;
+    }
+  }
+  @if $breakpoint == 'desktop' {
+    @media (min-width: 1024px) {
+      @content;
+    }
+  }
+}
+
+// 按钮样式
+@mixin button-variant($color, $background, $border) {
+  color: $color;
+  background-color: $background;
+  border-color: $border;
+  
+  &:hover {
+    color: $color;
+    background-color: lighten($background, 10%);
+    border-color: lighten($border, 10%);
+  }
+  
+  &:active {
+    color: $color;
+    background-color: darken($background, 10%);
+    border-color: darken($border, 10%);
+  }
+}
+
+// 卡片阴影
+@mixin card-shadow($level: 1) {
+  @if $level == 1 {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  } @else if $level == 2 {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  } @else if $level == 3 {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+}
+
+// 过渡动画
+@mixin transition($property: all, $duration: 0.3s, $timing: ease) {
+  transition: $property $duration $timing;
+}
+
+// 滚动条样式
+@mixin scrollbar($width: 8px, $track-color: #f1f1f1, $thumb-color: #c1c1c1) {
+  &::-webkit-scrollbar {
+    width: $width;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: $track-color;
+    border-radius: $width / 2;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: $thumb-color;
+    border-radius: $width / 2;
+    
+    &:hover {
+      background: darken($thumb-color, 10%);
+    }
+  }
+}

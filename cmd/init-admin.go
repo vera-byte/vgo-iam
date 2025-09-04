@@ -75,7 +75,7 @@ var InitAdminCmd = &cobra.Command{
 		// 初始化配置
 		cfg := config.LodIAMConfig()
 		// 初始化服务
-		iamServer, session := bootstrap.InitServices(cfg)
+		iamServer, session, _, _ := bootstrap.InitServices(cfg)
 		defer session.Close()
 
 		// 获取服务实例

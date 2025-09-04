@@ -214,6 +214,28 @@ service IAM {
       body: "*"
     };
   }
+
+  // Dashboard相关接口
+  // 获取统计数据
+  rpc GetDashboardStats(DashboardStatsRequest) returns (DashboardStatsResponse) {
+    option (google.api.http) = {
+      get: "/v1/dashboard/stats"
+    };
+  }
+  
+  // 获取系统状态
+  rpc GetDashboardStatus(DashboardStatusRequest) returns (DashboardStatusResponse) {
+    option (google.api.http) = {
+      get: "/v1/dashboard/status"
+    };
+  }
+  
+  // 获取最近活动
+  rpc GetDashboardActivities(DashboardActivitiesRequest) returns (DashboardActivitiesResponse) {
+    option (google.api.http) = {
+      get: "/v1/dashboard/activities"
+    };
+  }
 }
 
 // 用户相关消息
@@ -533,4 +555,39 @@ message TemporaryCredentials {
 message AssumedRoleUser {
   string arn = 1;                         // 假设角色用户ARN
   string assumed_role_id = 2;             // 假设角色ID
+}
+
+// Dashboard相关消息
+message DashboardStatsRequest {}
+
+message DashboardStatsResponse {
+  int32 users = 1;                        // 用户总数
+  int32 access_keys = 2;                  // 访问密钥总数
+  int32 policies = 3;                     // 策略总数
+  int32 applications = 4;                 // 应用总数
+}
+
+message DashboardStatusRequest {}
+
+message DashboardStatusResponse {
+  string service_status = 1;              // 服务状态: healthy/unhealthy
+  string database_status = 2;             // 数据库状态: connected/disconnected
+  string uptime = 3;                      // 运行时间
+  string version = 4;                     // 版本信息
+}
+
+message DashboardActivitiesRequest {
+  int32 limit = 1;                        // 限制返回数量，默认10
+}
+
+message Activity {
+  string id = 1;                          // 活动ID
+  string type = 2;                        // 活动类型
+  string description = 3;                 // 活动描述
+  string user = 4;                        // 操作用户
+  google.protobuf.Timestamp timestamp = 5; // 时间戳
+}
+
+message DashboardActivitiesResponse {
+  repeated Activity activities = 1;        // 活动列表
 }

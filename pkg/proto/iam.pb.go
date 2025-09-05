@@ -23,6 +23,58 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type HealthCheckResponse_ServingStatus int32
+
+const (
+	HealthCheckResponse_UNKNOWN         HealthCheckResponse_ServingStatus = 0
+	HealthCheckResponse_SERVING         HealthCheckResponse_ServingStatus = 1
+	HealthCheckResponse_NOT_SERVING     HealthCheckResponse_ServingStatus = 2
+	HealthCheckResponse_SERVICE_UNKNOWN HealthCheckResponse_ServingStatus = 3 // Used only by the Watch method.
+)
+
+// Enum value maps for HealthCheckResponse_ServingStatus.
+var (
+	HealthCheckResponse_ServingStatus_name = map[int32]string{
+		0: "UNKNOWN",
+		1: "SERVING",
+		2: "NOT_SERVING",
+		3: "SERVICE_UNKNOWN",
+	}
+	HealthCheckResponse_ServingStatus_value = map[string]int32{
+		"UNKNOWN":         0,
+		"SERVING":         1,
+		"NOT_SERVING":     2,
+		"SERVICE_UNKNOWN": 3,
+	}
+)
+
+func (x HealthCheckResponse_ServingStatus) Enum() *HealthCheckResponse_ServingStatus {
+	p := new(HealthCheckResponse_ServingStatus)
+	*p = x
+	return p
+}
+
+func (x HealthCheckResponse_ServingStatus) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (HealthCheckResponse_ServingStatus) Descriptor() protoreflect.EnumDescriptor {
+	return file_proto_iam_proto_enumTypes[0].Descriptor()
+}
+
+func (HealthCheckResponse_ServingStatus) Type() protoreflect.EnumType {
+	return &file_proto_iam_proto_enumTypes[0]
+}
+
+func (x HealthCheckResponse_ServingStatus) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use HealthCheckResponse_ServingStatus.Descriptor instead.
+func (HealthCheckResponse_ServingStatus) EnumDescriptor() ([]byte, []int) {
+	return file_proto_iam_proto_rawDescGZIP(), []int{57, 0}
+}
+
 // 用户相关消息
 type CreateUserRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -3534,6 +3586,563 @@ func (x *DashboardActivitiesResponse) GetActivities() []*Activity {
 	return nil
 }
 
+// 健康检查请求
+type HealthCheckRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Service       string                 `protobuf:"bytes,1,opt,name=service,proto3" json:"service,omitempty"` // 服务名称（可选）
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *HealthCheckRequest) Reset() {
+	*x = HealthCheckRequest{}
+	mi := &file_proto_iam_proto_msgTypes[56]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *HealthCheckRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HealthCheckRequest) ProtoMessage() {}
+
+func (x *HealthCheckRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_iam_proto_msgTypes[56]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HealthCheckRequest.ProtoReflect.Descriptor instead.
+func (*HealthCheckRequest) Descriptor() ([]byte, []int) {
+	return file_proto_iam_proto_rawDescGZIP(), []int{56}
+}
+
+func (x *HealthCheckRequest) GetService() string {
+	if x != nil {
+		return x.Service
+	}
+	return ""
+}
+
+// 健康检查响应
+type HealthCheckResponse struct {
+	state         protoimpl.MessageState            `protogen:"open.v1"`
+	Status        HealthCheckResponse_ServingStatus `protobuf:"varint,1,opt,name=status,proto3,enum=iam.v1.HealthCheckResponse_ServingStatus" json:"status,omitempty"`
+	Message       string                            `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`     // 状态描述
+	Timestamp     *timestamppb.Timestamp            `protobuf:"bytes,3,opt,name=timestamp,proto3" json:"timestamp,omitempty"` // 检查时间
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *HealthCheckResponse) Reset() {
+	*x = HealthCheckResponse{}
+	mi := &file_proto_iam_proto_msgTypes[57]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *HealthCheckResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*HealthCheckResponse) ProtoMessage() {}
+
+func (x *HealthCheckResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_iam_proto_msgTypes[57]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use HealthCheckResponse.ProtoReflect.Descriptor instead.
+func (*HealthCheckResponse) Descriptor() ([]byte, []int) {
+	return file_proto_iam_proto_rawDescGZIP(), []int{57}
+}
+
+func (x *HealthCheckResponse) GetStatus() HealthCheckResponse_ServingStatus {
+	if x != nil {
+		return x.Status
+	}
+	return HealthCheckResponse_UNKNOWN
+}
+
+func (x *HealthCheckResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+func (x *HealthCheckResponse) GetTimestamp() *timestamppb.Timestamp {
+	if x != nil {
+		return x.Timestamp
+	}
+	return nil
+}
+
+// 存活性探针请求
+type LivenessProbeRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LivenessProbeRequest) Reset() {
+	*x = LivenessProbeRequest{}
+	mi := &file_proto_iam_proto_msgTypes[58]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LivenessProbeRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LivenessProbeRequest) ProtoMessage() {}
+
+func (x *LivenessProbeRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_iam_proto_msgTypes[58]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LivenessProbeRequest.ProtoReflect.Descriptor instead.
+func (*LivenessProbeRequest) Descriptor() ([]byte, []int) {
+	return file_proto_iam_proto_rawDescGZIP(), []int{58}
+}
+
+// 存活性探针响应
+type LivenessProbeResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Alive         bool                   `protobuf:"varint,1,opt,name=alive,proto3" json:"alive,omitempty"`        // 是否存活
+	Service       string                 `protobuf:"bytes,2,opt,name=service,proto3" json:"service,omitempty"`     // 服务名称
+	Version       string                 `protobuf:"bytes,3,opt,name=version,proto3" json:"version,omitempty"`     // 版本信息
+	Timestamp     *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=timestamp,proto3" json:"timestamp,omitempty"` // 检查时间
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LivenessProbeResponse) Reset() {
+	*x = LivenessProbeResponse{}
+	mi := &file_proto_iam_proto_msgTypes[59]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LivenessProbeResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LivenessProbeResponse) ProtoMessage() {}
+
+func (x *LivenessProbeResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_iam_proto_msgTypes[59]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LivenessProbeResponse.ProtoReflect.Descriptor instead.
+func (*LivenessProbeResponse) Descriptor() ([]byte, []int) {
+	return file_proto_iam_proto_rawDescGZIP(), []int{59}
+}
+
+func (x *LivenessProbeResponse) GetAlive() bool {
+	if x != nil {
+		return x.Alive
+	}
+	return false
+}
+
+func (x *LivenessProbeResponse) GetService() string {
+	if x != nil {
+		return x.Service
+	}
+	return ""
+}
+
+func (x *LivenessProbeResponse) GetVersion() string {
+	if x != nil {
+		return x.Version
+	}
+	return ""
+}
+
+func (x *LivenessProbeResponse) GetTimestamp() *timestamppb.Timestamp {
+	if x != nil {
+		return x.Timestamp
+	}
+	return nil
+}
+
+// 就绪性探针请求
+type ReadinessProbeRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ReadinessProbeRequest) Reset() {
+	*x = ReadinessProbeRequest{}
+	mi := &file_proto_iam_proto_msgTypes[60]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReadinessProbeRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReadinessProbeRequest) ProtoMessage() {}
+
+func (x *ReadinessProbeRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_iam_proto_msgTypes[60]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReadinessProbeRequest.ProtoReflect.Descriptor instead.
+func (*ReadinessProbeRequest) Descriptor() ([]byte, []int) {
+	return file_proto_iam_proto_rawDescGZIP(), []int{60}
+}
+
+// 就绪性探针响应
+type ReadinessProbeResponse struct {
+	state                  protoimpl.MessageState `protogen:"open.v1"`
+	Ready                  bool                   `protobuf:"varint,1,opt,name=ready,proto3" json:"ready,omitempty"`                                                                  // 是否就绪
+	DatabaseStatus         string                 `protobuf:"bytes,2,opt,name=database_status,json=databaseStatus,proto3" json:"database_status,omitempty"`                           // 数据库状态
+	CacheStatus            string                 `protobuf:"bytes,3,opt,name=cache_status,json=cacheStatus,proto3" json:"cache_status,omitempty"`                                    // 缓存状态
+	ExternalServicesStatus string                 `protobuf:"bytes,4,opt,name=external_services_status,json=externalServicesStatus,proto3" json:"external_services_status,omitempty"` // 外部服务状态
+	Timestamp              *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=timestamp,proto3" json:"timestamp,omitempty"`                                                           // 检查时间
+	unknownFields          protoimpl.UnknownFields
+	sizeCache              protoimpl.SizeCache
+}
+
+func (x *ReadinessProbeResponse) Reset() {
+	*x = ReadinessProbeResponse{}
+	mi := &file_proto_iam_proto_msgTypes[61]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ReadinessProbeResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReadinessProbeResponse) ProtoMessage() {}
+
+func (x *ReadinessProbeResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_iam_proto_msgTypes[61]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReadinessProbeResponse.ProtoReflect.Descriptor instead.
+func (*ReadinessProbeResponse) Descriptor() ([]byte, []int) {
+	return file_proto_iam_proto_rawDescGZIP(), []int{61}
+}
+
+func (x *ReadinessProbeResponse) GetReady() bool {
+	if x != nil {
+		return x.Ready
+	}
+	return false
+}
+
+func (x *ReadinessProbeResponse) GetDatabaseStatus() string {
+	if x != nil {
+		return x.DatabaseStatus
+	}
+	return ""
+}
+
+func (x *ReadinessProbeResponse) GetCacheStatus() string {
+	if x != nil {
+		return x.CacheStatus
+	}
+	return ""
+}
+
+func (x *ReadinessProbeResponse) GetExternalServicesStatus() string {
+	if x != nil {
+		return x.ExternalServicesStatus
+	}
+	return ""
+}
+
+func (x *ReadinessProbeResponse) GetTimestamp() *timestamppb.Timestamp {
+	if x != nil {
+		return x.Timestamp
+	}
+	return nil
+}
+
+// 系统状态请求
+type SystemStatusRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SystemStatusRequest) Reset() {
+	*x = SystemStatusRequest{}
+	mi := &file_proto_iam_proto_msgTypes[62]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SystemStatusRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SystemStatusRequest) ProtoMessage() {}
+
+func (x *SystemStatusRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_iam_proto_msgTypes[62]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SystemStatusRequest.ProtoReflect.Descriptor instead.
+func (*SystemStatusRequest) Descriptor() ([]byte, []int) {
+	return file_proto_iam_proto_rawDescGZIP(), []int{62}
+}
+
+// 系统状态响应
+type SystemStatusResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Service       string                 `protobuf:"bytes,1,opt,name=service,proto3" json:"service,omitempty"`                                                                                 // 服务名称
+	Version       string                 `protobuf:"bytes,2,opt,name=version,proto3" json:"version,omitempty"`                                                                                 // 版本信息
+	Environment   string                 `protobuf:"bytes,3,opt,name=environment,proto3" json:"environment,omitempty"`                                                                         // 环境信息
+	Uptime        string                 `protobuf:"bytes,4,opt,name=uptime,proto3" json:"uptime,omitempty"`                                                                                   // 运行时间
+	Metrics       *SystemMetrics         `protobuf:"bytes,5,opt,name=metrics,proto3" json:"metrics,omitempty"`                                                                                 // 系统指标
+	Components    map[string]string      `protobuf:"bytes,6,rep,name=components,proto3" json:"components,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"` // 组件状态
+	Timestamp     *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=timestamp,proto3" json:"timestamp,omitempty"`                                                                             // 检查时间
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SystemStatusResponse) Reset() {
+	*x = SystemStatusResponse{}
+	mi := &file_proto_iam_proto_msgTypes[63]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SystemStatusResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SystemStatusResponse) ProtoMessage() {}
+
+func (x *SystemStatusResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_iam_proto_msgTypes[63]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SystemStatusResponse.ProtoReflect.Descriptor instead.
+func (*SystemStatusResponse) Descriptor() ([]byte, []int) {
+	return file_proto_iam_proto_rawDescGZIP(), []int{63}
+}
+
+func (x *SystemStatusResponse) GetService() string {
+	if x != nil {
+		return x.Service
+	}
+	return ""
+}
+
+func (x *SystemStatusResponse) GetVersion() string {
+	if x != nil {
+		return x.Version
+	}
+	return ""
+}
+
+func (x *SystemStatusResponse) GetEnvironment() string {
+	if x != nil {
+		return x.Environment
+	}
+	return ""
+}
+
+func (x *SystemStatusResponse) GetUptime() string {
+	if x != nil {
+		return x.Uptime
+	}
+	return ""
+}
+
+func (x *SystemStatusResponse) GetMetrics() *SystemMetrics {
+	if x != nil {
+		return x.Metrics
+	}
+	return nil
+}
+
+func (x *SystemStatusResponse) GetComponents() map[string]string {
+	if x != nil {
+		return x.Components
+	}
+	return nil
+}
+
+func (x *SystemStatusResponse) GetTimestamp() *timestamppb.Timestamp {
+	if x != nil {
+		return x.Timestamp
+	}
+	return nil
+}
+
+// 系统指标
+type SystemMetrics struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	RequestsTotal   int64                  `protobuf:"varint,1,opt,name=requests_total,json=requestsTotal,proto3" json:"requests_total,omitempty"`       // 总请求数
+	RequestsSuccess int64                  `protobuf:"varint,2,opt,name=requests_success,json=requestsSuccess,proto3" json:"requests_success,omitempty"` // 成功请求数
+	RequestsFailed  int64                  `protobuf:"varint,3,opt,name=requests_failed,json=requestsFailed,proto3" json:"requests_failed,omitempty"`    // 失败请求数
+	ResponseTime    string                 `protobuf:"bytes,4,opt,name=response_time,json=responseTime,proto3" json:"response_time,omitempty"`           // 平均响应时间
+	ActiveUsers     int32                  `protobuf:"varint,5,opt,name=active_users,json=activeUsers,proto3" json:"active_users,omitempty"`             // 活跃用户数
+	ActiveSessions  int32                  `protobuf:"varint,6,opt,name=active_sessions,json=activeSessions,proto3" json:"active_sessions,omitempty"`    // 活跃会话数
+	MemoryUsage     string                 `protobuf:"bytes,7,opt,name=memory_usage,json=memoryUsage,proto3" json:"memory_usage,omitempty"`              // 内存使用情况
+	CpuUsage        string                 `protobuf:"bytes,8,opt,name=cpu_usage,json=cpuUsage,proto3" json:"cpu_usage,omitempty"`                       // CPU使用情况
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *SystemMetrics) Reset() {
+	*x = SystemMetrics{}
+	mi := &file_proto_iam_proto_msgTypes[64]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SystemMetrics) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SystemMetrics) ProtoMessage() {}
+
+func (x *SystemMetrics) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_iam_proto_msgTypes[64]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SystemMetrics.ProtoReflect.Descriptor instead.
+func (*SystemMetrics) Descriptor() ([]byte, []int) {
+	return file_proto_iam_proto_rawDescGZIP(), []int{64}
+}
+
+func (x *SystemMetrics) GetRequestsTotal() int64 {
+	if x != nil {
+		return x.RequestsTotal
+	}
+	return 0
+}
+
+func (x *SystemMetrics) GetRequestsSuccess() int64 {
+	if x != nil {
+		return x.RequestsSuccess
+	}
+	return 0
+}
+
+func (x *SystemMetrics) GetRequestsFailed() int64 {
+	if x != nil {
+		return x.RequestsFailed
+	}
+	return 0
+}
+
+func (x *SystemMetrics) GetResponseTime() string {
+	if x != nil {
+		return x.ResponseTime
+	}
+	return ""
+}
+
+func (x *SystemMetrics) GetActiveUsers() int32 {
+	if x != nil {
+		return x.ActiveUsers
+	}
+	return 0
+}
+
+func (x *SystemMetrics) GetActiveSessions() int32 {
+	if x != nil {
+		return x.ActiveSessions
+	}
+	return 0
+}
+
+func (x *SystemMetrics) GetMemoryUsage() string {
+	if x != nil {
+		return x.MemoryUsage
+	}
+	return ""
+}
+
+func (x *SystemMetrics) GetCpuUsage() string {
+	if x != nil {
+		return x.CpuUsage
+	}
+	return ""
+}
+
 var File_proto_iam_proto protoreflect.FileDescriptor
 
 const file_proto_iam_proto_rawDesc = "" +
@@ -3811,7 +4420,54 @@ const file_proto_iam_proto_rawDesc = "" +
 	"\x1bDashboardActivitiesResponse\x120\n" +
 	"\n" +
 	"activities\x18\x01 \x03(\v2\x10.iam.v1.ActivityR\n" +
-	"activities2\xe6\x1a\n" +
+	"activities\".\n" +
+	"\x12HealthCheckRequest\x12\x18\n" +
+	"\aservice\x18\x01 \x01(\tR\aservice\"\xfd\x01\n" +
+	"\x13HealthCheckResponse\x12A\n" +
+	"\x06status\x18\x01 \x01(\x0e2).iam.v1.HealthCheckResponse.ServingStatusR\x06status\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\x128\n" +
+	"\ttimestamp\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\ttimestamp\"O\n" +
+	"\rServingStatus\x12\v\n" +
+	"\aUNKNOWN\x10\x00\x12\v\n" +
+	"\aSERVING\x10\x01\x12\x0f\n" +
+	"\vNOT_SERVING\x10\x02\x12\x13\n" +
+	"\x0fSERVICE_UNKNOWN\x10\x03\"\x16\n" +
+	"\x14LivenessProbeRequest\"\x9b\x01\n" +
+	"\x15LivenessProbeResponse\x12\x14\n" +
+	"\x05alive\x18\x01 \x01(\bR\x05alive\x12\x18\n" +
+	"\aservice\x18\x02 \x01(\tR\aservice\x12\x18\n" +
+	"\aversion\x18\x03 \x01(\tR\aversion\x128\n" +
+	"\ttimestamp\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\ttimestamp\"\x17\n" +
+	"\x15ReadinessProbeRequest\"\xee\x01\n" +
+	"\x16ReadinessProbeResponse\x12\x14\n" +
+	"\x05ready\x18\x01 \x01(\bR\x05ready\x12'\n" +
+	"\x0fdatabase_status\x18\x02 \x01(\tR\x0edatabaseStatus\x12!\n" +
+	"\fcache_status\x18\x03 \x01(\tR\vcacheStatus\x128\n" +
+	"\x18external_services_status\x18\x04 \x01(\tR\x16externalServicesStatus\x128\n" +
+	"\ttimestamp\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\ttimestamp\"\x15\n" +
+	"\x13SystemStatusRequest\"\xfc\x02\n" +
+	"\x14SystemStatusResponse\x12\x18\n" +
+	"\aservice\x18\x01 \x01(\tR\aservice\x12\x18\n" +
+	"\aversion\x18\x02 \x01(\tR\aversion\x12 \n" +
+	"\venvironment\x18\x03 \x01(\tR\venvironment\x12\x16\n" +
+	"\x06uptime\x18\x04 \x01(\tR\x06uptime\x12/\n" +
+	"\ametrics\x18\x05 \x01(\v2\x15.iam.v1.SystemMetricsR\ametrics\x12L\n" +
+	"\n" +
+	"components\x18\x06 \x03(\v2,.iam.v1.SystemStatusResponse.ComponentsEntryR\n" +
+	"components\x128\n" +
+	"\ttimestamp\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\ttimestamp\x1a=\n" +
+	"\x0fComponentsEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xbb\x02\n" +
+	"\rSystemMetrics\x12%\n" +
+	"\x0erequests_total\x18\x01 \x01(\x03R\rrequestsTotal\x12)\n" +
+	"\x10requests_success\x18\x02 \x01(\x03R\x0frequestsSuccess\x12'\n" +
+	"\x0frequests_failed\x18\x03 \x01(\x03R\x0erequestsFailed\x12#\n" +
+	"\rresponse_time\x18\x04 \x01(\tR\fresponseTime\x12!\n" +
+	"\factive_users\x18\x05 \x01(\x05R\vactiveUsers\x12'\n" +
+	"\x0factive_sessions\x18\x06 \x01(\x05R\x0eactiveSessions\x12!\n" +
+	"\fmemory_usage\x18\a \x01(\tR\vmemoryUsage\x12\x1b\n" +
+	"\tcpu_usage\x18\b \x01(\tR\bcpuUsage2\xf9\x1d\n" +
 	"\x03IAM\x12K\n" +
 	"\n" +
 	"CreateUser\x12\x19.iam.v1.CreateUserRequest\x1a\f.iam.v1.User\"\x14\x82\xd3\xe4\x93\x02\x0e:\x01*\"\t/v1/users\x12I\n" +
@@ -3846,7 +4502,11 @@ const file_proto_iam_proto_rawDesc = "" +
 	"\vRevokeToken\x12\x1a.iam.v1.RevokeTokenRequest\x1a\x1b.iam.v1.RevokeTokenResponse\"\x1f\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/v1/sts/revoke-token\x12o\n" +
 	"\x11GetDashboardStats\x12\x1d.iam.v1.DashboardStatsRequest\x1a\x1e.iam.v1.DashboardStatsResponse\"\x1b\x82\xd3\xe4\x93\x02\x15\x12\x13/v1/dashboard/stats\x12s\n" +
 	"\x12GetDashboardStatus\x12\x1e.iam.v1.DashboardStatusRequest\x1a\x1f.iam.v1.DashboardStatusResponse\"\x1c\x82\xd3\xe4\x93\x02\x16\x12\x14/v1/dashboard/status\x12\x83\x01\n" +
-	"\x16GetDashboardActivities\x12\".iam.v1.DashboardActivitiesRequest\x1a#.iam.v1.DashboardActivitiesResponse\" \x82\xd3\xe4\x93\x02\x1a\x12\x18/v1/dashboard/activitiesB.Z,github.com/vera-byte/vgo-iam/pkg/proto;iamv1b\x06proto3"
+	"\x16GetDashboardActivities\x12\".iam.v1.DashboardActivitiesRequest\x1a#.iam.v1.DashboardActivitiesResponse\" \x82\xd3\xe4\x93\x02\x1a\x12\x18/v1/dashboard/activities\x12W\n" +
+	"\vHealthCheck\x12\x1a.iam.v1.HealthCheckRequest\x1a\x1b.iam.v1.HealthCheckResponse\"\x0f\x82\xd3\xe4\x93\x02\t\x12\a/health\x12f\n" +
+	"\rLivenessProbe\x12\x1c.iam.v1.LivenessProbeRequest\x1a\x1d.iam.v1.LivenessProbeResponse\"\x18\x82\xd3\xe4\x93\x02\x12\x12\x10/health/liveness\x12j\n" +
+	"\x0eReadinessProbe\x12\x1d.iam.v1.ReadinessProbeRequest\x1a\x1e.iam.v1.ReadinessProbeResponse\"\x19\x82\xd3\xe4\x93\x02\x13\x12\x11/health/readiness\x12d\n" +
+	"\x0fGetSystemStatus\x12\x1b.iam.v1.SystemStatusRequest\x1a\x1c.iam.v1.SystemStatusResponse\"\x16\x82\xd3\xe4\x93\x02\x10\x12\x0e/health/systemB.Z,github.com/vera-byte/vgo-iam/pkg/proto;iamv1b\x06proto3"
 
 var (
 	file_proto_iam_proto_rawDescOnce sync.Once
@@ -3860,157 +4520,184 @@ func file_proto_iam_proto_rawDescGZIP() []byte {
 	return file_proto_iam_proto_rawDescData
 }
 
-var file_proto_iam_proto_msgTypes = make([]protoimpl.MessageInfo, 57)
+var file_proto_iam_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_proto_iam_proto_msgTypes = make([]protoimpl.MessageInfo, 67)
 var file_proto_iam_proto_goTypes = []any{
-	(*CreateUserRequest)(nil),                  // 0: iam.v1.CreateUserRequest
-	(*GetUserRequest)(nil),                     // 1: iam.v1.GetUserRequest
-	(*ListUsersRequest)(nil),                   // 2: iam.v1.ListUsersRequest
-	(*ListUsersResponse)(nil),                  // 3: iam.v1.ListUsersResponse
-	(*UpdateUserRequest)(nil),                  // 4: iam.v1.UpdateUserRequest
-	(*DeleteUserRequest)(nil),                  // 5: iam.v1.DeleteUserRequest
-	(*DeleteUserResponse)(nil),                 // 6: iam.v1.DeleteUserResponse
-	(*User)(nil),                               // 7: iam.v1.User
-	(*CreatePolicyRequest)(nil),                // 8: iam.v1.CreatePolicyRequest
-	(*AttachUserPolicyRequest)(nil),            // 9: iam.v1.AttachUserPolicyRequest
-	(*AttachUserPolicyResponse)(nil),           // 10: iam.v1.AttachUserPolicyResponse
-	(*ListPoliciesRequest)(nil),                // 11: iam.v1.ListPoliciesRequest
-	(*ListPoliciesResponse)(nil),               // 12: iam.v1.ListPoliciesResponse
-	(*Policy)(nil),                             // 13: iam.v1.Policy
-	(*SubmitDeveloperVerificationRequest)(nil), // 14: iam.v1.SubmitDeveloperVerificationRequest
-	(*GetDeveloperVerificationRequest)(nil),    // 15: iam.v1.GetDeveloperVerificationRequest
-	(*ListDeveloperVerificationsRequest)(nil),  // 16: iam.v1.ListDeveloperVerificationsRequest
-	(*ReviewDeveloperVerificationRequest)(nil), // 17: iam.v1.ReviewDeveloperVerificationRequest
-	(*DeveloperVerification)(nil),              // 18: iam.v1.DeveloperVerification
-	(*ListDeveloperVerificationsResponse)(nil), // 19: iam.v1.ListDeveloperVerificationsResponse
-	(*CreateApplicationRequest)(nil),           // 20: iam.v1.CreateApplicationRequest
-	(*GetApplicationRequest)(nil),              // 21: iam.v1.GetApplicationRequest
-	(*ListApplicationsRequest)(nil),            // 22: iam.v1.ListApplicationsRequest
-	(*UpdateApplicationRequest)(nil),           // 23: iam.v1.UpdateApplicationRequest
-	(*DeleteApplicationRequest)(nil),           // 24: iam.v1.DeleteApplicationRequest
-	(*DeleteApplicationResponse)(nil),          // 25: iam.v1.DeleteApplicationResponse
-	(*Application)(nil),                        // 26: iam.v1.Application
-	(*ListApplicationsResponse)(nil),           // 27: iam.v1.ListApplicationsResponse
-	(*CreateAccessKeyRequest)(nil),             // 28: iam.v1.CreateAccessKeyRequest
-	(*ListAccessKeysRequest)(nil),              // 29: iam.v1.ListAccessKeysRequest
-	(*UpdateAccessKeyStatusRequest)(nil),       // 30: iam.v1.UpdateAccessKeyStatusRequest
-	(*AccessKey)(nil),                          // 31: iam.v1.AccessKey
-	(*ListAccessKeysResponse)(nil),             // 32: iam.v1.ListAccessKeysResponse
-	(*VerifyRequest)(nil),                      // 33: iam.v1.VerifyRequest
-	(*VerifyResponse)(nil),                     // 34: iam.v1.VerifyResponse
-	(*CheckPermissionRequest)(nil),             // 35: iam.v1.CheckPermissionRequest
-	(*CheckPermissionResponse)(nil),            // 36: iam.v1.CheckPermissionResponse
-	(*ValidatePermissionRequest)(nil),          // 37: iam.v1.ValidatePermissionRequest
-	(*ValidatePermissionResponse)(nil),         // 38: iam.v1.ValidatePermissionResponse
-	(*AssumeRoleRequest)(nil),                  // 39: iam.v1.AssumeRoleRequest
-	(*AssumeRoleResponse)(nil),                 // 40: iam.v1.AssumeRoleResponse
-	(*GetSessionTokenRequest)(nil),             // 41: iam.v1.GetSessionTokenRequest
-	(*GetSessionTokenResponse)(nil),            // 42: iam.v1.GetSessionTokenResponse
-	(*RefreshTokenRequest)(nil),                // 43: iam.v1.RefreshTokenRequest
-	(*RefreshTokenResponse)(nil),               // 44: iam.v1.RefreshTokenResponse
-	(*RevokeTokenRequest)(nil),                 // 45: iam.v1.RevokeTokenRequest
-	(*RevokeTokenResponse)(nil),                // 46: iam.v1.RevokeTokenResponse
-	(*TemporaryCredentials)(nil),               // 47: iam.v1.TemporaryCredentials
-	(*AssumedRoleUser)(nil),                    // 48: iam.v1.AssumedRoleUser
-	(*DashboardStatsRequest)(nil),              // 49: iam.v1.DashboardStatsRequest
-	(*DashboardStatsResponse)(nil),             // 50: iam.v1.DashboardStatsResponse
-	(*DashboardStatusRequest)(nil),             // 51: iam.v1.DashboardStatusRequest
-	(*DashboardStatusResponse)(nil),            // 52: iam.v1.DashboardStatusResponse
-	(*DashboardActivitiesRequest)(nil),         // 53: iam.v1.DashboardActivitiesRequest
-	(*Activity)(nil),                           // 54: iam.v1.Activity
-	(*DashboardActivitiesResponse)(nil),        // 55: iam.v1.DashboardActivitiesResponse
-	nil,                                        // 56: iam.v1.AssumeRoleRequest.TagsEntry
-	(*timestamppb.Timestamp)(nil),              // 57: google.protobuf.Timestamp
+	(HealthCheckResponse_ServingStatus)(0),     // 0: iam.v1.HealthCheckResponse.ServingStatus
+	(*CreateUserRequest)(nil),                  // 1: iam.v1.CreateUserRequest
+	(*GetUserRequest)(nil),                     // 2: iam.v1.GetUserRequest
+	(*ListUsersRequest)(nil),                   // 3: iam.v1.ListUsersRequest
+	(*ListUsersResponse)(nil),                  // 4: iam.v1.ListUsersResponse
+	(*UpdateUserRequest)(nil),                  // 5: iam.v1.UpdateUserRequest
+	(*DeleteUserRequest)(nil),                  // 6: iam.v1.DeleteUserRequest
+	(*DeleteUserResponse)(nil),                 // 7: iam.v1.DeleteUserResponse
+	(*User)(nil),                               // 8: iam.v1.User
+	(*CreatePolicyRequest)(nil),                // 9: iam.v1.CreatePolicyRequest
+	(*AttachUserPolicyRequest)(nil),            // 10: iam.v1.AttachUserPolicyRequest
+	(*AttachUserPolicyResponse)(nil),           // 11: iam.v1.AttachUserPolicyResponse
+	(*ListPoliciesRequest)(nil),                // 12: iam.v1.ListPoliciesRequest
+	(*ListPoliciesResponse)(nil),               // 13: iam.v1.ListPoliciesResponse
+	(*Policy)(nil),                             // 14: iam.v1.Policy
+	(*SubmitDeveloperVerificationRequest)(nil), // 15: iam.v1.SubmitDeveloperVerificationRequest
+	(*GetDeveloperVerificationRequest)(nil),    // 16: iam.v1.GetDeveloperVerificationRequest
+	(*ListDeveloperVerificationsRequest)(nil),  // 17: iam.v1.ListDeveloperVerificationsRequest
+	(*ReviewDeveloperVerificationRequest)(nil), // 18: iam.v1.ReviewDeveloperVerificationRequest
+	(*DeveloperVerification)(nil),              // 19: iam.v1.DeveloperVerification
+	(*ListDeveloperVerificationsResponse)(nil), // 20: iam.v1.ListDeveloperVerificationsResponse
+	(*CreateApplicationRequest)(nil),           // 21: iam.v1.CreateApplicationRequest
+	(*GetApplicationRequest)(nil),              // 22: iam.v1.GetApplicationRequest
+	(*ListApplicationsRequest)(nil),            // 23: iam.v1.ListApplicationsRequest
+	(*UpdateApplicationRequest)(nil),           // 24: iam.v1.UpdateApplicationRequest
+	(*DeleteApplicationRequest)(nil),           // 25: iam.v1.DeleteApplicationRequest
+	(*DeleteApplicationResponse)(nil),          // 26: iam.v1.DeleteApplicationResponse
+	(*Application)(nil),                        // 27: iam.v1.Application
+	(*ListApplicationsResponse)(nil),           // 28: iam.v1.ListApplicationsResponse
+	(*CreateAccessKeyRequest)(nil),             // 29: iam.v1.CreateAccessKeyRequest
+	(*ListAccessKeysRequest)(nil),              // 30: iam.v1.ListAccessKeysRequest
+	(*UpdateAccessKeyStatusRequest)(nil),       // 31: iam.v1.UpdateAccessKeyStatusRequest
+	(*AccessKey)(nil),                          // 32: iam.v1.AccessKey
+	(*ListAccessKeysResponse)(nil),             // 33: iam.v1.ListAccessKeysResponse
+	(*VerifyRequest)(nil),                      // 34: iam.v1.VerifyRequest
+	(*VerifyResponse)(nil),                     // 35: iam.v1.VerifyResponse
+	(*CheckPermissionRequest)(nil),             // 36: iam.v1.CheckPermissionRequest
+	(*CheckPermissionResponse)(nil),            // 37: iam.v1.CheckPermissionResponse
+	(*ValidatePermissionRequest)(nil),          // 38: iam.v1.ValidatePermissionRequest
+	(*ValidatePermissionResponse)(nil),         // 39: iam.v1.ValidatePermissionResponse
+	(*AssumeRoleRequest)(nil),                  // 40: iam.v1.AssumeRoleRequest
+	(*AssumeRoleResponse)(nil),                 // 41: iam.v1.AssumeRoleResponse
+	(*GetSessionTokenRequest)(nil),             // 42: iam.v1.GetSessionTokenRequest
+	(*GetSessionTokenResponse)(nil),            // 43: iam.v1.GetSessionTokenResponse
+	(*RefreshTokenRequest)(nil),                // 44: iam.v1.RefreshTokenRequest
+	(*RefreshTokenResponse)(nil),               // 45: iam.v1.RefreshTokenResponse
+	(*RevokeTokenRequest)(nil),                 // 46: iam.v1.RevokeTokenRequest
+	(*RevokeTokenResponse)(nil),                // 47: iam.v1.RevokeTokenResponse
+	(*TemporaryCredentials)(nil),               // 48: iam.v1.TemporaryCredentials
+	(*AssumedRoleUser)(nil),                    // 49: iam.v1.AssumedRoleUser
+	(*DashboardStatsRequest)(nil),              // 50: iam.v1.DashboardStatsRequest
+	(*DashboardStatsResponse)(nil),             // 51: iam.v1.DashboardStatsResponse
+	(*DashboardStatusRequest)(nil),             // 52: iam.v1.DashboardStatusRequest
+	(*DashboardStatusResponse)(nil),            // 53: iam.v1.DashboardStatusResponse
+	(*DashboardActivitiesRequest)(nil),         // 54: iam.v1.DashboardActivitiesRequest
+	(*Activity)(nil),                           // 55: iam.v1.Activity
+	(*DashboardActivitiesResponse)(nil),        // 56: iam.v1.DashboardActivitiesResponse
+	(*HealthCheckRequest)(nil),                 // 57: iam.v1.HealthCheckRequest
+	(*HealthCheckResponse)(nil),                // 58: iam.v1.HealthCheckResponse
+	(*LivenessProbeRequest)(nil),               // 59: iam.v1.LivenessProbeRequest
+	(*LivenessProbeResponse)(nil),              // 60: iam.v1.LivenessProbeResponse
+	(*ReadinessProbeRequest)(nil),              // 61: iam.v1.ReadinessProbeRequest
+	(*ReadinessProbeResponse)(nil),             // 62: iam.v1.ReadinessProbeResponse
+	(*SystemStatusRequest)(nil),                // 63: iam.v1.SystemStatusRequest
+	(*SystemStatusResponse)(nil),               // 64: iam.v1.SystemStatusResponse
+	(*SystemMetrics)(nil),                      // 65: iam.v1.SystemMetrics
+	nil,                                        // 66: iam.v1.AssumeRoleRequest.TagsEntry
+	nil,                                        // 67: iam.v1.SystemStatusResponse.ComponentsEntry
+	(*timestamppb.Timestamp)(nil),              // 68: google.protobuf.Timestamp
 }
 var file_proto_iam_proto_depIdxs = []int32{
-	7,  // 0: iam.v1.ListUsersResponse.users:type_name -> iam.v1.User
-	57, // 1: iam.v1.User.created_at:type_name -> google.protobuf.Timestamp
-	57, // 2: iam.v1.User.updated_at:type_name -> google.protobuf.Timestamp
-	13, // 3: iam.v1.ListPoliciesResponse.policies:type_name -> iam.v1.Policy
-	57, // 4: iam.v1.Policy.created_at:type_name -> google.protobuf.Timestamp
-	57, // 5: iam.v1.Policy.updated_at:type_name -> google.protobuf.Timestamp
-	57, // 6: iam.v1.DeveloperVerification.reviewed_at:type_name -> google.protobuf.Timestamp
-	57, // 7: iam.v1.DeveloperVerification.created_at:type_name -> google.protobuf.Timestamp
-	57, // 8: iam.v1.DeveloperVerification.updated_at:type_name -> google.protobuf.Timestamp
-	18, // 9: iam.v1.ListDeveloperVerificationsResponse.verifications:type_name -> iam.v1.DeveloperVerification
-	57, // 10: iam.v1.Application.created_at:type_name -> google.protobuf.Timestamp
-	57, // 11: iam.v1.Application.updated_at:type_name -> google.protobuf.Timestamp
-	26, // 12: iam.v1.ListApplicationsResponse.applications:type_name -> iam.v1.Application
-	57, // 13: iam.v1.AccessKey.created_at:type_name -> google.protobuf.Timestamp
-	57, // 14: iam.v1.AccessKey.updated_at:type_name -> google.protobuf.Timestamp
-	31, // 15: iam.v1.ListAccessKeysResponse.access_keys:type_name -> iam.v1.AccessKey
-	56, // 16: iam.v1.AssumeRoleRequest.tags:type_name -> iam.v1.AssumeRoleRequest.TagsEntry
-	47, // 17: iam.v1.AssumeRoleResponse.credentials:type_name -> iam.v1.TemporaryCredentials
-	48, // 18: iam.v1.AssumeRoleResponse.assumed_role_user:type_name -> iam.v1.AssumedRoleUser
-	47, // 19: iam.v1.GetSessionTokenResponse.credentials:type_name -> iam.v1.TemporaryCredentials
-	47, // 20: iam.v1.RefreshTokenResponse.credentials:type_name -> iam.v1.TemporaryCredentials
-	57, // 21: iam.v1.TemporaryCredentials.expiration:type_name -> google.protobuf.Timestamp
-	57, // 22: iam.v1.Activity.timestamp:type_name -> google.protobuf.Timestamp
-	54, // 23: iam.v1.DashboardActivitiesResponse.activities:type_name -> iam.v1.Activity
-	0,  // 24: iam.v1.IAM.CreateUser:input_type -> iam.v1.CreateUserRequest
-	1,  // 25: iam.v1.IAM.GetUser:input_type -> iam.v1.GetUserRequest
-	2,  // 26: iam.v1.IAM.ListUsers:input_type -> iam.v1.ListUsersRequest
-	4,  // 27: iam.v1.IAM.UpdateUser:input_type -> iam.v1.UpdateUserRequest
-	5,  // 28: iam.v1.IAM.DeleteUser:input_type -> iam.v1.DeleteUserRequest
-	8,  // 29: iam.v1.IAM.CreatePolicy:input_type -> iam.v1.CreatePolicyRequest
-	11, // 30: iam.v1.IAM.ListPolicies:input_type -> iam.v1.ListPoliciesRequest
-	9,  // 31: iam.v1.IAM.AttachUserPolicy:input_type -> iam.v1.AttachUserPolicyRequest
-	14, // 32: iam.v1.IAM.SubmitDeveloperVerification:input_type -> iam.v1.SubmitDeveloperVerificationRequest
-	15, // 33: iam.v1.IAM.GetDeveloperVerification:input_type -> iam.v1.GetDeveloperVerificationRequest
-	16, // 34: iam.v1.IAM.ListDeveloperVerifications:input_type -> iam.v1.ListDeveloperVerificationsRequest
-	17, // 35: iam.v1.IAM.ReviewDeveloperVerification:input_type -> iam.v1.ReviewDeveloperVerificationRequest
-	20, // 36: iam.v1.IAM.CreateApplication:input_type -> iam.v1.CreateApplicationRequest
-	21, // 37: iam.v1.IAM.GetApplication:input_type -> iam.v1.GetApplicationRequest
-	22, // 38: iam.v1.IAM.ListApplications:input_type -> iam.v1.ListApplicationsRequest
-	23, // 39: iam.v1.IAM.UpdateApplication:input_type -> iam.v1.UpdateApplicationRequest
-	24, // 40: iam.v1.IAM.DeleteApplication:input_type -> iam.v1.DeleteApplicationRequest
-	28, // 41: iam.v1.IAM.CreateAccessKey:input_type -> iam.v1.CreateAccessKeyRequest
-	29, // 42: iam.v1.IAM.ListAccessKeys:input_type -> iam.v1.ListAccessKeysRequest
-	30, // 43: iam.v1.IAM.UpdateAccessKeyStatus:input_type -> iam.v1.UpdateAccessKeyStatusRequest
-	33, // 44: iam.v1.IAM.VerifyAccessKey:input_type -> iam.v1.VerifyRequest
-	35, // 45: iam.v1.IAM.CheckPermission:input_type -> iam.v1.CheckPermissionRequest
-	37, // 46: iam.v1.IAM.ValidatePermission:input_type -> iam.v1.ValidatePermissionRequest
-	39, // 47: iam.v1.IAM.AssumeRole:input_type -> iam.v1.AssumeRoleRequest
-	41, // 48: iam.v1.IAM.GetSessionToken:input_type -> iam.v1.GetSessionTokenRequest
-	43, // 49: iam.v1.IAM.RefreshToken:input_type -> iam.v1.RefreshTokenRequest
-	45, // 50: iam.v1.IAM.RevokeToken:input_type -> iam.v1.RevokeTokenRequest
-	49, // 51: iam.v1.IAM.GetDashboardStats:input_type -> iam.v1.DashboardStatsRequest
-	51, // 52: iam.v1.IAM.GetDashboardStatus:input_type -> iam.v1.DashboardStatusRequest
-	53, // 53: iam.v1.IAM.GetDashboardActivities:input_type -> iam.v1.DashboardActivitiesRequest
-	7,  // 54: iam.v1.IAM.CreateUser:output_type -> iam.v1.User
-	7,  // 55: iam.v1.IAM.GetUser:output_type -> iam.v1.User
-	3,  // 56: iam.v1.IAM.ListUsers:output_type -> iam.v1.ListUsersResponse
-	7,  // 57: iam.v1.IAM.UpdateUser:output_type -> iam.v1.User
-	6,  // 58: iam.v1.IAM.DeleteUser:output_type -> iam.v1.DeleteUserResponse
-	13, // 59: iam.v1.IAM.CreatePolicy:output_type -> iam.v1.Policy
-	12, // 60: iam.v1.IAM.ListPolicies:output_type -> iam.v1.ListPoliciesResponse
-	10, // 61: iam.v1.IAM.AttachUserPolicy:output_type -> iam.v1.AttachUserPolicyResponse
-	18, // 62: iam.v1.IAM.SubmitDeveloperVerification:output_type -> iam.v1.DeveloperVerification
-	18, // 63: iam.v1.IAM.GetDeveloperVerification:output_type -> iam.v1.DeveloperVerification
-	19, // 64: iam.v1.IAM.ListDeveloperVerifications:output_type -> iam.v1.ListDeveloperVerificationsResponse
-	18, // 65: iam.v1.IAM.ReviewDeveloperVerification:output_type -> iam.v1.DeveloperVerification
-	26, // 66: iam.v1.IAM.CreateApplication:output_type -> iam.v1.Application
-	26, // 67: iam.v1.IAM.GetApplication:output_type -> iam.v1.Application
-	27, // 68: iam.v1.IAM.ListApplications:output_type -> iam.v1.ListApplicationsResponse
-	26, // 69: iam.v1.IAM.UpdateApplication:output_type -> iam.v1.Application
-	25, // 70: iam.v1.IAM.DeleteApplication:output_type -> iam.v1.DeleteApplicationResponse
-	31, // 71: iam.v1.IAM.CreateAccessKey:output_type -> iam.v1.AccessKey
-	32, // 72: iam.v1.IAM.ListAccessKeys:output_type -> iam.v1.ListAccessKeysResponse
-	31, // 73: iam.v1.IAM.UpdateAccessKeyStatus:output_type -> iam.v1.AccessKey
-	34, // 74: iam.v1.IAM.VerifyAccessKey:output_type -> iam.v1.VerifyResponse
-	36, // 75: iam.v1.IAM.CheckPermission:output_type -> iam.v1.CheckPermissionResponse
-	38, // 76: iam.v1.IAM.ValidatePermission:output_type -> iam.v1.ValidatePermissionResponse
-	40, // 77: iam.v1.IAM.AssumeRole:output_type -> iam.v1.AssumeRoleResponse
-	42, // 78: iam.v1.IAM.GetSessionToken:output_type -> iam.v1.GetSessionTokenResponse
-	44, // 79: iam.v1.IAM.RefreshToken:output_type -> iam.v1.RefreshTokenResponse
-	46, // 80: iam.v1.IAM.RevokeToken:output_type -> iam.v1.RevokeTokenResponse
-	50, // 81: iam.v1.IAM.GetDashboardStats:output_type -> iam.v1.DashboardStatsResponse
-	52, // 82: iam.v1.IAM.GetDashboardStatus:output_type -> iam.v1.DashboardStatusResponse
-	55, // 83: iam.v1.IAM.GetDashboardActivities:output_type -> iam.v1.DashboardActivitiesResponse
-	54, // [54:84] is the sub-list for method output_type
-	24, // [24:54] is the sub-list for method input_type
-	24, // [24:24] is the sub-list for extension type_name
-	24, // [24:24] is the sub-list for extension extendee
-	0,  // [0:24] is the sub-list for field type_name
+	8,  // 0: iam.v1.ListUsersResponse.users:type_name -> iam.v1.User
+	68, // 1: iam.v1.User.created_at:type_name -> google.protobuf.Timestamp
+	68, // 2: iam.v1.User.updated_at:type_name -> google.protobuf.Timestamp
+	14, // 3: iam.v1.ListPoliciesResponse.policies:type_name -> iam.v1.Policy
+	68, // 4: iam.v1.Policy.created_at:type_name -> google.protobuf.Timestamp
+	68, // 5: iam.v1.Policy.updated_at:type_name -> google.protobuf.Timestamp
+	68, // 6: iam.v1.DeveloperVerification.reviewed_at:type_name -> google.protobuf.Timestamp
+	68, // 7: iam.v1.DeveloperVerification.created_at:type_name -> google.protobuf.Timestamp
+	68, // 8: iam.v1.DeveloperVerification.updated_at:type_name -> google.protobuf.Timestamp
+	19, // 9: iam.v1.ListDeveloperVerificationsResponse.verifications:type_name -> iam.v1.DeveloperVerification
+	68, // 10: iam.v1.Application.created_at:type_name -> google.protobuf.Timestamp
+	68, // 11: iam.v1.Application.updated_at:type_name -> google.protobuf.Timestamp
+	27, // 12: iam.v1.ListApplicationsResponse.applications:type_name -> iam.v1.Application
+	68, // 13: iam.v1.AccessKey.created_at:type_name -> google.protobuf.Timestamp
+	68, // 14: iam.v1.AccessKey.updated_at:type_name -> google.protobuf.Timestamp
+	32, // 15: iam.v1.ListAccessKeysResponse.access_keys:type_name -> iam.v1.AccessKey
+	66, // 16: iam.v1.AssumeRoleRequest.tags:type_name -> iam.v1.AssumeRoleRequest.TagsEntry
+	48, // 17: iam.v1.AssumeRoleResponse.credentials:type_name -> iam.v1.TemporaryCredentials
+	49, // 18: iam.v1.AssumeRoleResponse.assumed_role_user:type_name -> iam.v1.AssumedRoleUser
+	48, // 19: iam.v1.GetSessionTokenResponse.credentials:type_name -> iam.v1.TemporaryCredentials
+	48, // 20: iam.v1.RefreshTokenResponse.credentials:type_name -> iam.v1.TemporaryCredentials
+	68, // 21: iam.v1.TemporaryCredentials.expiration:type_name -> google.protobuf.Timestamp
+	68, // 22: iam.v1.Activity.timestamp:type_name -> google.protobuf.Timestamp
+	55, // 23: iam.v1.DashboardActivitiesResponse.activities:type_name -> iam.v1.Activity
+	0,  // 24: iam.v1.HealthCheckResponse.status:type_name -> iam.v1.HealthCheckResponse.ServingStatus
+	68, // 25: iam.v1.HealthCheckResponse.timestamp:type_name -> google.protobuf.Timestamp
+	68, // 26: iam.v1.LivenessProbeResponse.timestamp:type_name -> google.protobuf.Timestamp
+	68, // 27: iam.v1.ReadinessProbeResponse.timestamp:type_name -> google.protobuf.Timestamp
+	65, // 28: iam.v1.SystemStatusResponse.metrics:type_name -> iam.v1.SystemMetrics
+	67, // 29: iam.v1.SystemStatusResponse.components:type_name -> iam.v1.SystemStatusResponse.ComponentsEntry
+	68, // 30: iam.v1.SystemStatusResponse.timestamp:type_name -> google.protobuf.Timestamp
+	1,  // 31: iam.v1.IAM.CreateUser:input_type -> iam.v1.CreateUserRequest
+	2,  // 32: iam.v1.IAM.GetUser:input_type -> iam.v1.GetUserRequest
+	3,  // 33: iam.v1.IAM.ListUsers:input_type -> iam.v1.ListUsersRequest
+	5,  // 34: iam.v1.IAM.UpdateUser:input_type -> iam.v1.UpdateUserRequest
+	6,  // 35: iam.v1.IAM.DeleteUser:input_type -> iam.v1.DeleteUserRequest
+	9,  // 36: iam.v1.IAM.CreatePolicy:input_type -> iam.v1.CreatePolicyRequest
+	12, // 37: iam.v1.IAM.ListPolicies:input_type -> iam.v1.ListPoliciesRequest
+	10, // 38: iam.v1.IAM.AttachUserPolicy:input_type -> iam.v1.AttachUserPolicyRequest
+	15, // 39: iam.v1.IAM.SubmitDeveloperVerification:input_type -> iam.v1.SubmitDeveloperVerificationRequest
+	16, // 40: iam.v1.IAM.GetDeveloperVerification:input_type -> iam.v1.GetDeveloperVerificationRequest
+	17, // 41: iam.v1.IAM.ListDeveloperVerifications:input_type -> iam.v1.ListDeveloperVerificationsRequest
+	18, // 42: iam.v1.IAM.ReviewDeveloperVerification:input_type -> iam.v1.ReviewDeveloperVerificationRequest
+	21, // 43: iam.v1.IAM.CreateApplication:input_type -> iam.v1.CreateApplicationRequest
+	22, // 44: iam.v1.IAM.GetApplication:input_type -> iam.v1.GetApplicationRequest
+	23, // 45: iam.v1.IAM.ListApplications:input_type -> iam.v1.ListApplicationsRequest
+	24, // 46: iam.v1.IAM.UpdateApplication:input_type -> iam.v1.UpdateApplicationRequest
+	25, // 47: iam.v1.IAM.DeleteApplication:input_type -> iam.v1.DeleteApplicationRequest
+	29, // 48: iam.v1.IAM.CreateAccessKey:input_type -> iam.v1.CreateAccessKeyRequest
+	30, // 49: iam.v1.IAM.ListAccessKeys:input_type -> iam.v1.ListAccessKeysRequest
+	31, // 50: iam.v1.IAM.UpdateAccessKeyStatus:input_type -> iam.v1.UpdateAccessKeyStatusRequest
+	34, // 51: iam.v1.IAM.VerifyAccessKey:input_type -> iam.v1.VerifyRequest
+	36, // 52: iam.v1.IAM.CheckPermission:input_type -> iam.v1.CheckPermissionRequest
+	38, // 53: iam.v1.IAM.ValidatePermission:input_type -> iam.v1.ValidatePermissionRequest
+	40, // 54: iam.v1.IAM.AssumeRole:input_type -> iam.v1.AssumeRoleRequest
+	42, // 55: iam.v1.IAM.GetSessionToken:input_type -> iam.v1.GetSessionTokenRequest
+	44, // 56: iam.v1.IAM.RefreshToken:input_type -> iam.v1.RefreshTokenRequest
+	46, // 57: iam.v1.IAM.RevokeToken:input_type -> iam.v1.RevokeTokenRequest
+	50, // 58: iam.v1.IAM.GetDashboardStats:input_type -> iam.v1.DashboardStatsRequest
+	52, // 59: iam.v1.IAM.GetDashboardStatus:input_type -> iam.v1.DashboardStatusRequest
+	54, // 60: iam.v1.IAM.GetDashboardActivities:input_type -> iam.v1.DashboardActivitiesRequest
+	57, // 61: iam.v1.IAM.HealthCheck:input_type -> iam.v1.HealthCheckRequest
+	59, // 62: iam.v1.IAM.LivenessProbe:input_type -> iam.v1.LivenessProbeRequest
+	61, // 63: iam.v1.IAM.ReadinessProbe:input_type -> iam.v1.ReadinessProbeRequest
+	63, // 64: iam.v1.IAM.GetSystemStatus:input_type -> iam.v1.SystemStatusRequest
+	8,  // 65: iam.v1.IAM.CreateUser:output_type -> iam.v1.User
+	8,  // 66: iam.v1.IAM.GetUser:output_type -> iam.v1.User
+	4,  // 67: iam.v1.IAM.ListUsers:output_type -> iam.v1.ListUsersResponse
+	8,  // 68: iam.v1.IAM.UpdateUser:output_type -> iam.v1.User
+	7,  // 69: iam.v1.IAM.DeleteUser:output_type -> iam.v1.DeleteUserResponse
+	14, // 70: iam.v1.IAM.CreatePolicy:output_type -> iam.v1.Policy
+	13, // 71: iam.v1.IAM.ListPolicies:output_type -> iam.v1.ListPoliciesResponse
+	11, // 72: iam.v1.IAM.AttachUserPolicy:output_type -> iam.v1.AttachUserPolicyResponse
+	19, // 73: iam.v1.IAM.SubmitDeveloperVerification:output_type -> iam.v1.DeveloperVerification
+	19, // 74: iam.v1.IAM.GetDeveloperVerification:output_type -> iam.v1.DeveloperVerification
+	20, // 75: iam.v1.IAM.ListDeveloperVerifications:output_type -> iam.v1.ListDeveloperVerificationsResponse
+	19, // 76: iam.v1.IAM.ReviewDeveloperVerification:output_type -> iam.v1.DeveloperVerification
+	27, // 77: iam.v1.IAM.CreateApplication:output_type -> iam.v1.Application
+	27, // 78: iam.v1.IAM.GetApplication:output_type -> iam.v1.Application
+	28, // 79: iam.v1.IAM.ListApplications:output_type -> iam.v1.ListApplicationsResponse
+	27, // 80: iam.v1.IAM.UpdateApplication:output_type -> iam.v1.Application
+	26, // 81: iam.v1.IAM.DeleteApplication:output_type -> iam.v1.DeleteApplicationResponse
+	32, // 82: iam.v1.IAM.CreateAccessKey:output_type -> iam.v1.AccessKey
+	33, // 83: iam.v1.IAM.ListAccessKeys:output_type -> iam.v1.ListAccessKeysResponse
+	32, // 84: iam.v1.IAM.UpdateAccessKeyStatus:output_type -> iam.v1.AccessKey
+	35, // 85: iam.v1.IAM.VerifyAccessKey:output_type -> iam.v1.VerifyResponse
+	37, // 86: iam.v1.IAM.CheckPermission:output_type -> iam.v1.CheckPermissionResponse
+	39, // 87: iam.v1.IAM.ValidatePermission:output_type -> iam.v1.ValidatePermissionResponse
+	41, // 88: iam.v1.IAM.AssumeRole:output_type -> iam.v1.AssumeRoleResponse
+	43, // 89: iam.v1.IAM.GetSessionToken:output_type -> iam.v1.GetSessionTokenResponse
+	45, // 90: iam.v1.IAM.RefreshToken:output_type -> iam.v1.RefreshTokenResponse
+	47, // 91: iam.v1.IAM.RevokeToken:output_type -> iam.v1.RevokeTokenResponse
+	51, // 92: iam.v1.IAM.GetDashboardStats:output_type -> iam.v1.DashboardStatsResponse
+	53, // 93: iam.v1.IAM.GetDashboardStatus:output_type -> iam.v1.DashboardStatusResponse
+	56, // 94: iam.v1.IAM.GetDashboardActivities:output_type -> iam.v1.DashboardActivitiesResponse
+	58, // 95: iam.v1.IAM.HealthCheck:output_type -> iam.v1.HealthCheckResponse
+	60, // 96: iam.v1.IAM.LivenessProbe:output_type -> iam.v1.LivenessProbeResponse
+	62, // 97: iam.v1.IAM.ReadinessProbe:output_type -> iam.v1.ReadinessProbeResponse
+	64, // 98: iam.v1.IAM.GetSystemStatus:output_type -> iam.v1.SystemStatusResponse
+	65, // [65:99] is the sub-list for method output_type
+	31, // [31:65] is the sub-list for method input_type
+	31, // [31:31] is the sub-list for extension type_name
+	31, // [31:31] is the sub-list for extension extendee
+	0,  // [0:31] is the sub-list for field type_name
 }
 
 func init() { file_proto_iam_proto_init() }
@@ -4023,13 +4710,14 @@ func file_proto_iam_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_iam_proto_rawDesc), len(file_proto_iam_proto_rawDesc)),
-			NumEnums:      0,
-			NumMessages:   57,
+			NumEnums:      1,
+			NumMessages:   67,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_proto_iam_proto_goTypes,
 		DependencyIndexes: file_proto_iam_proto_depIdxs,
+		EnumInfos:         file_proto_iam_proto_enumTypes,
 		MessageInfos:      file_proto_iam_proto_msgTypes,
 	}.Build()
 	File_proto_iam_proto = out.File

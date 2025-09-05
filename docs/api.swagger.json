@@ -16,6 +16,104 @@
     "application/json"
   ],
   "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health Check 相关接口",
+        "operationId": "IAM_HealthCheck",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1HealthCheckResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "service",
+            "description": "服务名称（可选）",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "IAM"
+        ]
+      }
+    },
+    "/health/liveness": {
+      "get": {
+        "operationId": "IAM_LivenessProbe",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1LivenessProbeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "IAM"
+        ]
+      }
+    },
+    "/health/readiness": {
+      "get": {
+        "operationId": "IAM_ReadinessProbe",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ReadinessProbeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "IAM"
+        ]
+      }
+    },
+    "/health/system": {
+      "get": {
+        "operationId": "IAM_GetSystemStatus",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1SystemStatusResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "IAM"
+        ]
+      }
+    },
     "/v1/access-keys": {
       "get": {
         "summary": "访问密钥列表",
@@ -1051,6 +1149,17 @@
     }
   },
   "definitions": {
+    "HealthCheckResponseServingStatus": {
+      "type": "string",
+      "enum": [
+        "UNKNOWN",
+        "SERVING",
+        "NOT_SERVING",
+        "SERVICE_UNKNOWN"
+      ],
+      "default": "UNKNOWN",
+      "description": " - SERVICE_UNKNOWN: Used only by the Watch method."
+    },
     "IAMReviewDeveloperVerificationBody": {
       "type": "object",
       "properties": {
@@ -1603,6 +1712,24 @@
         }
       }
     },
+    "v1HealthCheckResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/HealthCheckResponseServingStatus"
+        },
+        "message": {
+          "type": "string",
+          "title": "状态描述"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "title": "检查时间"
+        }
+      },
+      "title": "健康检查响应"
+    },
     "v1ListAccessKeysResponse": {
       "type": "object",
       "properties": {
@@ -1716,6 +1843,29 @@
         }
       }
     },
+    "v1LivenessProbeResponse": {
+      "type": "object",
+      "properties": {
+        "alive": {
+          "type": "boolean",
+          "title": "是否存活"
+        },
+        "service": {
+          "type": "string",
+          "title": "服务名称"
+        },
+        "version": {
+          "type": "string",
+          "title": "版本信息"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "title": "检查时间"
+        }
+      },
+      "title": "存活性探针响应"
+    },
     "v1Policy": {
       "type": "object",
       "properties": {
@@ -1741,6 +1891,33 @@
           "format": "date-time"
         }
       }
+    },
+    "v1ReadinessProbeResponse": {
+      "type": "object",
+      "properties": {
+        "ready": {
+          "type": "boolean",
+          "title": "是否就绪"
+        },
+        "databaseStatus": {
+          "type": "string",
+          "title": "数据库状态"
+        },
+        "cacheStatus": {
+          "type": "string",
+          "title": "缓存状态"
+        },
+        "externalServicesStatus": {
+          "type": "string",
+          "title": "外部服务状态"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "title": "检查时间"
+        }
+      },
+      "title": "就绪性探针响应"
     },
     "v1RefreshTokenRequest": {
       "type": "object",
@@ -1825,6 +2002,87 @@
         }
       },
       "title": "开发者认证相关消息"
+    },
+    "v1SystemMetrics": {
+      "type": "object",
+      "properties": {
+        "requestsTotal": {
+          "type": "string",
+          "format": "int64",
+          "title": "总请求数"
+        },
+        "requestsSuccess": {
+          "type": "string",
+          "format": "int64",
+          "title": "成功请求数"
+        },
+        "requestsFailed": {
+          "type": "string",
+          "format": "int64",
+          "title": "失败请求数"
+        },
+        "responseTime": {
+          "type": "string",
+          "title": "平均响应时间"
+        },
+        "activeUsers": {
+          "type": "integer",
+          "format": "int32",
+          "title": "活跃用户数"
+        },
+        "activeSessions": {
+          "type": "integer",
+          "format": "int32",
+          "title": "活跃会话数"
+        },
+        "memoryUsage": {
+          "type": "string",
+          "title": "内存使用情况"
+        },
+        "cpuUsage": {
+          "type": "string",
+          "title": "CPU使用情况"
+        }
+      },
+      "title": "系统指标"
+    },
+    "v1SystemStatusResponse": {
+      "type": "object",
+      "properties": {
+        "service": {
+          "type": "string",
+          "title": "服务名称"
+        },
+        "version": {
+          "type": "string",
+          "title": "版本信息"
+        },
+        "environment": {
+          "type": "string",
+          "title": "环境信息"
+        },
+        "uptime": {
+          "type": "string",
+          "title": "运行时间"
+        },
+        "metrics": {
+          "$ref": "#/definitions/v1SystemMetrics",
+          "title": "系统指标"
+        },
+        "components": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "组件状态"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "title": "检查时间"
+        }
+      },
+      "title": "系统状态响应"
     },
     "v1TemporaryCredentials": {
       "type": "object",

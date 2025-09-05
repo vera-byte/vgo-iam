@@ -27,6 +27,8 @@ middleware:
   # 忽略认证
   ignore:
     - "/iam.v1.IAM/VerifyAccessKey"
+    - "/iam.v1.IAM/HealthCheck"
+    - "/iam.v1.IAM/GetDashboardStatus"
   # 允许传递到gRPC metadata的HTTP头部
   allowed_headers:
     - "access-key-id"
@@ -37,6 +39,7 @@ middleware:
     - "client-ip"
     - "user-agent"
     - "remote-addr"
+    - "request-id"
 
 # Sentry和日志配置
 log:

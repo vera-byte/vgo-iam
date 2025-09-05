@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
@@ -22,55 +21,16 @@ import (
 	"github.com/vera-byte/vgo-kit/logger"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
-	"google.golang.org/protobuf/proto"
 )
 
 func init() {
 	RootCmd.AddCommand(ServerCmd)
 }
 
-// StandardResponse 标准API响应格式
-type StandardResponse struct {
-	Code    int         `json:"code"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
-}
 
-// wrapSuccessResponse 包装成功响应为标准格式
-// ctx: 上下文
-// w: HTTP响应写入器
-// resp: 原始响应数据
-func wrapSuccessResponse(ctx context.Context, w http.ResponseWriter, resp []byte) error {
-	// 解析原始响应
-	var originalData interface{}
-	if len(resp) > 0 {
-		if err := json.Unmarshal(resp, &originalData); err != nil {
-			vgokit.Log.Error("Failed to unmarshal response", zap.Error(err))
-			return err
-		}
-	}
-
-	// 创建标准响应格式
-	standardResp := StandardResponse{
-		Code:    0,
-		Message: "success",
-		Data:    originalData,
-	}
-
-	// 序列化标准响应
-	wrappedResp, err := json.Marshal(standardResp)
-	if err != nil {
-		vgokit.Log.Error("Failed to marshal wrapped response", zap.Error(err))
-		return err
-	}
-
-	// 写入响应
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(wrappedResp)
-	return nil
-}
 
 // corsMiddleware 创建CORS中间件
 func corsMiddleware(handler http.Handler) http.Handler {
@@ -176,7 +136,7 @@ func startServer() {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	// 创建gRPC Gateway mux，配置metadata处理器
+	// 创建gRPC Gateway mux，配置metadata处理器和错误处理器
 	mux := runtime.NewServeMux(
 		runtime.WithIncomingHeaderMatcher(func(key string) (string, bool) {
 			// 检查头部是否在配置的允许列表中
@@ -195,41 +155,20 @@ func startServer() {
 		runtime.WithOutgoingHeaderMatcher(func(key string) (string, bool) {
 			return key, true
 		}),
-		// 自定义错误处理器，将details字段改为data字段
+		// 自定义错误处理器，直接返回错误信息
 		runtime.WithErrorHandler(func(ctx context.Context, mux *runtime.ServeMux, marshaler runtime.Marshaler, w http.ResponseWriter, r *http.Request, err error) {
-			// 获取gRPC状态
-			s := status.Convert(err)
-
-			// 创建自定义错误响应
-			errorResp := StandardResponse{
-				Code:    int(s.Code()),
-				Message: s.Message(),
-				Data:    s.Details(), // 将details改为data
+			// 从gRPC状态中提取错误信息
+			st, ok := status.FromError(err)
+			if !ok {
+				st = status.New(codes.Internal, err.Error())
 			}
 
-			// 设置HTTP状态码
-			httpStatus := runtime.HTTPStatusFromCode(s.Code())
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(httpStatus)
+			// 设置响应头为纯文本
+			w.Header().Set("Content-Type", "text/plain")
+			w.WriteHeader(runtime.HTTPStatusFromCode(st.Code()))
 
-			// 序列化并写入响应
-			if jsonData, jsonErr := json.Marshal(errorResp); jsonErr == nil {
-				w.Write(jsonData)
-			} else {
-				// 如果序列化失败，返回简单的错误信息
-				w.Write([]byte(`{"code":13,"message":"Internal error","data":null}`))
-			}
-		}),
-		// 添加响应包装器，将所有成功响应包装成标准格式
-		runtime.WithForwardResponseOption(func(ctx context.Context, w http.ResponseWriter, resp proto.Message) error {
-			// 序列化 protobuf 消息
-			jsonData, err := json.Marshal(resp)
-			if err != nil {
-				return err
-			}
-
-			// 包装响应
-			return wrapSuccessResponse(ctx, w, jsonData)
+			// 直接返回纯文本错误消息
+			w.Write([]byte(st.Message()))
 		}),
 	)
 
@@ -243,7 +182,7 @@ func startServer() {
 		vgokit.Log.Fatal("Failed to register gateway", zap.Error(err))
 	}
 
-	// 创建CORS中间件包装器
+	// 创建中间件链：CORS -> mux
 	corsHandler := corsMiddleware(mux)
 
 	// 启动HTTP服务器协程

@@ -8,7 +8,6 @@ package iamv1
 
 import (
 	context "context"
-
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -50,6 +49,10 @@ const (
 	IAM_GetDashboardStats_FullMethodName           = "/iam.v1.IAM/GetDashboardStats"
 	IAM_GetDashboardStatus_FullMethodName          = "/iam.v1.IAM/GetDashboardStatus"
 	IAM_GetDashboardActivities_FullMethodName      = "/iam.v1.IAM/GetDashboardActivities"
+	IAM_HealthCheck_FullMethodName                 = "/iam.v1.IAM/HealthCheck"
+	IAM_LivenessProbe_FullMethodName               = "/iam.v1.IAM/LivenessProbe"
+	IAM_ReadinessProbe_FullMethodName              = "/iam.v1.IAM/ReadinessProbe"
+	IAM_GetSystemStatus_FullMethodName             = "/iam.v1.IAM/GetSystemStatus"
 )
 
 // IAMClient is the client API for IAM service.
@@ -123,6 +126,11 @@ type IAMClient interface {
 	GetDashboardStatus(ctx context.Context, in *DashboardStatusRequest, opts ...grpc.CallOption) (*DashboardStatusResponse, error)
 	// 获取最近活动
 	GetDashboardActivities(ctx context.Context, in *DashboardActivitiesRequest, opts ...grpc.CallOption) (*DashboardActivitiesResponse, error)
+	// Health Check 相关接口
+	HealthCheck(ctx context.Context, in *HealthCheckRequest, opts ...grpc.CallOption) (*HealthCheckResponse, error)
+	LivenessProbe(ctx context.Context, in *LivenessProbeRequest, opts ...grpc.CallOption) (*LivenessProbeResponse, error)
+	ReadinessProbe(ctx context.Context, in *ReadinessProbeRequest, opts ...grpc.CallOption) (*ReadinessProbeResponse, error)
+	GetSystemStatus(ctx context.Context, in *SystemStatusRequest, opts ...grpc.CallOption) (*SystemStatusResponse, error)
 }
 
 type iAMClient struct {
@@ -433,6 +441,46 @@ func (c *iAMClient) GetDashboardActivities(ctx context.Context, in *DashboardAct
 	return out, nil
 }
 
+func (c *iAMClient) HealthCheck(ctx context.Context, in *HealthCheckRequest, opts ...grpc.CallOption) (*HealthCheckResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(HealthCheckResponse)
+	err := c.cc.Invoke(ctx, IAM_HealthCheck_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *iAMClient) LivenessProbe(ctx context.Context, in *LivenessProbeRequest, opts ...grpc.CallOption) (*LivenessProbeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(LivenessProbeResponse)
+	err := c.cc.Invoke(ctx, IAM_LivenessProbe_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *iAMClient) ReadinessProbe(ctx context.Context, in *ReadinessProbeRequest, opts ...grpc.CallOption) (*ReadinessProbeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ReadinessProbeResponse)
+	err := c.cc.Invoke(ctx, IAM_ReadinessProbe_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *iAMClient) GetSystemStatus(ctx context.Context, in *SystemStatusRequest, opts ...grpc.CallOption) (*SystemStatusResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SystemStatusResponse)
+	err := c.cc.Invoke(ctx, IAM_GetSystemStatus_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // IAMServer is the server API for IAM service.
 // All implementations should embed UnimplementedIAMServer
 // for forward compatibility.
@@ -504,6 +552,11 @@ type IAMServer interface {
 	GetDashboardStatus(context.Context, *DashboardStatusRequest) (*DashboardStatusResponse, error)
 	// 获取最近活动
 	GetDashboardActivities(context.Context, *DashboardActivitiesRequest) (*DashboardActivitiesResponse, error)
+	// Health Check 相关接口
+	HealthCheck(context.Context, *HealthCheckRequest) (*HealthCheckResponse, error)
+	LivenessProbe(context.Context, *LivenessProbeRequest) (*LivenessProbeResponse, error)
+	ReadinessProbe(context.Context, *ReadinessProbeRequest) (*ReadinessProbeResponse, error)
+	GetSystemStatus(context.Context, *SystemStatusRequest) (*SystemStatusResponse, error)
 }
 
 // UnimplementedIAMServer should be embedded to have
@@ -602,6 +655,18 @@ func (UnimplementedIAMServer) GetDashboardStatus(context.Context, *DashboardStat
 }
 func (UnimplementedIAMServer) GetDashboardActivities(context.Context, *DashboardActivitiesRequest) (*DashboardActivitiesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetDashboardActivities not implemented")
+}
+func (UnimplementedIAMServer) HealthCheck(context.Context, *HealthCheckRequest) (*HealthCheckResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method HealthCheck not implemented")
+}
+func (UnimplementedIAMServer) LivenessProbe(context.Context, *LivenessProbeRequest) (*LivenessProbeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LivenessProbe not implemented")
+}
+func (UnimplementedIAMServer) ReadinessProbe(context.Context, *ReadinessProbeRequest) (*ReadinessProbeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReadinessProbe not implemented")
+}
+func (UnimplementedIAMServer) GetSystemStatus(context.Context, *SystemStatusRequest) (*SystemStatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSystemStatus not implemented")
 }
 func (UnimplementedIAMServer) testEmbeddedByValue() {}
 
@@ -1163,6 +1228,78 @@ func _IAM_GetDashboardActivities_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _IAM_HealthCheck_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HealthCheckRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IAMServer).HealthCheck(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IAM_HealthCheck_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IAMServer).HealthCheck(ctx, req.(*HealthCheckRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IAM_LivenessProbe_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LivenessProbeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IAMServer).LivenessProbe(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IAM_LivenessProbe_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IAMServer).LivenessProbe(ctx, req.(*LivenessProbeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IAM_ReadinessProbe_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadinessProbeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IAMServer).ReadinessProbe(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IAM_ReadinessProbe_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IAMServer).ReadinessProbe(ctx, req.(*ReadinessProbeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IAM_GetSystemStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SystemStatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IAMServer).GetSystemStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IAM_GetSystemStatus_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IAMServer).GetSystemStatus(ctx, req.(*SystemStatusRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // IAM_ServiceDesc is the grpc.ServiceDesc for IAM service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1289,6 +1426,22 @@ var IAM_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetDashboardActivities",
 			Handler:    _IAM_GetDashboardActivities_Handler,
+		},
+		{
+			MethodName: "HealthCheck",
+			Handler:    _IAM_HealthCheck_Handler,
+		},
+		{
+			MethodName: "LivenessProbe",
+			Handler:    _IAM_LivenessProbe_Handler,
+		},
+		{
+			MethodName: "ReadinessProbe",
+			Handler:    _IAM_ReadinessProbe_Handler,
+		},
+		{
+			MethodName: "GetSystemStatus",
+			Handler:    _IAM_GetSystemStatus_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

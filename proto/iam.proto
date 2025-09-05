@@ -243,6 +243,31 @@ service IAM {
       get: "/v1/dashboard/activities"
     };
   }
+
+  // Health Check 相关接口
+  rpc HealthCheck(HealthCheckRequest) returns (HealthCheckResponse) {
+    option (google.api.http) = {
+      get: "/health"
+    };
+  }
+
+  rpc LivenessProbe(LivenessProbeRequest) returns (LivenessProbeResponse) {
+    option (google.api.http) = {
+      get: "/health/liveness"
+    };
+  }
+
+  rpc ReadinessProbe(ReadinessProbeRequest) returns (ReadinessProbeResponse) {
+    option (google.api.http) = {
+      get: "/health/readiness"
+    };
+  }
+
+  rpc GetSystemStatus(SystemStatusRequest) returns (SystemStatusResponse) {
+    option (google.api.http) = {
+      get: "/health/system"
+    };
+  }
 }
 
 // 用户相关消息
@@ -611,4 +636,73 @@ message Activity {
 
 message DashboardActivitiesResponse {
   repeated Activity activities = 1;        // 活动列表
+}
+
+// ========== Health Check Service ==========
+
+// 健康检查请求
+message HealthCheckRequest {
+  string service = 1;                     // 服务名称（可选）
+}
+
+// 健康检查响应
+message HealthCheckResponse {
+  enum ServingStatus {
+    UNKNOWN = 0;
+    SERVING = 1;
+    NOT_SERVING = 2;
+    SERVICE_UNKNOWN = 3;  // Used only by the Watch method.
+  }
+  ServingStatus status = 1;
+  string message = 2;                     // 状态描述
+  google.protobuf.Timestamp timestamp = 3; // 检查时间
+}
+
+// 存活性探针请求
+message LivenessProbeRequest {}
+
+// 存活性探针响应
+message LivenessProbeResponse {
+  bool alive = 1;                         // 是否存活
+  string service = 2;                     // 服务名称
+  string version = 3;                     // 版本信息
+  google.protobuf.Timestamp timestamp = 4; // 检查时间
+}
+
+// 就绪性探针请求
+message ReadinessProbeRequest {}
+
+// 就绪性探针响应
+message ReadinessProbeResponse {
+  bool ready = 1;                         // 是否就绪
+  string database_status = 2;             // 数据库状态
+  string cache_status = 3;                // 缓存状态
+  string external_services_status = 4;    // 外部服务状态
+  google.protobuf.Timestamp timestamp = 5; // 检查时间
+}
+
+// 系统状态请求
+message SystemStatusRequest {}
+
+// 系统状态响应
+message SystemStatusResponse {
+  string service = 1;                     // 服务名称
+  string version = 2;                     // 版本信息
+  string environment = 3;                 // 环境信息
+  string uptime = 4;                      // 运行时间
+  SystemMetrics metrics = 5;              // 系统指标
+  map<string, string> components = 6;     // 组件状态
+  google.protobuf.Timestamp timestamp = 7; // 检查时间
+}
+
+// 系统指标
+message SystemMetrics {
+  int64 requests_total = 1;               // 总请求数
+  int64 requests_success = 2;             // 成功请求数
+  int64 requests_failed = 3;              // 失败请求数
+  string response_time = 4;               // 平均响应时间
+  int32 active_users = 5;                 // 活跃用户数
+  int32 active_sessions = 6;              // 活跃会话数
+  string memory_usage = 7;                // 内存使用情况
+  string cpu_usage = 8;                   // CPU使用情况
 }

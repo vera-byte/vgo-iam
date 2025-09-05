@@ -68,14 +68,14 @@
         <div class="system-status">
           <div class="status-item">
             <span class="status-label">服务状态:</span>
-            <el-tag :type="systemStatus.service_status === 'healthy' ? 'success' : 'danger'">
-              {{ systemStatus.service_status === 'healthy' ? '正常' : '异常' }}
+            <el-tag :type="systemStatus.serviceStatus === 'healthy' ? 'success' : 'danger'">
+              {{ systemStatus.serviceStatus === 'healthy' ? '正常' : '异常' }}
             </el-tag>
           </div>
           <div class="status-item">
             <span class="status-label">数据库连接:</span>
-            <el-tag :type="systemStatus.database_status === 'connected' ? 'success' : 'danger'">
-              {{ systemStatus.database_status === 'connected' ? '已连接' : '断开' }}
+            <el-tag :type="systemStatus.databaseStatus === 'connected' ? 'success' : 'danger'">
+              {{ systemStatus.databaseStatus === 'connected' ? '已连接' : '断开' }}
             </el-tag>
           </div>
           <div class="status-item">
@@ -166,8 +166,8 @@ interface Stats {
 }
 
 interface SystemStatus {
-  service_status: 'healthy' | 'unhealthy'
-  database_status: 'connected' | 'disconnected'
+  serviceStatus: 'healthy' | 'unhealthy'
+  databaseStatus: 'connected' | 'disconnected'
   uptime: string
   version: string
 }
@@ -189,8 +189,8 @@ const stats = ref<Stats>({
 })
 
 const systemStatus = ref<SystemStatus>({
-  service_status: 'healthy',
-  database_status: 'connected',
+  serviceStatus: 'healthy',
+  databaseStatus: 'connected',
   uptime: '',
   version: ''
 })
@@ -251,9 +251,9 @@ const loadSystemStatus = async () => {
     console.error('加载系统状态失败:', error)
     // 使用模拟数据
     systemStatus.value = {
-      service_status: 'healthy',
-      database_status: 'connected',
-      uptime: '2天 5小时 30分钟',
+      serviceStatus: 'healthy',
+      databaseStatus: 'connected',
+      uptime: '0天 0小时 0分钟',
       version: 'v1.0.0'
     }
   }

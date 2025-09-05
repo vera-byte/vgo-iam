@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
@@ -23,10 +24,52 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/proto"
 )
 
 func init() {
 	RootCmd.AddCommand(ServerCmd)
+}
+
+// StandardResponse 标准API响应格式
+type StandardResponse struct {
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+}
+
+// wrapSuccessResponse 包装成功响应为标准格式
+// ctx: 上下文
+// w: HTTP响应写入器
+// resp: 原始响应数据
+func wrapSuccessResponse(ctx context.Context, w http.ResponseWriter, resp []byte) error {
+	// 解析原始响应
+	var originalData interface{}
+	if len(resp) > 0 {
+		if err := json.Unmarshal(resp, &originalData); err != nil {
+			vgokit.Log.Error("Failed to unmarshal response", zap.Error(err))
+			return err
+		}
+	}
+
+	// 创建标准响应格式
+	standardResp := StandardResponse{
+		Code:    0,
+		Message: "success",
+		Data:    originalData,
+	}
+
+	// 序列化标准响应
+	wrappedResp, err := json.Marshal(standardResp)
+	if err != nil {
+		vgokit.Log.Error("Failed to marshal wrapped response", zap.Error(err))
+		return err
+	}
+
+	// 写入响应
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(wrappedResp)
+	return nil
 }
 
 // corsMiddleware 创建CORS中间件
@@ -158,10 +201,10 @@ func startServer() {
 			s := status.Convert(err)
 
 			// 创建自定义错误响应
-			errorResp := map[string]interface{}{
-				"code":    int(s.Code()),
-				"message": s.Message(),
-				"data":    s.Details(), // 将details改为data
+			errorResp := StandardResponse{
+				Code:    int(s.Code()),
+				Message: s.Message(),
+				Data:    s.Details(), // 将details改为data
 			}
 
 			// 设置HTTP状态码
@@ -170,12 +213,23 @@ func startServer() {
 			w.WriteHeader(httpStatus)
 
 			// 序列化并写入响应
-			if jsonData, jsonErr := marshaler.Marshal(errorResp); jsonErr == nil {
+			if jsonData, jsonErr := json.Marshal(errorResp); jsonErr == nil {
 				w.Write(jsonData)
 			} else {
 				// 如果序列化失败，返回简单的错误信息
-				w.Write([]byte(`{"code":13,"message":"Internal error","data":[]}`))
+				w.Write([]byte(`{"code":13,"message":"Internal error","data":null}`))
 			}
+		}),
+		// 添加响应包装器，将所有成功响应包装成标准格式
+		runtime.WithForwardResponseOption(func(ctx context.Context, w http.ResponseWriter, resp proto.Message) error {
+			// 序列化 protobuf 消息
+			jsonData, err := json.Marshal(resp)
+			if err != nil {
+				return err
+			}
+
+			// 包装响应
+			return wrapSuccessResponse(ctx, w, jsonData)
 		}),
 	)
 

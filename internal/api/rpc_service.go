@@ -2,6 +2,8 @@ package api
 
 import (
 	"context"
+	"fmt"
+	"math"
 	"time"
 
 	"github.com/golang/protobuf/ptypes"
@@ -15,6 +17,7 @@ import (
 	"github.com/vera-byte/vgo-iam/internal/policy"
 	"github.com/vera-byte/vgo-iam/internal/service"
 	"github.com/vera-byte/vgo-iam/internal/util"
+	"github.com/vera-byte/vgo-iam/internal/version"
 	iamv1 "github.com/vera-byte/vgo-iam/pkg/proto"
 	vgokit "github.com/vera-byte/vgo-kit"
 	"github.com/vera-byte/vgo-kit/i18n"
@@ -22,15 +25,16 @@ import (
 
 type IAMServer struct {
 	iamv1.UnimplementedIAMServer
-	userService                 *service.UserService
-	policyService               *service.PolicyService
-	accessKeyService            *service.AccessKeyService
+	userService                  *service.UserService
+	policyService                *service.PolicyService
+	accessKeyService             *service.AccessKeyService
 	developerVerificationService service.DeveloperVerificationService
-	applicationService          service.ApplicationService
-	stsService                  *service.STSService
-	policyEngine                *policy.PolicyEngine
-	masterKey                   []byte
-	translator                  i18n.Translator
+	applicationService           service.ApplicationService
+	stsService                   *service.STSService
+	policyEngine                 *policy.PolicyEngine
+	masterKey                    []byte
+	translator                   i18n.Translator
+	startTime                    time.Time // 服务启动时间
 }
 
 // AccessKeyService 返回accessKeyService
@@ -70,15 +74,16 @@ func NewIAMServer(
 	translator i18n.Translator,
 ) *IAMServer {
 	return &IAMServer{
-		userService:                 userService,
-		policyService:               policyService,
-		accessKeyService:            accessKeyService,
+		userService:                  userService,
+		policyService:                policyService,
+		accessKeyService:             accessKeyService,
 		developerVerificationService: developerVerificationService,
-		applicationService:          applicationService,
-		stsService:                  stsService,
-		policyEngine:                policyEngine,
-		masterKey:                   masterKey,
-		translator:                  translator,
+		applicationService:           applicationService,
+		stsService:                   stsService,
+		policyEngine:                 policyEngine,
+		masterKey:                    masterKey,
+		translator:                   translator,
+		startTime:                    time.Now(), // 记录服务启动时间
 	}
 }
 
@@ -124,6 +129,63 @@ func (s *IAMServer) CreatePolicy(ctx context.Context, req *iamv1.CreatePolicyReq
 	return convertPolicyToProto(policy), nil
 }
 
+// ListPolicies 获取策略列表
+// ctx: 上下文
+// req: 列表请求
+// 返回: 策略列表响应和错误信息
+func (s *IAMServer) ListPolicies(ctx context.Context, req *iamv1.ListPoliciesRequest) (*iamv1.ListPoliciesResponse, error) {
+	// 获取所有策略
+	policies, err := s.policyService.ListPolicies(ctx)
+	if err != nil {
+		return nil, s.translateError(ctx, codes.Internal, "error.policy.list_failed", err)
+	}
+
+	// 计算分页
+	page := req.Page
+	pageSize := req.PageSize
+	if page <= 0 {
+		page = 1
+	}
+	if pageSize <= 0 {
+		pageSize = 20
+	}
+
+	total := int32(len(policies))
+	startIndex := (page - 1) * pageSize
+	endIndex := startIndex + pageSize
+
+	// 处理边界情况
+	if startIndex >= total {
+		// 如果起始索引超出范围，返回空列表
+		return &iamv1.ListPoliciesResponse{
+			Policies: []*iamv1.Policy{},
+			Total:    total,
+			Page:     page,
+			PageSize: pageSize,
+		}, nil
+	}
+
+	if endIndex > total {
+		endIndex = total
+	}
+
+	// 获取当前页的策略
+	pagedPolicies := policies[startIndex:endIndex]
+
+	// 转换为protobuf格式
+	protoPolicies := make([]*iamv1.Policy, len(pagedPolicies))
+	for i, policy := range pagedPolicies {
+		protoPolicies[i] = convertPolicyToProto(policy)
+	}
+
+	return &iamv1.ListPoliciesResponse{
+		Policies: protoPolicies,
+		Total:    total,
+		Page:     page,
+		PageSize: pageSize,
+	}, nil
+}
+
 func (s *IAMServer) AttachUserPolicy(ctx context.Context, req *iamv1.AttachUserPolicyRequest) (*iamv1.AttachUserPolicyResponse, error) {
 	if err := s.userService.AttachPolicy(ctx, req.UserName, req.PolicyName); err != nil {
 		return nil, s.translateError(ctx, codes.Internal, "error.policy.attach_failed", err)
@@ -138,7 +200,7 @@ func (s *IAMServer) CreateAccessKey(ctx context.Context, req *iamv1.CreateAccess
 	}
 
 	var ak *model.AccessKey
-	
+
 	// 如果指定了应用ID，创建应用专用访问密钥
 	if req.AppId > 0 {
 		ak, err = s.accessKeyService.CreateAccessKeyForApp(ctx, user.Name, req.AppId, req.Description)
@@ -146,7 +208,7 @@ func (s *IAMServer) CreateAccessKey(ctx context.Context, req *iamv1.CreateAccess
 		// 否则创建通用访问密钥（已废弃，但保持向后兼容）
 		ak, err = s.accessKeyService.CreateAccessKey(ctx, user.Name)
 	}
-	
+
 	if err != nil {
 		return nil, s.translateError(ctx, codes.Internal, "error.access_key.create_failed", err)
 	}
@@ -159,12 +221,12 @@ func (s *IAMServer) CreateAccessKey(ctx context.Context, req *iamv1.CreateAccess
 		Description:     ak.Description,
 		CreatedAt:       convertTimeToTimestamp(ak.CreatedAt),
 	}
-	
+
 	// 如果有应用ID，添加到响应中
 	if ak.AppID != nil {
 		response.AppId = *ak.AppID
 	}
-	
+
 	return response, nil
 }
 
@@ -187,7 +249,7 @@ func (s *IAMServer) ListAccessKeys(ctx context.Context, req *iamv1.ListAccessKey
 				continue
 			}
 		}
-		
+
 		accessKey := &iamv1.AccessKey{
 			AccessKeyId: key.AccessKeyID,
 			Status:      key.Status,
@@ -196,12 +258,12 @@ func (s *IAMServer) ListAccessKeys(ctx context.Context, req *iamv1.ListAccessKey
 			CreatedAt:   convertTimeToTimestamp(key.CreatedAt),
 			UpdatedAt:   convertTimeToTimestamp(key.UpdatedAt),
 		}
-		
+
 		// 如果有应用ID，添加到响应中
 		if key.AppID != nil {
 			accessKey.AppId = *key.AppID
 		}
-		
+
 		resp.AccessKeys = append(resp.AccessKeys, accessKey)
 	}
 	return resp, nil
@@ -733,7 +795,7 @@ func (s *IAMServer) GetSessionToken(ctx context.Context, req *iamv1.GetSessionTo
 // req: 扮演角色请求
 // 返回: 扮演角色响应和错误信息
 func (s *IAMServer) AssumeRole(ctx context.Context, req *iamv1.AssumeRoleRequest) (*iamv1.AssumeRoleResponse, error) {
-	vgokit.Log.Info("AssumeRole request received", 
+	vgokit.Log.Info("AssumeRole request received",
 		zap.String("role_arn", req.RoleArn),
 		zap.String("role_session_name", req.RoleSessionName))
 
@@ -744,7 +806,7 @@ func (s *IAMServer) AssumeRole(ctx context.Context, req *iamv1.AssumeRoleRequest
 		return nil, s.translateError(ctx, codes.Internal, "error.sts.assume_role_failed", err)
 	}
 
-	vgokit.Log.Info("Role assumed successfully", 
+	vgokit.Log.Info("Role assumed successfully",
 		zap.String("access_key_id", resp.Credentials.AccessKeyId),
 		zap.String("assumed_role_id", resp.AssumedRoleUser.AssumedRoleId))
 	return resp, nil
@@ -829,31 +891,44 @@ func (s *IAMServer) GetDashboardStats(ctx context.Context, req *iamv1.DashboardS
 }
 
 // GetDashboardStatus 获取系统状态
+// 返回系统运行状态、数据库连接状态、运行时间和版本信息
 func (s *IAMServer) GetDashboardStatus(ctx context.Context, req *iamv1.DashboardStatusRequest) (*iamv1.DashboardStatusResponse, error) {
 	vgokit.Log.Info("GetDashboardStatus request received")
 
 	// 检查数据库连接状态
 	databaseStatus := "connected"
+	serviceStatus := "healthy"
+
+	// 执行数据库健康检查
 	if err := s.userService.HealthCheck(ctx); err != nil {
 		vgokit.Log.Error("Database health check failed", zap.Error(err))
 		databaseStatus = "disconnected"
+		serviceStatus = "degraded" // 数据库连接失败时服务状态为降级
 	}
 
-	// 获取系统运行时间（简化实现）
-	uptime := "running"
+	// 计算系统运行时间
+	uptime := time.Since(s.startTime)
+	days := int(uptime.Hours() / 24)
+	hours := int(math.Mod(uptime.Hours(), 24))
+	minutes := int(math.Mod(uptime.Minutes(), 60))
+	uptimeStr := fmt.Sprintf("%d days, %d hours, %d minutes", days, hours, minutes)
 
-	// 获取版本信息
-	version := "v1.0.0"
+	// 获取版本信息（包含构建信息）
+	versionInfo := fmt.Sprintf("%s (commit: %s, built: %s)",
+		version.Version,
+		version.Commit,
+		version.BuildTime)
 
 	return &iamv1.DashboardStatusResponse{
-		ServiceStatus:  "healthy",
+		ServiceStatus:  serviceStatus,
 		DatabaseStatus: databaseStatus,
-		Uptime:         uptime,
-		Version:        version,
+		Uptime:         uptimeStr,
+		Version:        versionInfo,
 	}, nil
 }
 
 // GetDashboardActivities 获取最近活动
+// 从数据库中获取最近的用户、访问密钥、策略和应用的创建/更新记录
 func (s *IAMServer) GetDashboardActivities(ctx context.Context, req *iamv1.DashboardActivitiesRequest) (*iamv1.DashboardActivitiesResponse, error) {
 	vgokit.Log.Info("GetDashboardActivities request received")
 
@@ -863,34 +938,95 @@ func (s *IAMServer) GetDashboardActivities(ctx context.Context, req *iamv1.Dashb
 		limit = 10
 	}
 
-	// 这里返回模拟数据，实际项目中应该从数据库或日志系统获取
-	activities := []*iamv1.Activity{
-		{
-			Id:          "1",
-			Type:        "user_created",
-			Description: "Created new user",
-			User:        "admin",
-			Timestamp:   timestamppb.New(time.Now().Add(-30 * time.Minute)),
-		},
-		{
-			Id:          "2",
-			Type:        "key_created",
-			Description: "Created new access key",
-			User:        "admin",
-			Timestamp:   timestamppb.New(time.Now().Add(-2 * time.Hour)),
-		},
-		{
-			Id:          "3",
-			Type:        "policy_updated",
-			Description: "Updated policy",
-			User:        "admin",
-			Timestamp:   timestamppb.New(time.Now().Add(-4 * time.Hour)),
-		},
+	var activities []*iamv1.Activity
+	activityID := 1
+
+	// 获取最近创建的用户（最多5个）
+	users, err := s.userService.ListUsers(ctx)
+	if err == nil && len(users) > 0 {
+		// 按创建时间排序，取最新的几个
+		userCount := len(users)
+		if userCount > 5 {
+			userCount = 5
+		}
+		for i := userCount - 1; i >= 0; i-- {
+			user := users[i]
+			activities = append(activities, &iamv1.Activity{
+				Id:          fmt.Sprintf("%d", activityID),
+				Type:        "user_created",
+				Description: fmt.Sprintf("Created user '%s'", user.DisplayName),
+				User:        "system", // 创建用户的操作者
+				Timestamp:   timestamppb.New(user.CreatedAt),
+			})
+			activityID++
+		}
+	} else if err != nil {
+		vgokit.Log.Warn("Failed to get users for activities", zap.Error(err))
+	}
+
+	// 获取最近创建的访问密钥（通过所有用户）
+	if len(users) > 0 {
+		keyCount := 0
+		for _, user := range users {
+			if keyCount >= 5 { // 最多获取5个访问密钥活动
+				break
+			}
+			accessKeys, err := s.accessKeyService.ListAccessKeys(ctx, user.Name)
+			if err == nil {
+				for _, key := range accessKeys {
+					if keyCount >= 5 {
+						break
+					}
+					activities = append(activities, &iamv1.Activity{
+						Id:          fmt.Sprintf("%d", activityID),
+						Type:        "access_key_created",
+						Description: fmt.Sprintf("Created access key for user '%s'", user.Name),
+						User:        user.Name,
+						Timestamp:   timestamppb.New(key.CreatedAt),
+					})
+					activityID++
+					keyCount++
+				}
+			}
+		}
+	}
+
+	// 获取最近的应用活动
+	if s.applicationService != nil {
+		apps, _, err := s.applicationService.ListApplications(ctx, 0, model.AppStatus(""), 1, 5) // 获取前5个应用，userID=0表示所有用户，status=""表示所有状态
+		if err == nil {
+			for _, app := range apps {
+				activities = append(activities, &iamv1.Activity{
+					Id:          fmt.Sprintf("%d", activityID),
+					Type:        "application_created",
+					Description: fmt.Sprintf("Created application '%s'", app.AppName),
+					User:        app.UserName,
+					Timestamp:   timestamppb.New(app.CreatedAt),
+				})
+				activityID++
+			}
+		} else {
+			vgokit.Log.Warn("Failed to get applications for activities", zap.Error(err))
+		}
+	}
+
+	// 按时间戳降序排序（最新的在前）
+	for i := 0; i < len(activities)-1; i++ {
+		for j := i + 1; j < len(activities); j++ {
+			if activities[i].Timestamp.AsTime().Before(activities[j].Timestamp.AsTime()) {
+				activities[i], activities[j] = activities[j], activities[i]
+			}
+		}
 	}
 
 	// 限制返回数量
 	if int(limit) < len(activities) {
 		activities = activities[:limit]
+	}
+
+	// 如果没有真实活动数据，返回一个默认活动
+	if len(activities) == 0 {
+		activities = []*iamv1.Activity{}
 	}
 
 	return &iamv1.DashboardActivitiesResponse{

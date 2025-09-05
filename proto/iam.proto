@@ -55,6 +55,13 @@ service IAM {
     };
   }
   
+  // 获取策略列表
+  rpc ListPolicies(ListPoliciesRequest) returns (ListPoliciesResponse) {
+    option (google.api.http) = {
+      get: "/v1/policies"
+    };
+  }
+  
   // 附加用户策略
   rpc AttachUserPolicy(AttachUserPolicyRequest)
       returns (AttachUserPolicyResponse) {
@@ -295,6 +302,20 @@ message AttachUserPolicyRequest {
 }
 
 message AttachUserPolicyResponse { bool success = 1; }
+
+// 策略列表请求
+message ListPoliciesRequest {
+  int32 page = 1;      // 页码（从1开始）
+  int32 page_size = 2; // 每页大小（最大100）
+}
+
+// 策略列表响应
+message ListPoliciesResponse {
+  repeated Policy policies = 1; // 策略列表
+  int32 total = 2;             // 总数
+  int32 page = 3;              // 当前页码
+  int32 page_size = 4;         // 每页大小
+}
 
 message Policy {
   int64 id = 1;
@@ -562,7 +583,7 @@ message DashboardStatsRequest {}
 
 message DashboardStatsResponse {
   int32 users = 1;                        // 用户总数
-  int32 access_keys = 2;                  // 访问密钥总数
+  int32 access_keys = 2 [json_name = "accessKeys"];  // 访问密钥总数
   int32 policies = 3;                     // 策略总数
   int32 applications = 4;                 // 应用总数
 }

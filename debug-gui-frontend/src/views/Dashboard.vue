@@ -31,7 +31,7 @@
           </el-icon>
         </div>
         <div class="stat-content">
-          <div class="stat-number">{{ stats.access_keys || 0 }}</div>
+          <div class="stat-number">{{ stats.accessKeys || 0 }}</div>
           <div class="stat-label">访问密钥</div>
         </div>
       </div>
@@ -160,7 +160,7 @@ import dayjs from 'dayjs'
 
 interface Stats {
   users: number
-  access_keys: number
+  accessKeys: number
   policies: number
   applications: number
 }
@@ -183,7 +183,7 @@ interface Activity {
 const loading = ref(false)
 const stats = ref<Stats>({
   users: 0,
-  access_keys: 0,
+  accessKeys: 0,
   policies: 0,
   applications: 0
 })
@@ -235,7 +235,7 @@ const loadStats = async () => {
     // 使用模拟数据
     stats.value = {
       users: 0,
-      access_keys: 0,
+      accessKeys: 0,
       policies: 0,
       applications: 0
     }

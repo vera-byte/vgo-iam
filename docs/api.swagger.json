@@ -575,6 +575,45 @@
       }
     },
     "/v1/policies": {
+      "get": {
+        "summary": "获取策略列表",
+        "operationId": "IAM_ListPolicies",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListPoliciesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "page",
+            "description": "页码（从1开始）",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageSize",
+            "description": "每页大小（最大100）",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "tags": [
+          "IAM"
+        ]
+      },
       "post": {
         "summary": "策略管理\n创建策略",
         "operationId": "IAM_CreatePolicy",
@@ -1623,6 +1662,35 @@
           "format": "int32"
         }
       }
+    },
+    "v1ListPoliciesResponse": {
+      "type": "object",
+      "properties": {
+        "policies": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Policy"
+          },
+          "title": "策略列表"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int32",
+          "title": "总数"
+        },
+        "page": {
+          "type": "integer",
+          "format": "int32",
+          "title": "当前页码"
+        },
+        "pageSize": {
+          "type": "integer",
+          "format": "int32",
+          "title": "每页大小"
+        }
+      },
+      "title": "策略列表响应"
     },
     "v1ListUsersResponse": {
       "type": "object",

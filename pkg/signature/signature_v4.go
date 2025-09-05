@@ -13,7 +13,6 @@ import (
 
 const (
 	AuthHeaderPrefix = "IAM-HMAC-SHA256"
-	TimeFormat       = time.RFC3339
 )
 
 // VerifySignatureV4 验证V4签名

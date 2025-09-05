@@ -8,6 +8,7 @@ package iamv1
 
 import (
 	context "context"
+
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -25,6 +26,7 @@ const (
 	IAM_UpdateUser_FullMethodName                  = "/iam.v1.IAM/UpdateUser"
 	IAM_DeleteUser_FullMethodName                  = "/iam.v1.IAM/DeleteUser"
 	IAM_CreatePolicy_FullMethodName                = "/iam.v1.IAM/CreatePolicy"
+	IAM_ListPolicies_FullMethodName                = "/iam.v1.IAM/ListPolicies"
 	IAM_AttachUserPolicy_FullMethodName            = "/iam.v1.IAM/AttachUserPolicy"
 	IAM_SubmitDeveloperVerification_FullMethodName = "/iam.v1.IAM/SubmitDeveloperVerification"
 	IAM_GetDeveloperVerification_FullMethodName    = "/iam.v1.IAM/GetDeveloperVerification"
@@ -67,6 +69,8 @@ type IAMClient interface {
 	// 策略管理
 	// 创建策略
 	CreatePolicy(ctx context.Context, in *CreatePolicyRequest, opts ...grpc.CallOption) (*Policy, error)
+	// 获取策略列表
+	ListPolicies(ctx context.Context, in *ListPoliciesRequest, opts ...grpc.CallOption) (*ListPoliciesResponse, error)
 	// 附加用户策略
 	AttachUserPolicy(ctx context.Context, in *AttachUserPolicyRequest, opts ...grpc.CallOption) (*AttachUserPolicyResponse, error)
 	// 开发者认证管理
@@ -183,6 +187,16 @@ func (c *iAMClient) CreatePolicy(ctx context.Context, in *CreatePolicyRequest, o
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(Policy)
 	err := c.cc.Invoke(ctx, IAM_CreatePolicy_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *iAMClient) ListPolicies(ctx context.Context, in *ListPoliciesRequest, opts ...grpc.CallOption) (*ListPoliciesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListPoliciesResponse)
+	err := c.cc.Invoke(ctx, IAM_ListPolicies_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -436,6 +450,8 @@ type IAMServer interface {
 	// 策略管理
 	// 创建策略
 	CreatePolicy(context.Context, *CreatePolicyRequest) (*Policy, error)
+	// 获取策略列表
+	ListPolicies(context.Context, *ListPoliciesRequest) (*ListPoliciesResponse, error)
 	// 附加用户策略
 	AttachUserPolicy(context.Context, *AttachUserPolicyRequest) (*AttachUserPolicyResponse, error)
 	// 开发者认证管理
@@ -514,6 +530,9 @@ func (UnimplementedIAMServer) DeleteUser(context.Context, *DeleteUserRequest) (*
 }
 func (UnimplementedIAMServer) CreatePolicy(context.Context, *CreatePolicyRequest) (*Policy, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreatePolicy not implemented")
+}
+func (UnimplementedIAMServer) ListPolicies(context.Context, *ListPoliciesRequest) (*ListPoliciesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListPolicies not implemented")
 }
 func (UnimplementedIAMServer) AttachUserPolicy(context.Context, *AttachUserPolicyRequest) (*AttachUserPolicyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AttachUserPolicy not implemented")
@@ -708,6 +727,24 @@ func _IAM_CreatePolicy_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(IAMServer).CreatePolicy(ctx, req.(*CreatePolicyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IAM_ListPolicies_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListPoliciesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IAMServer).ListPolicies(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IAM_ListPolicies_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IAMServer).ListPolicies(ctx, req.(*ListPoliciesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1156,6 +1193,10 @@ var IAM_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreatePolicy",
 			Handler:    _IAM_CreatePolicy_Handler,
+		},
+		{
+			MethodName: "ListPolicies",
+			Handler:    _IAM_ListPolicies_Handler,
 		},
 		{
 			MethodName: "AttachUserPolicy",

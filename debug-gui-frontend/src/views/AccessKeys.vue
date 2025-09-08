@@ -194,13 +194,14 @@ const formatDate = (dateString: string) => {
 const loadAccessKeys = async () => {
   loading.value = true
   try {
-    const response = await api.accessKeys.list({
+    const response: any = await api.accessKeys.list({
       page: currentPage.value,
       page_size: pageSize.value,
       status: statusFilter.value || undefined
     })
-    accessKeys.value = response.data.access_keys || []
-    total.value = response.data.total || 0
+    // 适配新的分页响应格式
+    accessKeys.value = response.list || []
+    total.value = response.pagination?.total || 0
   } catch (error) {
     console.error('加载访问密钥失败:', error)
     ElMessage.error('加载访问密钥失败')

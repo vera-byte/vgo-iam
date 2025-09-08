@@ -1,4 +1,5 @@
 {
+  "message.success": "成功",
   "success": {
     "user_created": "用户创建成功",
     "policy_created": "策略创建成功",
@@ -70,5 +71,16 @@
   
   "system.maintenance": "系统正在维护中",
   "system.service_unavailable": "服务暂时不可用",
-  "system.rate_limit_exceeded": "请求频率超限，请稍后重试"
+  "system.rate_limit_exceeded": "请求频率超限，请稍后重试",
+  
+  "activity.user_created": "创建了用户 '%s'",
+  "activity.access_key_created": "为用户 '%s' 创建了访问密钥",
+  "activity.application_created": "创建了应用 '%s'",
+  "activity.policy_created": "创建了策略 '%s'",
+  "activity.user_updated": "更新了用户 '%s'",
+  "activity.application_updated": "更新了应用 '%s'",
+  "activity.policy_updated": "更新了策略 '%s'",
+  "activity.user_deleted": "删除了用户 '%s'",
+  "activity.application_deleted": "删除了应用 '%s'",
+  "activity.policy_deleted": "删除了策略 '%s'"
 }

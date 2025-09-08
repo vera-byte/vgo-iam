@@ -67,6 +67,14 @@ func (s *PolicyService) UpdatePolicy(ctx context.Context, name, description, pol
 func (s *PolicyService) GetPolicy(ctx context.Context, name string) (*model.Policy, error) {
 	policy, err := s.policyStore.GetByName(name)
 	if err != nil {
+		// 对于策略查找，优先返回具体的策略不存在错误
+		if bizErr := errors.HandleDBError(err); bizErr != nil {
+			// 如果是 "暂无数据" 错误，转换为更具体的 "策略不存在" 错误
+			if bizErr.Code == errors.CodeNoData {
+				return nil, errors.NewBusinessError(errors.CodePolicyNotFound, "policy not found")
+			}
+			return nil, bizErr
+		}
 		return nil, errors.NewBusinessError(errors.CodePolicyNotFound, "policy not found")
 	}
 	return policy, nil
@@ -77,6 +85,9 @@ func (s *PolicyService) DeletePolicy(ctx context.Context, name string) error {
 	// 检查策略是否存在
 	policy, err := s.policyStore.GetByName(name)
 	if err != nil {
+		if bizErr := errors.HandleDBError(err); bizErr != nil {
+			return bizErr
+		}
 		return errors.NewBusinessError(errors.CodePolicyNotFound, "policy not found")
 	}
 
@@ -92,6 +103,9 @@ func (s *PolicyService) DeletePolicy(ctx context.Context, name string) error {
 func (s *PolicyService) ListPolicies(ctx context.Context) ([]*model.Policy, error) {
 	policies, err := s.policyStore.List()
 	if err != nil {
+		if bizErr := errors.HandleDBError(err); bizErr != nil {
+			return nil, bizErr
+		}
 		return nil, errors.NewBusinessError(errors.CodeInternalError, "failed to list policies")
 	}
 	return policies, nil

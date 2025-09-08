@@ -75,7 +75,19 @@ func (s *UserService) GetUserPolicies(ctx context.Context, userID int64) ([]*mod
 	return s.userStore.ListPolicies(userID)
 }
 func (s *UserService) GetUser(ctx context.Context, name string) (*model.User, error) {
-	return s.userStore.GetByName(name)
+	user, err := s.userStore.GetByName(name)
+	if err != nil {
+		// 对于用户查找，优先返回具体的用户不存在错误
+		if bizErr := errors.HandleDBError(err); bizErr != nil {
+			// 如果是 "暂无数据" 错误，转换为更具体的 "用户不存在" 错误
+			if bizErr.Code == errors.CodeNoData {
+				return nil, errors.NewBusinessError(errors.CodeUserNotFound, "user not found")
+			}
+			return nil, bizErr
+		}
+		return nil, err
+	}
+	return user, nil
 }
 
 // AttachPolicy 为用户附加策略
@@ -198,6 +210,14 @@ func (s *UserService) ListUsers(ctx context.Context) ([]*model.User, error) {
 func (s *UserService) GetUserByID(ctx context.Context, userID int64) (*model.User, error) {
 	user, err := s.userStore.GetByID(userID)
 	if err != nil {
+		// 对于用户查找，优先返回具体的用户不存在错误
+		if bizErr := errors.HandleDBError(err); bizErr != nil {
+			// 如果是 "暂无数据" 错误，转换为更具体的 "用户不存在" 错误
+			if bizErr.Code == errors.CodeNoData {
+				return nil, errors.NewBusinessError(errors.CodeUserNotFound, "user not found")
+			}
+			return nil, bizErr
+		}
 		return nil, errors.NewBusinessError(errors.CodeUserNotFound, "user not found")
 	}
 	return user, nil

@@ -6,13 +6,14 @@ import (
 	"math"
 	"time"
 
-	"github.com/golang/protobuf/ptypes"
 	"github.com/vera-byte/vgo-iam/pkg/signature"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
+	ctxkeys "github.com/vera-byte/vgo-iam/internal/context"
+	"github.com/vera-byte/vgo-iam/internal/errors"
 	"github.com/vera-byte/vgo-iam/internal/model"
 	"github.com/vera-byte/vgo-iam/internal/policy"
 	"github.com/vera-byte/vgo-iam/internal/service"
@@ -110,10 +111,60 @@ func (s *IAMServer) CreateUser(ctx context.Context, req *iamv1.CreateUserRequest
 func (s *IAMServer) GetUser(ctx context.Context, req *iamv1.GetUserRequest) (*iamv1.User, error) {
 	user, err := s.userService.GetUser(ctx, req.Name)
 	if err != nil {
+		// 优先使用 translateBusinessError 处理业务错误
+		if businessErr, ok := err.(*errors.BusinessError); ok {
+			return nil, s.translateBusinessError(ctx, businessErr)
+		}
 		return nil, s.translateError(ctx, codes.NotFound, "error.user.not_found", req.Name)
 	}
 
 	return convertUserToProto(user), nil
+}
+
+// ListUsers 获取用户列表
+// ctx: 上下文
+// req: 列表请求
+// 返回: 用户列表响应和错误信息
+func (s *IAMServer) ListUsers(ctx context.Context, req *iamv1.ListUsersRequest) (*iamv1.ListUsersResponse, error) {
+	vgokit.Log.Info("ListUsers request received", zap.Int32("page", req.Page), zap.Int32("size", req.Size))
+
+	// 获取所有用户
+	users, err := s.userService.ListUsers(ctx)
+	if err != nil {
+		vgokit.Log.Error("Failed to list users", zap.Error(err))
+		return nil, s.translateError(ctx, codes.Internal, "error.user.list_failed", err)
+	}
+
+	// 检查是否有数据
+	if len(users) == 0 {
+		// 创建 CodeNoData 业务错误并转换为 gRPC 错误
+		bizErr := errors.NewBusinessError(errors.CodeNoData, "no users found")
+		return nil, bizErr.ToGRPCError()
+	}
+
+	// 使用分页工具函数进行分页处理
+	pagedUsers, pagination := util.SlicePagination(users, req.Page, req.Size)
+
+	// 转换为protobuf格式
+	protoUsers := make([]*iamv1.User, len(pagedUsers))
+	for i, user := range pagedUsers {
+		protoUsers[i] = convertUserToProto(user)
+	}
+
+	vgokit.Log.Info("ListUsers completed successfully",
+		zap.Int("total_users", int(pagination.Total)),
+		zap.Int("returned_users", len(protoUsers)),
+		zap.Int32("page", pagination.Page),
+		zap.Int32("page_size", pagination.Size))
+
+	return &iamv1.ListUsersResponse{
+		List: protoUsers,
+		Pagination: &iamv1.Pagination{
+			Page:  pagination.Page,
+			Size:  pagination.Size,
+			Total: pagination.Total,
+		},
+	}, nil
 }
 
 func (s *IAMServer) CreatePolicy(ctx context.Context, req *iamv1.CreatePolicyRequest) (*iamv1.Policy, error) {
@@ -137,40 +188,22 @@ func (s *IAMServer) ListPolicies(ctx context.Context, req *iamv1.ListPoliciesReq
 	// 获取所有策略
 	policies, err := s.policyService.ListPolicies(ctx)
 	if err != nil {
+		// 优先使用 translateBusinessError 处理业务错误
+		if businessErr, ok := err.(*errors.BusinessError); ok {
+			return nil, s.translateBusinessError(ctx, businessErr)
+		}
 		return nil, s.translateError(ctx, codes.Internal, "error.policy.list_failed", err)
 	}
 
-	// 计算分页
-	page := req.Page
-	pageSize := req.PageSize
-	if page <= 0 {
-		page = 1
-	}
-	if pageSize <= 0 {
-		pageSize = 20
+	// 检查是否有数据
+	if len(policies) == 0 {
+		// 创建 CodeNoData 业务错误并转换为 gRPC 错误
+		bizErr := errors.NewBusinessError(errors.CodeNoData, "no policies found")
+		return nil, bizErr.ToGRPCError()
 	}
 
-	total := int32(len(policies))
-	startIndex := (page - 1) * pageSize
-	endIndex := startIndex + pageSize
-
-	// 处理边界情况
-	if startIndex >= total {
-		// 如果起始索引超出范围，返回空列表
-		return &iamv1.ListPoliciesResponse{
-			Policies: []*iamv1.Policy{},
-			Total:    total,
-			Page:     page,
-			PageSize: pageSize,
-		}, nil
-	}
-
-	if endIndex > total {
-		endIndex = total
-	}
-
-	// 获取当前页的策略
-	pagedPolicies := policies[startIndex:endIndex]
+	// 使用分页工具函数进行分页处理
+	pagedPolicies, pagination := util.SlicePagination(policies, req.Page, req.PageSize)
 
 	// 转换为protobuf格式
 	protoPolicies := make([]*iamv1.Policy, len(pagedPolicies))
@@ -179,10 +212,12 @@ func (s *IAMServer) ListPolicies(ctx context.Context, req *iamv1.ListPoliciesReq
 	}
 
 	return &iamv1.ListPoliciesResponse{
-		Policies: protoPolicies,
-		Total:    total,
-		Page:     page,
-		PageSize: pageSize,
+		List: protoPolicies,
+		Pagination: &iamv1.Pagination{
+			Page:  pagination.Page,
+			Size:  pagination.Size,
+			Total: pagination.Total,
+		},
 	}, nil
 }
 
@@ -231,17 +266,35 @@ func (s *IAMServer) CreateAccessKey(ctx context.Context, req *iamv1.CreateAccess
 }
 
 func (s *IAMServer) ListAccessKeys(ctx context.Context, req *iamv1.ListAccessKeysRequest) (*iamv1.ListAccessKeysResponse, error) {
-	user, err := s.userService.GetUser(ctx, req.UserName)
-	if err != nil {
-		return nil, s.translateError(ctx, codes.NotFound, "error.user.not_found", req.UserName)
+	var keys []*model.AccessKey
+	var err error
+	var user *model.User
+
+	// 如果指定了用户名，只返回该用户的访问密钥
+	if req.UserName != "" {
+		user, err = s.userService.GetUser(ctx, req.UserName)
+		if err != nil {
+			// 优先使用 translateBusinessError 处理业务错误
+			if businessErr, ok := err.(*errors.BusinessError); ok {
+				return nil, s.translateBusinessError(ctx, businessErr)
+			}
+			return nil, s.translateError(ctx, codes.NotFound, "error.user.not_found", req.UserName)
+		}
+		keys, err = s.accessKeyService.ListAccessKeys(ctx, user.Name)
+	} else {
+		// 如果没有指定用户名，返回所有用户的访问密钥
+		keys, err = s.accessKeyService.ListAllAccessKeys(ctx)
 	}
 
-	keys, err := s.accessKeyService.ListAccessKeys(ctx, user.Name)
 	if err != nil {
+		// 优先使用 translateBusinessError 处理业务错误
+		if businessErr, ok := err.(*errors.BusinessError); ok {
+			return nil, s.translateBusinessError(ctx, businessErr)
+		}
 		return nil, s.translateError(ctx, codes.Internal, "error.access_key.list_failed", err)
 	}
 
-	resp := &iamv1.ListAccessKeysResponse{}
+	var accessKeys []*iamv1.AccessKey
 	for _, key := range keys {
 		// 如果请求中指定了应用ID，只返回该应用的访问密钥
 		if req.AppId > 0 {
@@ -250,10 +303,29 @@ func (s *IAMServer) ListAccessKeys(ctx context.Context, req *iamv1.ListAccessKey
 			}
 		}
 
+		// 获取用户名
+		userName := ""
+		if user != nil {
+			userName = user.Name
+		} else {
+			// 当列出所有访问密钥时，需要通过UserID获取用户名
+			if key.UserName != "" {
+				userName = key.UserName
+			} else {
+				// 通过UserID获取用户信息
+				keyUser, err := s.userService.GetUserByID(ctx, key.UserID)
+				if err != nil {
+					userName = fmt.Sprintf("user_%d", key.UserID) // fallback
+				} else {
+					userName = keyUser.Name
+				}
+			}
+		}
+
 		accessKey := &iamv1.AccessKey{
 			AccessKeyId: key.AccessKeyID,
 			Status:      key.Status,
-			UserName:    user.Name,
+			UserName:    userName,
 			Description: key.Description,
 			CreatedAt:   convertTimeToTimestamp(key.CreatedAt),
 			UpdatedAt:   convertTimeToTimestamp(key.UpdatedAt),
@@ -264,7 +336,26 @@ func (s *IAMServer) ListAccessKeys(ctx context.Context, req *iamv1.ListAccessKey
 			accessKey.AppId = *key.AppID
 		}
 
-		resp.AccessKeys = append(resp.AccessKeys, accessKey)
+		accessKeys = append(accessKeys, accessKey)
+	}
+
+	// 检查是否有数据
+	if len(accessKeys) == 0 {
+		// 创建 CodeNoData 业务错误并转换为 gRPC 错误
+		bizErr := errors.NewBusinessError(errors.CodeNoData, "no access keys found")
+		return nil, bizErr.ToGRPCError()
+	}
+
+	// 使用分页工具函数处理分页
+	paginatedKeys, paginationInfo := util.SlicePagination(accessKeys, int32(req.PageSize), int32(req.Page))
+
+	resp := &iamv1.ListAccessKeysResponse{
+		List: paginatedKeys,
+		Pagination: &iamv1.Pagination{
+			Page:  paginationInfo.Page,
+			Size:  paginationInfo.Size,
+			Total: paginationInfo.Total,
+		},
 	}
 	return resp, nil
 }
@@ -354,7 +445,7 @@ func (s *IAMServer) CheckPermission(ctx context.Context, req *iamv1.CheckPermiss
 
 // 辅助函数：转换时间到Timestamp
 func convertTimeToTimestamp(t time.Time) *timestamppb.Timestamp {
-	ts, _ := ptypes.TimestampProto(t)
+	ts := timestamppb.New(t)
 	return ts
 }
 
@@ -461,9 +552,16 @@ func (s *IAMServer) ListDeveloperVerifications(ctx context.Context, req *iamv1.L
 	}
 
 	// 调用服务层
-	verifications, total, err := s.developerVerificationService.ListVerifications(ctx, verificationStatus, int(req.Page), int(req.PageSize))
+	verifications, _, err := s.developerVerificationService.ListVerifications(ctx, verificationStatus, int(req.Page), int(req.PageSize))
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to list verifications: %v", err)
+	}
+
+	// 检查是否有数据
+	if len(verifications) == 0 {
+		// 创建 CodeNoData 业务错误并转换为 gRPC 错误
+		bizErr := errors.NewBusinessError(errors.CodeNoData, "no developer verifications found")
+		return nil, bizErr.ToGRPCError()
 	}
 
 	// 转换为proto消息
@@ -472,11 +570,16 @@ func (s *IAMServer) ListDeveloperVerifications(ctx context.Context, req *iamv1.L
 		protoVerifications[i] = convertVerificationToProto(v, "user")
 	}
 
+	// 使用分页工具函数处理分页
+	paginatedVerifications, paginationInfo := util.SlicePagination(protoVerifications, req.PageSize, req.Page)
+
 	return &iamv1.ListDeveloperVerificationsResponse{
-		Verifications: protoVerifications,
-		Total:         int32(total),
-		Page:          req.Page,
-		PageSize:      req.PageSize,
+		List: paginatedVerifications,
+		Pagination: &iamv1.Pagination{
+			Page:  paginationInfo.Page,
+			Size:  paginationInfo.Size,
+			Total: paginationInfo.Total,
+		},
 	}, nil
 }
 
@@ -553,10 +656,38 @@ func (s *IAMServer) GetApplication(ctx context.Context, req *iamv1.GetApplicatio
 	return convertApplicationToProto(app, "user"), nil
 }
 
+// getUserIDFromContext 从上下文中获取用户ID
+// 参数:
+//   - ctx: 上下文
+//
+// 返回值:
+//   - int64: 用户ID
+//   - error: 错误信息
+func getUserIDFromContext(ctx context.Context) (int64, error) {
+	userID, ok := ctx.Value(ctxkeys.UserIDKey{}).(int64)
+	if !ok {
+		return 0, status.Error(codes.Unauthenticated, "user not authenticated")
+	}
+	return userID, nil
+}
+
 // ListApplications 获取应用列表
+// 参数:
+//   - ctx: 上下文
+//   - req: 请求参数
+//
+// 返回值:
+//   - *iamv1.ListApplicationsResponse: 应用列表响应
+//   - error: 错误信息
 func (s *IAMServer) ListApplications(ctx context.Context, req *iamv1.ListApplicationsRequest) (*iamv1.ListApplicationsResponse, error) {
-	// 根据用户名获取用户信息
-	user, err := s.userService.GetUser(ctx, req.UserName)
+	// 从上下文中获取用户ID
+	userID, err := getUserIDFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// 根据用户ID获取用户信息
+	user, err := s.userService.GetUserByID(ctx, userID)
 	if err != nil {
 		return nil, status.Errorf(codes.NotFound, "user not found: %v", err)
 	}
@@ -568,9 +699,16 @@ func (s *IAMServer) ListApplications(ctx context.Context, req *iamv1.ListApplica
 	}
 
 	// 调用服务层
-	apps, total, err := s.applicationService.ListApplications(ctx, user.ID, appStatus, int(req.Page), int(req.PageSize))
+	apps, _, err := s.applicationService.ListApplications(ctx, user.ID, appStatus, int(req.Page), int(req.PageSize))
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to list applications: %v", err)
+	}
+
+	// 检查是否有数据
+	if len(apps) == 0 {
+		// 创建 CodeNoData 业务错误并转换为 gRPC 错误
+		bizErr := errors.NewBusinessError(errors.CodeNoData, "no applications found")
+		return nil, bizErr.ToGRPCError()
 	}
 
 	// 转换为proto消息
@@ -579,11 +717,16 @@ func (s *IAMServer) ListApplications(ctx context.Context, req *iamv1.ListApplica
 		protoApps[i] = convertApplicationToProto(app, user.Name)
 	}
 
+	// 使用分页工具函数处理分页
+	paginatedApps, paginationInfo := util.SlicePagination(protoApps, req.PageSize, req.Page)
+
 	return &iamv1.ListApplicationsResponse{
-		Applications: protoApps,
-		Total:        int32(total),
-		Page:         req.Page,
-		PageSize:     req.PageSize,
+		List: paginatedApps,
+		Pagination: &iamv1.Pagination{
+			Page:  paginationInfo.Page,
+			Size:  paginationInfo.Size,
+			Total: paginationInfo.Total,
+		},
 	}, nil
 }
 
@@ -757,6 +900,25 @@ func (s *IAMServer) translateError(ctx context.Context, code codes.Code, key str
 	s.translator.SetLanguage(i18n.GetLanguageFromContext(ctx))
 	message := s.translator.Translate(key, args...)
 	return status.Error(code, message)
+}
+
+// translateBusinessError 将 BusinessError 转换为 gRPC 错误
+// ctx: 上下文，用于获取语言信息
+// err: 业务错误
+// 返回: gRPC 错误
+func (s *IAMServer) translateBusinessError(ctx context.Context, err error) error {
+	if businessErr, ok := err.(*errors.BusinessError); ok {
+		// 获取国际化键
+		i18nKey := errors.ErrorMessageKey[businessErr.Code]
+		// 获取 gRPC 状态码
+		grpcCode := errors.ErrorCodeToGRPCCode[businessErr.Code]
+		// 设置翻译器的语言（从上下文获取）
+		s.translator.SetLanguage(i18n.GetLanguageFromContext(ctx))
+		message := s.translator.Translate(i18nKey)
+		return status.Error(grpcCode, message)
+	}
+	// 如果不是 BusinessError，返回内部错误
+	return status.Error(codes.Internal, err.Error())
 }
 
 // 辅助函数：获取国际化消息
@@ -954,7 +1116,7 @@ func (s *IAMServer) GetDashboardActivities(ctx context.Context, req *iamv1.Dashb
 			activities = append(activities, &iamv1.Activity{
 				Id:          fmt.Sprintf("%d", activityID),
 				Type:        "user_created",
-				Description: fmt.Sprintf("Created user '%s'", user.DisplayName),
+				Description: s.translateMessage(ctx, "activity.user_created", user.DisplayName),
 				User:        "system", // 创建用户的操作者
 				Timestamp:   timestamppb.New(user.CreatedAt),
 			})
@@ -980,7 +1142,7 @@ func (s *IAMServer) GetDashboardActivities(ctx context.Context, req *iamv1.Dashb
 					activities = append(activities, &iamv1.Activity{
 						Id:          fmt.Sprintf("%d", activityID),
 						Type:        "access_key_created",
-						Description: fmt.Sprintf("Created access key for user '%s'", user.Name),
+						Description: s.translateMessage(ctx, "activity.access_key_created", user.Name),
 						User:        user.Name,
 						Timestamp:   timestamppb.New(key.CreatedAt),
 					})
@@ -999,7 +1161,7 @@ func (s *IAMServer) GetDashboardActivities(ctx context.Context, req *iamv1.Dashb
 				activities = append(activities, &iamv1.Activity{
 					Id:          fmt.Sprintf("%d", activityID),
 					Type:        "application_created",
-					Description: fmt.Sprintf("Created application '%s'", app.AppName),
+					Description: s.translateMessage(ctx, "activity.application_created", app.AppName),
 					User:        app.UserName,
 					Timestamp:   timestamppb.New(app.CreatedAt),
 				})

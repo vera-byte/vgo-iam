@@ -13,17 +13,17 @@ import (
 	iamv1 "github.com/vera-byte/vgo-iam/pkg/proto"
 
 	"github.com/spf13/cobra"
+	"github.com/vera-byte/vgo-iam/internal/api"
 	"github.com/vera-byte/vgo-iam/internal/auth"
 	"github.com/vera-byte/vgo-iam/internal/bootstrap"
 	"github.com/vera-byte/vgo-iam/internal/version"
 	vgokit "github.com/vera-byte/vgo-kit"
 	vgogrpc "github.com/vera-byte/vgo-kit/grpc"
+	"github.com/vera-byte/vgo-kit/i18n"
 	"github.com/vera-byte/vgo-kit/logger"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials/insecure"
-	"google.golang.org/grpc/status"
 )
 
 func init() {
@@ -107,6 +107,8 @@ func startServer() {
 	interceptorOpts := []vgogrpc.InterceptorOption{
 		vgogrpc.WithLoggingInterceptor(zapLogger),
 		vgogrpc.WithRecoveryInterceptor(zapLogger),
+		// 添加i18n拦截器
+		vgogrpc.WithCustomUnaryInterceptor(i18n.UnaryServerInterceptor(i18n.DefaultInterceptorConfig())),
 		// 添加认证拦截器
 		vgogrpc.WithCustomUnaryInterceptor(auth.CombinedAuthInterceptor(accessKeyStore, temporaryCredentialStore)),
 	}
@@ -155,20 +157,10 @@ func startServer() {
 		runtime.WithOutgoingHeaderMatcher(func(key string) (string, bool) {
 			return key, true
 		}),
-		// 自定义错误处理器，直接返回错误信息
+		// 自定义错误处理器，使用标准响应格式
 		runtime.WithErrorHandler(func(ctx context.Context, mux *runtime.ServeMux, marshaler runtime.Marshaler, w http.ResponseWriter, r *http.Request, err error) {
-			// 从gRPC状态中提取错误信息
-			st, ok := status.FromError(err)
-			if !ok {
-				st = status.New(codes.Internal, err.Error())
-			}
-
-			// 设置响应头为纯文本
-			w.Header().Set("Content-Type", "text/plain")
-			w.WriteHeader(runtime.HTTPStatusFromCode(st.Code()))
-
-			// 直接返回纯文本错误消息
-			w.Write([]byte(st.Message()))
+			// 使用标准错误响应处理器
+			api.WriteErrorResponse(w, err)
 		}),
 	)
 
@@ -182,8 +174,12 @@ func startServer() {
 		vgokit.Log.Fatal("Failed to register gateway", zap.Error(err))
 	}
 
-	// 创建中间件链：CORS -> mux
-	corsHandler := corsMiddleware(mux)
+	// 获取翻译器
+	translator := bootstrap.GetTranslator()
+	
+	// 创建中间件链：CORS -> StandardResponseWithI18n -> mux
+	standardResponseHandler := api.StandardResponseMiddlewareWithI18n(translator)(mux)
+	corsHandler := corsMiddleware(standardResponseHandler)
 
 	// 启动HTTP服务器协程
 	httpServer := &http.Server{

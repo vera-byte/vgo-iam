@@ -3,7 +3,9 @@
     <div class="page-header">
       <h1>开发者认证</h1>
       <el-button type="primary" @click="showCreateDialog = true">
-        <el-icon><Plus /></el-icon>
+        <el-icon>
+          <Plus />
+        </el-icon>
         新增认证
       </el-button>
     </div>
@@ -48,23 +50,19 @@
         <el-table-column label="操作" width="200" fixed="right">
           <template #default="{ row }">
             <el-button size="small" @click="viewVerification(row)">查看</el-button>
-            <el-button v-if="row.status === 'pending'" size="small" type="success" @click="approveVerification(row.id)">通过</el-button>
-            <el-button v-if="row.status === 'pending'" size="small" type="danger" @click="rejectVerification(row.id)">拒绝</el-button>
+            <el-button v-if="row.status === 'pending'" size="small" type="success"
+              @click="approveVerification(row.id)">通过</el-button>
+            <el-button v-if="row.status === 'pending'" size="small" type="danger"
+              @click="rejectVerification(row.id)">拒绝</el-button>
           </template>
         </el-table-column>
       </el-table>
 
       <!-- 分页 -->
       <div class="pagination-wrapper">
-        <el-pagination
-          v-model:current-page="currentPage"
-          v-model:page-size="pageSize"
-          :total="total"
-          :page-sizes="[10, 20, 50, 100]"
-          layout="total, sizes, prev, pager, next, jumper"
-          @size-change="loadVerifications"
-          @current-change="loadVerifications"
-        />
+        <el-pagination v-model:current-page="currentPage" v-model:page-size="pageSize" :total="total"
+          :page-sizes="[10, 20, 50, 100]" layout="total, sizes, prev, pager, next, jumper"
+          @size-change="loadVerifications" @current-change="loadVerifications" />
       </div>
     </el-card>
 
@@ -101,11 +99,15 @@
         <el-descriptions-item label="联系邮箱">{{ currentVerification.contact_email }}</el-descriptions-item>
         <el-descriptions-item label="联系电话">{{ currentVerification.contact_phone }}</el-descriptions-item>
         <el-descriptions-item label="状态">
-          <el-tag :type="getStatusType(currentVerification.status)">{{ getStatusText(currentVerification.status) }}</el-tag>
+          <el-tag :type="getStatusType(currentVerification.status)">{{ getStatusText(currentVerification.status)
+            }}</el-tag>
         </el-descriptions-item>
-        <el-descriptions-item label="申请时间">{{ dayjs(currentVerification.created_at).format('YYYY-MM-DD HH:mm:ss') }}</el-descriptions-item>
-        <el-descriptions-item label="业务描述" :span="2">{{ currentVerification.business_description }}</el-descriptions-item>
-        <el-descriptions-item v-if="currentVerification.review_comment" label="审核意见" :span="2">{{ currentVerification.review_comment }}</el-descriptions-item>
+        <el-descriptions-item label="申请时间">{{ dayjs(currentVerification.created_at).format('YYYY-MM-DD HH:mm:ss')
+          }}</el-descriptions-item>
+        <el-descriptions-item label="业务描述" :span="2">{{ currentVerification.business_description
+          }}</el-descriptions-item>
+        <el-descriptions-item v-if="currentVerification.review_comment" label="审核意见" :span="2">{{
+          currentVerification.review_comment }}</el-descriptions-item>
       </el-descriptions>
     </el-dialog>
   </div>
@@ -115,7 +117,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
-import * as dayjs from 'dayjs'
+import dayjs from 'dayjs'
 import { api } from '@/api'
 
 interface DeveloperVerification {
@@ -194,9 +196,10 @@ const loadVerifications = async () => {
       developer_id: searchForm.developerId || undefined,
       status: searchForm.status || undefined
     }
-    const response = await api.developerVerification.list(params)
-    verifications.value = response.data.verifications || []
-    total.value = response.data.total || 0
+    const response: any = await api.developerVerification.list(params)
+    // 适配新的分页响应格式
+    verifications.value = response.list || []
+    total.value = response.pagination?.total || 0
   } catch (error) {
     ElMessage.error('加载认证列表失败')
   } finally {
@@ -213,15 +216,15 @@ const resetSearch = () => {
 
 const createVerification = async () => {
   if (!createFormRef.value) return
-  
+
   try {
     await createFormRef.value.validate()
     creating.value = true
-    
+
     await api.developerVerification.submit(newVerification)
     ElMessage.success('创建认证申请成功')
     showCreateDialog.value = false
-    
+
     // 重置表单
     Object.assign(newVerification, {
       developer_id: '',
@@ -230,7 +233,7 @@ const createVerification = async () => {
       contact_phone: '',
       business_description: ''
     })
-    
+
     loadVerifications()
   } catch (error) {
     ElMessage.error('创建认证申请失败')
@@ -249,7 +252,7 @@ const approveVerification = async (id: number) => {
     await ElMessageBox.confirm('确定要通过这个认证申请吗？', '确认操作', {
       type: 'warning'
     })
-    
+
     await api.developerVerification.review(id.toString(), { status: 'approved' })
     ElMessage.success('认证申请已通过')
     loadVerifications()
@@ -273,7 +276,7 @@ const rejectVerification = async (id: number) => {
         return true
       }
     })
-    
+
     await api.developerVerification.review(id.toString(), { status: 'rejected', comment })
     ElMessage.success('认证申请已拒绝')
     loadVerifications()

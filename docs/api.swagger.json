@@ -146,6 +146,20 @@
             "required": false,
             "type": "string",
             "format": "int64"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
           }
         ],
         "tags": [
@@ -1733,67 +1747,58 @@
     "v1ListAccessKeysResponse": {
       "type": "object",
       "properties": {
-        "accessKeys": {
+        "list": {
           "type": "array",
           "items": {
             "type": "object",
             "$ref": "#/definitions/v1AccessKey"
-          }
+          },
+          "title": "访问密钥列表"
+        },
+        "pagination": {
+          "$ref": "#/definitions/v1Pagination",
+          "title": "分页信息"
         }
       }
     },
     "v1ListApplicationsResponse": {
       "type": "object",
       "properties": {
-        "applications": {
+        "list": {
           "type": "array",
           "items": {
             "type": "object",
             "$ref": "#/definitions/v1Application"
-          }
+          },
+          "title": "应用列表"
         },
-        "total": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "page": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "pageSize": {
-          "type": "integer",
-          "format": "int32"
+        "pagination": {
+          "$ref": "#/definitions/v1Pagination",
+          "title": "分页信息"
         }
       }
     },
     "v1ListDeveloperVerificationsResponse": {
       "type": "object",
       "properties": {
-        "verifications": {
+        "list": {
           "type": "array",
           "items": {
             "type": "object",
             "$ref": "#/definitions/v1DeveloperVerification"
-          }
+          },
+          "title": "开发者认证列表"
         },
-        "total": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "page": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "pageSize": {
-          "type": "integer",
-          "format": "int32"
+        "pagination": {
+          "$ref": "#/definitions/v1Pagination",
+          "title": "分页信息"
         }
       }
     },
     "v1ListPoliciesResponse": {
       "type": "object",
       "properties": {
-        "policies": {
+        "list": {
           "type": "array",
           "items": {
             "type": "object",
@@ -1801,20 +1806,9 @@
           },
           "title": "策略列表"
         },
-        "total": {
-          "type": "integer",
-          "format": "int32",
-          "title": "总数"
-        },
-        "page": {
-          "type": "integer",
-          "format": "int32",
-          "title": "当前页码"
-        },
-        "pageSize": {
-          "type": "integer",
-          "format": "int32",
-          "title": "每页大小"
+        "pagination": {
+          "$ref": "#/definitions/v1Pagination",
+          "title": "分页信息"
         }
       },
       "title": "策略列表响应"
@@ -1822,24 +1816,17 @@
     "v1ListUsersResponse": {
       "type": "object",
       "properties": {
-        "users": {
+        "list": {
           "type": "array",
           "items": {
             "type": "object",
             "$ref": "#/definitions/v1User"
-          }
+          },
+          "title": "用户列表"
         },
-        "total": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "page": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "size": {
-          "type": "integer",
-          "format": "int32"
+        "pagination": {
+          "$ref": "#/definitions/v1Pagination",
+          "title": "分页信息"
         }
       }
     },
@@ -1865,6 +1852,27 @@
         }
       },
       "title": "存活性探针响应"
+    },
+    "v1Pagination": {
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "format": "int32",
+          "title": "当前页码"
+        },
+        "size": {
+          "type": "integer",
+          "format": "int32",
+          "title": "每页大小"
+        },
+        "total": {
+          "type": "integer",
+          "format": "int32",
+          "title": "总记录数"
+        }
+      },
+      "title": "标准分页信息"
     },
     "v1Policy": {
       "type": "object",

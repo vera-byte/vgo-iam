@@ -284,11 +284,16 @@ message ListUsersRequest {
   int32 size = 2;
 }
 
+// 标准分页信息
+message Pagination {
+  int32 page = 1;   // 当前页码
+  int32 size = 2;   // 每页大小
+  int32 total = 3;  // 总记录数
+}
+
 message ListUsersResponse {
-  repeated User users = 1;
-  int32 total = 2;
-  int32 page = 3;
-  int32 size = 4;
+  repeated User list = 1;        // 用户列表
+  Pagination pagination = 2;     // 分页信息
 }
 
 message UpdateUserRequest {
@@ -336,10 +341,8 @@ message ListPoliciesRequest {
 
 // 策略列表响应
 message ListPoliciesResponse {
-  repeated Policy policies = 1; // 策略列表
-  int32 total = 2;             // 总数
-  int32 page = 3;              // 当前页码
-  int32 page_size = 4;         // 每页大小
+  repeated Policy list = 1;      // 策略列表
+  Pagination pagination = 2;     // 分页信息
 }
 
 message Policy {
@@ -415,10 +418,8 @@ message DeveloperVerification {
 }
 
 message ListDeveloperVerificationsResponse {
-  repeated DeveloperVerification verifications = 1;
-  int32 total = 2;
-  int32 page = 3;
-  int32 page_size = 4;
+  repeated DeveloperVerification list = 1;  // 开发者认证列表
+  Pagination pagination = 2;                // 分页信息
 }
 
 // 应用管理相关消息
@@ -479,10 +480,8 @@ message Application {
 }
 
 message ListApplicationsResponse {
-  repeated Application applications = 1;
-  int32 total = 2;
-  int32 page = 3;
-  int32 page_size = 4;
+  repeated Application list = 1;     // 应用列表
+  Pagination pagination = 2;         // 分页信息
 }
 
 // 访问密钥相关消息
@@ -495,6 +494,8 @@ message CreateAccessKeyRequest {
 message ListAccessKeysRequest {
   string user_name = 1;
   int64 app_id = 2; // 可选，筛选特定应用的密钥
+  int32 page = 3;
+  int32 page_size = 4;
 }
 
 message UpdateAccessKeyStatusRequest {
@@ -514,7 +515,10 @@ message AccessKey {
   google.protobuf.Timestamp updated_at = 9;
 }
 
-message ListAccessKeysResponse { repeated AccessKey access_keys = 1; }
+message ListAccessKeysResponse {
+  repeated AccessKey list = 1;       // 访问密钥列表
+  Pagination pagination = 2;         // 分页信息
+}
 
 // 验证相关消息
 message VerifyRequest {

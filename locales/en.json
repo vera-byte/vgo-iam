@@ -1,4 +1,5 @@
 {
+  "message.success": "Success",
   "success": {
     "user_created": "User created successfully",
     "policy_created": "Policy created successfully",
@@ -70,5 +71,16 @@
   
   "system.maintenance": "System is under maintenance",
   "system.service_unavailable": "Service temporarily unavailable",
-  "system.rate_limit_exceeded": "Rate limit exceeded, please try again later"
+  "system.rate_limit_exceeded": "Rate limit exceeded, please try again later",
+  
+  "activity.user_created": "Created user '%s'",
+  "activity.access_key_created": "Created access key for user '%s'",
+  "activity.application_created": "Created application '%s'",
+  "activity.policy_created": "Created policy '%s'",
+  "activity.user_updated": "Updated user '%s'",
+  "activity.application_updated": "Updated application '%s'",
+  "activity.policy_updated": "Updated policy '%s'",
+  "activity.user_deleted": "Deleted user '%s'",
+  "activity.application_deleted": "Deleted application '%s'",
+  "activity.policy_deleted": "Deleted policy '%s'"
 }

@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc/status"
 
 	"github.com/vera-byte/vgo-iam/internal/config"
+	ctxkeys "github.com/vera-byte/vgo-iam/internal/context"
 	"github.com/vera-byte/vgo-iam/internal/store"
 	"github.com/vera-byte/vgo-iam/pkg/signature"
 	vgokit "github.com/vera-byte/vgo-kit"
@@ -55,8 +56,7 @@ func AccessKeyInterceptor(akStore store.AccessKeyStore) grpc.UnaryServerIntercep
 		}
 
 		// 将用户信息添加到上下文
-		type userIDKey struct{}
-		ctx = context.WithValue(ctx, userIDKey{}, ak.UserID)
+		ctx = context.WithValue(ctx, ctxkeys.UserIDKey{}, ak.UserID)
 
 		return handler(ctx, req)
 	}

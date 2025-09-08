@@ -15,13 +15,9 @@
     </div>
 
     <div class="table-container">
-      <el-table
-        :data="users"
-        v-loading="loading"
-        style="width: 100%"
-      >
+      <el-table :data="users" v-loading="loading" style="width: 100%">
         <el-table-column prop="id" label="ID" width="200" />
-        <el-table-column prop="username" label="用户名" />
+        <el-table-column prop="name" label="用户名" />
         <el-table-column prop="email" label="邮箱" />
         <el-table-column prop="status" label="状态" width="100">
           <template #default="{ row }">
@@ -30,7 +26,11 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="created_at" label="创建时间" width="180" />
+        <el-table-column prop="createdAt" label="创建时间" width="180">
+          <template #default="{ row }">
+            <span>{{ dayjs(row.createdAt).format("YYYY-MM-DD HH:mm:s") }}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="200">
           <template #default="{ row }">
             <el-button size="small" @click="editUser(row)">编辑</el-button>
@@ -41,11 +41,7 @@
     </div>
 
     <!-- 创建用户对话框 -->
-    <el-dialog
-      v-model="showCreateDialog"
-      title="创建用户"
-      width="500px"
-    >
+    <el-dialog v-model="showCreateDialog" title="创建用户" width="500px">
       <el-form :model="userForm" label-width="80px">
         <el-form-item label="用户名">
           <el-input v-model="userForm.username" placeholder="请输入用户名" />
@@ -54,12 +50,7 @@
           <el-input v-model="userForm.email" placeholder="请输入邮箱" />
         </el-form-item>
         <el-form-item label="密码">
-          <el-input
-            v-model="userForm.password"
-            type="password"
-            placeholder="请输入密码"
-            show-password
-          />
+          <el-input v-model="userForm.password" type="password" placeholder="请输入密码" show-password />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -76,6 +67,7 @@
 import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { api, type User } from '../api'
+import dayjs from 'dayjs'
 
 // 响应式数据
 const users = ref<User[]>([])
@@ -94,8 +86,9 @@ const userForm = ref({
 const loadUsers = async () => {
   loading.value = true
   try {
-    const response = await api.users.list()
-    users.value = response.users || []
+    const response: any = await api.users.list()
+    // 适配新的分页响应格式
+    users.value = response.list || []
   } catch (error: any) {
     ElMessage.error(`加载用户列表失败: ${error.message}`)
   } finally {
@@ -108,7 +101,7 @@ const createUser = async () => {
     ElMessage.error('请填写完整信息')
     return
   }
-  
+
   creating.value = true
   try {
     await api.users.create(userForm.value)
@@ -132,7 +125,7 @@ const deleteUser = async (id: string) => {
     await ElMessageBox.confirm('确定要删除这个用户吗？', '确认删除', {
       type: 'warning'
     })
-    
+
     await api.users.delete(id)
     ElMessage.success('用户删除成功')
     await loadUsers()

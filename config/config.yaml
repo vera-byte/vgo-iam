@@ -18,7 +18,8 @@ grpc:
     connections: {}
 http:
   addr: ":50052"
-
+i18n:
+  default_language: "zh" # 设置中文为默认语言
 database:
   dsn: "postgres://vgo_user:vgo_password@localhost:5432/vgo_iam?sslmode=disable"
 
@@ -40,6 +41,7 @@ middleware:
     - "user-agent"
     - "remote-addr"
     - "request-id"
+    - "accept-language"
 
 # Sentry和日志配置
 log:

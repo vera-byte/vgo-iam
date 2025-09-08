@@ -29,7 +29,23 @@ apiClient.interceptors.request.use(
 // 响应拦截器
 apiClient.interceptors.response.use(
   (response: AxiosResponse) => {
-    return response.data
+    // 适配新的标准响应格式 {code, message, data}
+    const responseData = response.data
+    
+    // 如果响应包含标准格式，返回data字段
+    if (responseData && typeof responseData === 'object' && 'code' in responseData) {
+      // 检查业务错误码
+      if (responseData.code !== 0) {
+        const error = new Error(responseData.message || '请求失败')
+        error.name = 'BusinessError'
+        ;(error as any).code = responseData.code
+        return Promise.reject(error)
+      }
+      return responseData.data
+    }
+    
+    // 兼容旧格式，直接返回原数据
+    return responseData
   },
   (error) => {
     console.error('API请求错误:', error)

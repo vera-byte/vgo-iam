@@ -86,3 +86,71 @@ func ParsePolicyResource(resource string) (service, resourceType, resourceID str
 	}
 	return parts[0], parts[1], parts[2]
 }
+
+// PaginationInfo 分页信息结构
+type PaginationInfo struct {
+	Page  int32 // 当前页码
+	Size  int32 // 每页大小
+	Total int32 // 总记录数
+}
+
+// CalculatePagination 计算分页信息
+// page: 页码（从1开始）
+// size: 每页大小
+// total: 总记录数
+// 返回: 标准化的分页信息
+func CalculatePagination(page, size int32, total int) PaginationInfo {
+	if page <= 0 {
+		page = 1
+	}
+	if size <= 0 {
+		size = 20
+	}
+	
+	return PaginationInfo{
+		Page:  page,
+		Size:  size,
+		Total: int32(total),
+	}
+}
+
+// CalculateOffset 计算分页偏移量
+// page: 页码（从1开始）
+// size: 每页大小
+// 返回: 起始索引和结束索引
+func CalculateOffset(page, size int32) (startIndex, endIndex int32) {
+	if page <= 0 {
+		page = 1
+	}
+	if size <= 0 {
+		size = 20
+	}
+	
+	startIndex = (page - 1) * size
+	endIndex = startIndex + size
+	return startIndex, endIndex
+}
+
+// SlicePagination 对切片进行分页处理
+// data: 原始数据切片
+// page: 页码（从1开始）
+// size: 每页大小
+// 返回: 分页后的数据和分页信息
+func SlicePagination[T any](data []T, page, size int32) ([]T, PaginationInfo) {
+	total := len(data)
+	pagination := CalculatePagination(page, size, total)
+	
+	startIndex, endIndex := CalculateOffset(page, size)
+	
+	// 处理边界情况
+	if startIndex >= int32(total) {
+		// 如果起始索引超出范围，返回空切片
+		return []T{}, pagination
+	}
+	
+	if endIndex > int32(total) {
+		endIndex = int32(total)
+	}
+	
+	return data[startIndex:endIndex], pagination
+}

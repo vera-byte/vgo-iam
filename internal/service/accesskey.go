@@ -182,6 +182,9 @@ func (s *AccessKeyService) ListAccessKeys(ctx context.Context, userName string) 
 	// 获取用户
 	user, err := s.userStore.GetByName(userName)
 	if err != nil {
+		if bizErr := errors.HandleDBError(err); bizErr != nil {
+			return nil, bizErr
+		}
 		return nil, errors.NewBusinessError(errors.CodeUserNotFound, "user not found")
 	}
 
@@ -261,12 +264,28 @@ func (s *AccessKeyService) GetAccessKey(ctx context.Context, accessKeyID string)
 	// 从存储层获取密钥
 	ak, err := s.accessKeyStore.GetByAccessKeyID(accessKeyID, s.masterKey)
 	if err != nil {
+		// 对于访问密钥查找，优先返回具体的访问密钥不存在错误
+		if bizErr := errors.HandleDBError(err); bizErr != nil {
+			// 如果是 "暂无数据" 错误，转换为更具体的 "访问密钥不存在" 错误
+			if bizErr.Code == errors.CodeNoData {
+				return nil, errors.NewBusinessError(errors.CodeAccessKeyNotFound, "access key not found")
+			}
+			return nil, bizErr
+		}
 		return nil, errors.NewBusinessError(errors.CodeAccessKeyNotFound, "access key not found")
 	}
 
 	// 获取关联用户信息
 	user, err := s.userStore.GetByID(ak.UserID)
 	if err != nil {
+		// 对于用户查找，优先返回具体的用户不存在错误
+		if bizErr := errors.HandleDBError(err); bizErr != nil {
+			// 如果是 "暂无数据" 错误，转换为更具体的 "用户不存在" 错误
+			if bizErr.Code == errors.CodeNoData {
+				return nil, errors.NewBusinessError(errors.CodeUserNotFound, "associated user not found")
+			}
+			return nil, bizErr
+		}
 		return nil, errors.NewBusinessError(errors.CodeUserNotFound, "associated user not found")
 	}
 
@@ -501,6 +520,40 @@ func (s *AccessKeyService) ProcessScheduledRotations(ctx context.Context) error 
 	}
 
 	return nil
+}
+
+// ListAllAccessKeys 列出所有用户的访问密钥
+func (s *AccessKeyService) ListAllAccessKeys(ctx context.Context) ([]*model.AccessKey, error) {
+	aks, err := s.accessKeyStore.ListAll()
+	if err != nil {
+		if bizErr := errors.HandleDBError(err); bizErr != nil {
+			return nil, bizErr
+		}
+		return nil, err
+	}
+
+	// 解密所有密钥
+	for _, ak := range aks {
+		if len(ak.EncryptedSecretAccessKey) > 0 && s.masterKey != "" {
+			key, err := hex.DecodeString(s.masterKey)
+			if err != nil {
+				return nil, err
+			}
+			// 先进行base64解码
+			ciphertext, err := base64.StdEncoding.DecodeString(ak.EncryptedSecretAccessKey)
+			if err != nil {
+				return nil, err
+			}
+			// 解密
+			plaintext, err := crypto.DecryptKey(ciphertext, key)
+			if err != nil {
+				return nil, err
+			}
+			ak.SecretAccessKey = string(plaintext)
+		}
+	}
+
+	return aks, nil
 }
 
 // GetAccessKeysCount 获取访问密钥总数

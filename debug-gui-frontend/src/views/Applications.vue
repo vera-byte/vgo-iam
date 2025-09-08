@@ -3,21 +3,20 @@
     <div class="page-header">
       <h1>应用管理</h1>
       <el-button type="primary" @click="showCreateDialog = true">
-        <el-icon><Plus /></el-icon>
+        <el-icon>
+          <Plus />
+        </el-icon>
         创建应用
       </el-button>
     </div>
 
     <div class="content-card">
       <div class="toolbar">
-        <el-input
-          v-model="searchQuery"
-          placeholder="搜索应用..."
-          style="width: 300px"
-          clearable
-        >
+        <el-input v-model="searchQuery" placeholder="搜索应用..." style="width: 300px" clearable>
           <template #prefix>
-            <el-icon><Search /></el-icon>
+            <el-icon>
+              <Search />
+            </el-icon>
           </template>
         </el-input>
         <el-select v-model="typeFilter" placeholder="应用类型" style="width: 120px">
@@ -54,24 +53,14 @@
       </el-table>
 
       <div class="pagination">
-        <el-pagination
-          v-model:current-page="currentPage"
-          v-model:page-size="pageSize"
-          :total="total"
-          :page-sizes="[10, 20, 50, 100]"
-          layout="total, sizes, prev, pager, next, jumper"
-          @size-change="loadApplications"
-          @current-change="loadApplications"
-        />
+        <el-pagination v-model:current-page="currentPage" v-model:page-size="pageSize" :total="total"
+          :page-sizes="[10, 20, 50, 100]" layout="total, sizes, prev, pager, next, jumper"
+          @size-change="loadApplications" @current-change="loadApplications" />
       </div>
     </div>
 
     <!-- 创建/编辑应用对话框 -->
-    <el-dialog 
-      v-model="showCreateDialog" 
-      :title="editingApplication ? '编辑应用' : '创建应用'" 
-      width="600px"
-    >
+    <el-dialog v-model="showCreateDialog" :title="editingApplication ? '编辑应用' : '创建应用'" width="600px">
       <el-form :model="applicationForm" :rules="applicationRules" ref="applicationFormRef" label-width="120px">
         <el-form-item label="应用名称" prop="name">
           <el-input v-model="applicationForm.name" placeholder="请输入应用名称" />
@@ -84,23 +73,14 @@
           </el-select>
         </el-form-item>
         <el-form-item label="描述" prop="description">
-          <el-input
-            v-model="applicationForm.description"
-            type="textarea"
-            placeholder="请输入应用描述"
-            :rows="3"
-          />
+          <el-input v-model="applicationForm.description" type="textarea" placeholder="请输入应用描述" :rows="3" />
         </el-form-item>
         <el-form-item label="重定向URI">
           <div class="redirect-uris">
             <div v-for="(uri, index) in applicationForm.redirect_uris" :key="index" class="uri-item">
               <el-input v-model="applicationForm.redirect_uris[index]" placeholder="请输入重定向URI" />
-              <el-button 
-                type="danger" 
-                size="small" 
-                @click="removeRedirectUri(index)"
-                :disabled="applicationForm.redirect_uris.length <= 1"
-              >
+              <el-button type="danger" size="small" @click="removeRedirectUri(index)"
+                :disabled="applicationForm.redirect_uris.length <= 1">
                 删除
               </el-button>
             </div>
@@ -178,7 +158,7 @@ import { ref, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Plus, Search } from '@element-plus/icons-vue'
 import { api } from '../api'
-import * as dayjs from 'dayjs'
+import dayjs from 'dayjs'
 
 interface Application {
   id: string
@@ -230,18 +210,18 @@ const applicationRules = {
 
 const filteredApplications = computed(() => {
   let filtered = applications.value
-  
+
   if (searchQuery.value) {
-    filtered = filtered.filter(app => 
+    filtered = filtered.filter(app =>
       app.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
       app.description.toLowerCase().includes(searchQuery.value.toLowerCase())
     )
   }
-  
+
   if (typeFilter.value) {
     filtered = filtered.filter(app => app.type === typeFilter.value)
   }
-  
+
   return filtered
 })
 
@@ -279,13 +259,14 @@ const formatDate = (dateString: string) => {
 const loadApplications = async () => {
   loading.value = true
   try {
-    const response = await api.applications.list({
+    const response: any = await api.applications.list({
       page: currentPage.value,
       page_size: pageSize.value,
       type: typeFilter.value || undefined
     })
-    applications.value = response.data.applications || []
-    total.value = response.data.total || 0
+    // 适配新的分页响应格式
+    applications.value = response.list || []
+    total.value = response.pagination?.total || 0
   } catch (error) {
     console.error('加载应用失败:', error)
     ElMessage.error('加载应用失败')
@@ -333,18 +314,18 @@ const removeRedirectUri = (index: number) => {
 
 const saveApplication = async () => {
   if (!applicationFormRef.value) return
-  
+
   try {
     await applicationFormRef.value.validate()
-    
+
     // 过滤空的重定向URI
     const formData = {
       ...applicationForm.value,
       redirect_uris: applicationForm.value.redirect_uris.filter(uri => uri.trim())
     }
-    
+
     saving.value = true
-    
+
     if (editingApplication.value) {
       // 更新应用
       await api.applications.update(editingApplication.value.id, formData)
@@ -354,7 +335,7 @@ const saveApplication = async () => {
       await api.applications.create(formData)
       ElMessage.success('应用创建成功')
     }
-    
+
     cancelEdit()
     await loadApplications()
   } catch (error) {
@@ -376,7 +357,7 @@ const deleteApplication = async (application: Application) => {
         type: 'warning'
       }
     )
-    
+
     await api.applications.delete(application.id)
     await loadApplications()
     ElMessage.success('应用删除成功')

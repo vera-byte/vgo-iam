@@ -33,6 +33,9 @@ type AppConfig struct {
 	} `mapstructure:"middleware"`
 	Cache *cache.CacheConfig `mapstructure:"cache"`
 	STS   STSConfig          `mapstructure:"sts"`
+	I18n  struct {
+		DefaultLanguage string `mapstructure:"default_language"`
+	} `mapstructure:"i18n"`
 }
 type LogConfig struct {
 	Level     string `mapstructure:"level"`     // 日志级别: debug/info/warn/error
